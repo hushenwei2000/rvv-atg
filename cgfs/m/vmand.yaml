@@ -3,7 +3,7 @@ vmand:
       - check ISA:=regex(.*V.*)
     opcode: 
       vmand.mm: 0
-    rs2: 
+    rs1: 
       <<: *v_regs
     rd: 
       <<: *v_regs

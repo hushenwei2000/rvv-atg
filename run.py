@@ -57,7 +57,7 @@ def run_vf(cwd, args, cgf, output_dir):
     # 2. Use empty tests to generate coverage report
     riscof_dir = '/work/stu/swhu/projects/riscof-sample'
     (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, use_fail_macro=False)
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 3. Generate test with not-filled result
     first_test = create_first_test(
@@ -65,14 +65,14 @@ def run_vf(cwd, args, cgf, output_dir):
 
     # 4. Run riscof coverage and extract true result from isac_log
     (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, first_test, 'first', args.xlen, args.flen, args.vlen, use_fail_macro=False)
+                                                      output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 5. Replace old result with true results
     replace_results(args.i, first_test, isac_log_first)
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, first_test, 'final', args.xlen, args.flen, args.vlen, use_fail_macro=True)
+                                                      output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
 
 
 def run_integer(cwd, args, cgf, output_dir):
@@ -83,7 +83,7 @@ def run_integer(cwd, args, cgf, output_dir):
     # 2. Use empty tests to generate coverage report
     riscof_dir = '/work/stu/swhu/projects/riscof-sample'
     (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, use_fail_macro=False)
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 3. Generate test with not-filled result
     first_test = create_first_test(
@@ -91,14 +91,14 @@ def run_integer(cwd, args, cgf, output_dir):
 
     # 4. Run riscof coverage and extract true result from isac_log
     (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, first_test, 'first', args.xlen, args.flen, args.vlen, use_fail_macro=False)
+                                                      output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 5. Replace old result with true results
     des_path = replace_results(args.i, first_test, isac_log_first)
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, des_path, 'final', args.xlen, args.flen, args.vlen, use_fail_macro=True)
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
 
 
 def run_mask(cwd, args, cgf, output_dir):
@@ -110,14 +110,14 @@ def run_mask(cwd, args, cgf, output_dir):
 
     # 4. Run riscof coverage and extract true result from isac_log
     (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, use_fail_macro=False)
+                                                      output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 5. Replace old result with true results
     des_path = replace_results("vpopc", empty_test, isac_log_first)
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, riscof_dir, des_path, 'final', args.xlen, args.flen, args.vlen, use_fail_macro=True)
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
 
 
 def main():
