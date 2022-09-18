@@ -7,14 +7,16 @@
 // Helper macros
 //-----------------------------------------------------------------------
 
-#define RVTEST_VSET vsetivli x31, 1, e64, tu, mu;
-#define __riscv_vsew 64
-#define __riscv_double_vsew 128
-#define VSEW_MASK_BITS 0xffffffffffffffff
-#define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
-#define VSET_VSEW vsetivli x31, 1, e64, tu, mu;
-#define VSET_VSEW_4AVL vsetivli x31, 4, e64, tu, mu;
-#define VSET_DOUBLE_VSEW vsetivli x31, 1, e128, tu, mu;
+// VSEW temporarily hard-coded to 16 bits
+#define RVTEST_VSET vsetivli x31, 1, e16, tu, mu;
+#define __riscv_vsew 16
+#define __riscv_vsew_bytes 2
+#define __riscv_double_vsew 32
+#define VSEW_MASK_BITS 0x000000000000ffff
+#define DOUBLE_VSEW_MASK_BITS 0x00000000ffffffff
+#define VSET_VSEW vsetivli x31, 1, e16, tu, mu;
+#define VSET_VSEW_4AVL vsetivli x31, 4, e16, tu, mu;
+#define VSET_DOUBLE_VSEW vsetivli x31, 1, e32, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
