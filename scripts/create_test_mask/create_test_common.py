@@ -1,3 +1,6 @@
+from scripts.test_common_info import print_data_width_prefix
+
+
 def generate_walking_data_seg_common(element_num, vlen, f):
     # Generate walking ones
     for i in range(element_num + 1):
@@ -5,15 +8,8 @@ def generate_walking_data_seg_common(element_num, vlen, f):
         for j in range(element_num):
             print("\t", end="", file=f)
             element_width = vlen / element_num
-            if element_width == 8:
-                print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
-                print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
-                print(".word", end=" 0x", file=f)
-            elif element_width == 64:
-                print(".dword", end=" 0x", file=f)
-            print("1" if i == j + 1 else "0", file=f)
+            print_data_width_prefix(f, element_width)
+            print("0x1" if i == j + 1 else "0x0", file=f)
         print("", file=f)
 
     # Generate walking zeros
@@ -22,15 +18,8 @@ def generate_walking_data_seg_common(element_num, vlen, f):
         for j in range(element_num):
             print("\t", end="", file=f)
             element_width = vlen / element_num
-            if element_width == 8:
-                print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
-                print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
-                print(".word", end=" 0x", file=f)
-            elif element_width == 64:
-                print(".dword", end=" 0x", file=f)
-            print("0" if i == j + 1 else "1", file=f)
+            print_data_width_prefix(f, element_width)
+            print("0x0" if i == j + 1 else "0x1", file=f)
         print("", file=f)
 
 

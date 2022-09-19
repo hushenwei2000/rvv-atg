@@ -357,27 +357,27 @@ datasets:
   rs1val_walking_vector: &rs1val_walking_vector
     'walking_ones("rs1_val", vsew)': 0
     'walking_zeros("rs1_val", vsew)': 0
-    'alternate("rs1_val",32)': 0
+    'alternate("rs1_val",vsew)': 0
 
   rs1val_walking_vector_unsgn: &rs1val_walking_vector_unsgn
-    'walking_ones("rs1_val", 32, False)': 0
-    'walking_zeros("rs1_val", 32, False)': 0
-    'alternate("rs1_val",32, False)': 0
+    'walking_ones("rs1_val", vsew, False)': 0
+    'walking_zeros("rs1_val", vsew, False)': 0
+    'alternate("rs1_val", vsew, False)': 0
 
   rs2val_walking_vector: &rs2val_walking_vector
     'walking_ones("rs2_val", vsew)': 0
     'walking_zeros("rs2_val", vsew)': 0
-    'alternate("rs2_val",32)': 0
+    'alternate("rs2_val", vsew)': 0
 
   rs1val_walking_unsigned: &rs1val_walking_unsigned
     'walking_ones("rs1_val", vsew, signed=False)': 0
     'walking_zeros("rs1_val", vsew, signed=False)': 0
-    'alternate("rs1_val",32)': 0
+    'alternate("rs1_val", vsew)': 0
 
   rs2val_walking_unsigned: &rs2val_walking_unsigned
     'walking_ones("rs2_val", vsew, signed=False)': 0
     'walking_zeros("rs2_val", vsew, signed=False)': 0
-    'alternate("rs2_val",32)': 0
+    'alternate("rs2_val", vsew)': 0
 
   rs1val_walking_mask: &rs1val_walking_mask
     'walking_ones("rs1_val", int(vlen / vsew), signed=False)': 0

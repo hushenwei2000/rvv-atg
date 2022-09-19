@@ -29,7 +29,11 @@ def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, su
 
     logging.info("Running riscof coverage: {}.{}, stage: RISCV-ISAC Running...".format(instr, suffix))
 
-    isac_string = "riscv_isac --verbose info coverage -d                         -t %s_%s.log --parser-name c_sail -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, instr, isac_log_name)
+    # Use sail log to run isac
+    # isac_string = "riscv_isac --verbose info coverage -d                         -t %s_%s.log --parser-name c_sail -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, instr, isac_log_name)
+    
+    # Use spike log to run isac
+    isac_string = "riscv_isac --verbose info coverage -d                         -t spike_%s_%s.log --parser-name spike -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, instr, isac_log_name)
 
     os.system(isac_string)
 

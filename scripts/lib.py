@@ -100,3 +100,6 @@ def create_first_test(instr, xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     func_str = "create_first_test_{}(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path)".format(
         instr)
     return eval(func_str)
+
+def check_type(ins, type):
+  return True

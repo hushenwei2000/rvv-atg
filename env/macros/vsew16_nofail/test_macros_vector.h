@@ -198,13 +198,13 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v15, (correctval_addr_reg); \
+    vle32.v v1, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
-    VMVXS_AND_MASK_VSEW( x7, v15 ) \
+    VMVXS_AND_MASK_VSEW( x7, v1 ) \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
-    vslidedown.vi v15, v15, 1; \
+    vslidedown.vi v1, v1, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
 
@@ -212,13 +212,13 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v15, (correctval_addr_reg); \
+    vle16.v v1, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
-    VMVXS_AND_MASK_VSEW( x7, v15 ) \
+    VMVXS_AND_MASK_VSEW( x7, v1 ) \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
-    vslidedown.vi v15, v15, 1; \
+    vslidedown.vi v1, v1, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
 
@@ -1476,7 +1476,7 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v18, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vl8re32.v v8, (x1); \
+    vl8re16.v v8, (x1); \
     la x7, result_base; \
     inst v18, v8; \
   )
@@ -1485,7 +1485,7 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v18, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vl8re32.v v8, (x1); \
+    vl8re16.v v8, (x1); \
     la x7, result_base1; \
     inst v18, v8; \
   ) \
@@ -1495,14 +1495,14 @@ test_ ## testnum: \
   )
 
 #define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v18, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vl8re32.v v8, (x1); \
+    vl8re16.v v8, (x1); \
     la x7, result_base1; \
-    inst v18, v8; \
+    inst v16, v8; \
   ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v21, x7, \
+  TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
     VSET_VSEW_4AVL \
     la x7, result_base2; \
   )
@@ -1511,11 +1511,11 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v18, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vl8re32.v v8, (x1); \
+    vl8re16.v v8, (x1); \
     la x7, result_base1; \
-    inst v18, v8; \
+    inst v16, v8; \
   ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v25, x7, \
+  TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \
     VSET_VSEW_4AVL \
     la x7, result_base2; \
   )

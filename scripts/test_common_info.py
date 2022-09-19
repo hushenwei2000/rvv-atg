@@ -76,3 +76,13 @@ def print_common_ending(f):
     \n\
     RVTEST_DATA_END\n\
     ", file=f)
+
+def print_data_width_prefix(f, vsew):
+    if vsew == 8:
+        print(".byte", end="\t", file=f)
+    elif vsew == 16:
+        print(".hword", end="\t", file=f)
+    elif vsew == 32:
+        print(".word", end="\t", file=f)
+    elif vsew == 64:
+        print(".dword", end="\t", file=f)

@@ -19,3 +19,5 @@ from scripts.create_test_mask.create_test_viota import *
 # permute
 from scripts.create_test_permute.create_test_vcompress import *
 from scripts.create_test_permute.create_test_vslide import *
+from scripts.create_test_permute.create_test_vslide1 import *
+from scripts.create_test_permute.create_test_vmre import *

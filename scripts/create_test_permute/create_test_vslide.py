@@ -11,7 +11,10 @@ f_val = ['0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '
 walking_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -134217729, -67108865, -33554433, -16777217, -8388609, -4194305, -2097153, -1048577, -524289, -262145, -131073, -65537, -32769, -16385, -8193, -4097, -2049, -1025, -513, -257, -129, -65, -33, -
                17, -9, -5, -3, -2, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 1431655765, 2147483647]  # 66
 rd_val = [3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17,
-          18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+          18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+          33, 35, 36, 37, 39, 40, 41, 42, 43, 44, 45, 47,
+          48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+          61, 67, 71, 73, 79, 83, 89, 97, 101] # Random numbers
 vma = False  # False to turn to undisturb
 num_elem = 0
 num_group_walking = 0
@@ -144,54 +147,30 @@ def generate_tests_vslide(f):
 def generate_dat_seg_vslide(f, vlen, vsew):
     print("rd_data:", file=f)
     for i in range(num_elem):
-        if vsew == 8:
-            print(".byte\t%d" % rd_val[i], file=f)
-        elif vsew == 16:
-            print(".hword\t%d" % rd_val[i], file=f)
-        elif vsew == 32:
-            print(".word\t%d" % rd_val[i], file=f)
-        elif vsew == 64:
-            print(".dword\t%d" % rd_val[i], file=f)
+        print_data_width_prefix(f, vsew)
+        print("%d"%rd_val[i], file=f)
     print("", file=f)
     for i in range(num_group_walking):
         # generate data
         print("walking_data%d:" % i, file=f)
         for j in range(num_elem):
-            if vsew == 8:
-                print(".byte\t%d" % walking_val_grouped[i][j], file=f)
-            elif vsew == 16:
-                print(".hword\t%d" % walking_val_grouped[i][j], file=f)
-            elif vsew == 32:
-                print(".word\t%d" % walking_val_grouped[i][j], file=f)
-            elif vsew == 64:
-                print(".dword\t%d" % walking_val_grouped[i][j], file=f)
+            print_data_width_prefix(f, vsew)
+            print("%d"%walking_val_grouped[i][j], file=f)
         print("", file=f)
         # generate answer
         for k in range(num_elem + 1):
             # Each Offset has a answer
             print("walking_data%d_slideupans_offset_%d:" % (i, k), file=f)
             for p in range(num_elem):
-                if vsew == 8:
-                    print(".byte\t%d" % (rd_val[p] if p < k else walking_val_grouped[i][p - k]), file=f)
-                elif vsew == 16:
-                    print(".hword\t%d" % (rd_val[p] if p < k else walking_val_grouped[i][p - k]), file=f)
-                elif vsew == 32:
-                    print(".word\t%d" % (rd_val[p] if p < k else walking_val_grouped[i][p - k]), file=f)
-                elif vsew == 64:
-                    print(".dword\t%d" % (rd_val[p] if p < k else walking_val_grouped[i][p - k]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%d" % (rd_val[p] if p < k else walking_val_grouped[i][p - k]), file=f)
             print("", file=f)
         for k in range(num_elem + 1):
             # Each Offset has a answer
             print("walking_data%d_slidedownans_offset_%d:" % (i, k), file=f)
             for p in range(num_elem):
-                if vsew == 8:
-                    print(".byte\t%d" % (walking_val_grouped[i][p + k] if p + k < num_elem else (0 if vma else rd_val[p])), file=f)
-                elif vsew == 16:
-                    print(".hword\t%d" % (walking_val_grouped[i][p + k] if p + k < num_elem else (0 if vma else rd_val[p])), file=f)
-                elif vsew == 32:
-                    print(".word\t%d" % (walking_val_grouped[i][p + k] if p + k < num_elem else (0 if vma else rd_val[p])), file=f)
-                elif vsew == 64:
-                    print(".dword\t%d" % (walking_val_grouped[i][p + k] if p + k < num_elem else (0 if vma else rd_val[p])), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%d" % (walking_val_grouped[i][p + k] if p + k < num_elem else (0 if vma else rd_val[p])), file=f)
             print("", file=f)
 
 

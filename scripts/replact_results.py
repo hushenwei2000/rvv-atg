@@ -78,7 +78,7 @@ def replace_results_spike(instr, first_test, spike_log):
 
     ansList = []
     for i in range(len(lineList)):
-        matchResultPattern = re.compile(regList[i] + " (0x[0-9a-f]*)") # such as a4 0x00000001
+        matchResultPattern = re.compile(regList[i] + "\s+(0x[0-9a-f]*)") # such as a4 0x00000001
         a = matchResultPattern.search(lineList[i])
         if a is not None:
             ans = a.group(1)

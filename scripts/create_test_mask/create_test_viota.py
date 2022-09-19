@@ -14,21 +14,14 @@ def generate_walking_answer_seg_viota(element_num, vlen, f):
         for j in range(element_num):
             print("\t", end="", file=f)
             element_width = vlen / element_num
-            if element_width == 8:
-                print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
-                print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
-                print(".word", end=" 0x", file=f)
-            elif element_width == 64:
-                print(".dword", end=" 0x", file=f)
+            print_data_width_prefix(f, element_width)
             if i == 0 or i == element_num:
-                print("0", file=f)
+                print("0x0", file=f)
             else:
                 if j < i:
-                    print("0", file=f)
+                    print("0x0", file=f)
                 else:
-                    print("1", file=f)
+                    print("0x1", file=f)
         print("", file=f)
 
     # Generate prefix-sum of 1 for WalkingZeros
@@ -38,15 +31,8 @@ def generate_walking_answer_seg_viota(element_num, vlen, f):
         for j in range(element_num):
             print("\t", end="", file=f)
             element_width = vlen / element_num
-            if element_width == 8:
-                print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
-                print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
-                print(".word", end=" 0x", file=f)
-            elif element_width == 64:
-                print(".dword", end=" 0x", file=f)
-            print(prefix_sum, file=f)
+            print_data_width_prefix(f, element_width)
+            print("0x" + str(prefix_sum), file=f)
             if i != j + 1:
                 prefix_sum = prefix_sum + 1
         print("", file=f)

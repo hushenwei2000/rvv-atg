@@ -1,0 +1,16 @@
+vmre:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vmv1r.v: 0
+      vmv2r.v: 0
+      vmv4r.v: 0
+      vmv8r.v: 0
+      vslidedown.vi: 0
+    rs2:
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+      abstract_comb:
+        <<: [*rs2val_walking_vector]
