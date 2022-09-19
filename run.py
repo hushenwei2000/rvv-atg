@@ -165,7 +165,7 @@ def main():
         run_vf(cwd, args, cgf, output_dir)
     elif args.t == "i":
         run_integer(cwd, args, cgf,  output_dir)
-    elif args.t == "m":
+    elif args.t == "m" or args.t == "p":
         run_mask(cwd, args, cgf, output_dir)
 
 

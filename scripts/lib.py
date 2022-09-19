@@ -3,9 +3,7 @@ import logging
 import os
 import subprocess
 
-from scripts.create_test_integer.create_test_vadd import *
-from scripts.create_test_floating.create_test_vfmv import *
-from scripts.create_test_mask.create_test_vmand import *
+from scripts.import_test_functions import *
 
 
 def setup_logging(verbose):

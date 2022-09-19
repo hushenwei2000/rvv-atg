@@ -15,7 +15,7 @@
 #define VSEW_MASK_BITS 0x000000000000ffff
 #define DOUBLE_VSEW_MASK_BITS 0x00000000ffffffff
 #define VSET_VSEW vsetivli x31, 1, e16, tu, mu;
-#define VSET_VSEW_4AVL vsetivli x31, 4, e16, tu, mu;
+#define VSET_VSEW_4AVL vsetvli x31, x0, e16, tu, mu;
 #define VSET_DOUBLE_VSEW vsetivli x31, 1, e32, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))

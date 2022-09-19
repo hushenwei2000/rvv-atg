@@ -13,7 +13,7 @@
 #define VSEW_MASK_BITS 0xffffffffffffffff
 #define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
 #define VSET_VSEW vsetivli x31, 1, e64, tu, mu;
-#define VSET_VSEW_4AVL vsetivli x31, 4, e64, tu, mu;
+#define VSET_VSEW_4AVL vsetvli x31, x0, e64, tu, mu;
 #define VSET_DOUBLE_VSEW vsetivli x31, 1, e128, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
@@ -196,7 +196,7 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v15, (correctval_addr_reg); \
+    vle64.v v15, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v15 ) \
@@ -1522,9 +1522,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle64.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle64.v v14, (x1); \
     la  x7, result_base; \
     li x1, offset; \
     inst v14, v5, x1; \
@@ -1534,9 +1534,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle64.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle64.v v14, (x1); \
     la  x7, result_base; \
     li x1, rs1; \
     inst v14, v5, x1; \
@@ -1546,9 +1546,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle64.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle64.v v14, (x1); \
     la  x7, result_base; \
     inst v14, v5, offset_imm; \
   )
@@ -1557,9 +1557,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle64.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle64.v v14, (x1); \
     la x7, result_base; \
     la x1, f_rs1_base; \
     flw f1, 0(x1); \

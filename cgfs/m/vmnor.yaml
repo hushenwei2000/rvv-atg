@@ -1,0 +1,12 @@
+vmnor:
+    config:
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vmnor.mm: 0
+    rs1: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+      abstract_comb:
+        <<: [*rs2val_walking_mask]

@@ -69,7 +69,6 @@ def replace_results_spike(instr, first_test, spike_log):
         else:
             a = matchPattern.search(line)
             if a is not None:
-                print(a)
                 reg = a.group(1)
                 if reg in riscv_reg_abi_map.keys():
                     reg = riscv_reg_abi_map.get(reg)
@@ -83,7 +82,6 @@ def replace_results_spike(instr, first_test, spike_log):
         a = matchResultPattern.search(lineList[i])
         if a is not None:
             ans = a.group(1)
-            print(ans)
             ansList.append(ans)
 
     des_path = first_test.replace("_first", "_second")

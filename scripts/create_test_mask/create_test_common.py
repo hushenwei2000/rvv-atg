@@ -99,22 +99,31 @@ def generate_macros_common(f):
     )", file=f)
 
 
-def generate_tests_common(instr, f):
+def generate_tests_common(instr, f, vlen, vsew):
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    for i in range(0, 25):
-        print("TEST_VMRL_OP( %d,  %s.mm,  32,  5201314, walking_ones_dat%d, walking_ones_dat%d );" % (
-            i, instr, i / 5, i % 5), file=f)
-    for i in range(25, 50):
-        print("TEST_VMRL_OP( %d,  %s.mm,  32,  5201314, walking_zeros_dat%d, walking_zeros_dat%d );" % (
-            i, instr, (i - 25) / 5, (i - 25) % 5), file=f)
-    for i in range(50, 75):
-        print("TEST_VMRL_OP( %d,  %s.mm,  32,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
-            i, instr, (i - 50) / 5, (i - 50) % 5), file=f)
-    for i in range(75, 100):
-        print("TEST_VMRL_OP( %d,  %s.mm,  32,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
-            i, instr, (i - 75) / 5, (i - 75) % 5), file=f)
+    num_elem = int(vlen / vsew)
+    num_elem_plus = num_elem + 1
+    num_elem_plus_square = num_elem_plus ** 2
+    num_elem_plus_square_old = num_elem_plus_square
+    for i in range(0, num_elem_plus_square):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_ones_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), i / num_elem_plus, i % num_elem_plus), file=f)
+
+    for i in range(num_elem_plus_square, num_elem_plus_square * 2):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_zeros_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+
+    num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
+    for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+
+    num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
+    for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
 
     # generate cover different registers
     print("  #-------------------------------------------------------------", file=f)
@@ -122,14 +131,14 @@ def generate_tests_common(instr, f):
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
 
-    num_test = 100
+    num_test = num_elem_plus_square + num_elem_plus_square
     for i in range(1, 32):
-        print("TEST_VMRL_OP_rd_%d( %d,  %s.mm,  32,  5201314, walking_zeros_dat0, walking_ones_dat1 );" % (
-            i, num_test, instr), file=f)
+        print("TEST_VMRL_OP_rd_%d( %d,  %s.mm,  %d,  5201314, walking_zeros_dat0, walking_ones_dat1 );" % (
+            i, num_test, instr, (vsew if vsew <= 64 else 64),), file=f)
         num_test = num_test + 1
     for i in range(2, 32):
-        print("TEST_VMRL_OP_rs1_%d( %d,  %s.mm,  32,  5201314, walking_zeros_dat0, walking_ones_dat1 );" % (
-            i, num_test, instr), file=f)
+        print("TEST_VMRL_OP_rs1_%d( %d,  %s.mm,  %d,  5201314, walking_zeros_dat0, walking_ones_dat1 );" % (
+            i, num_test, instr, (vsew if vsew <= 64 else 64),), file=f)
         num_test = num_test + 1
 
 
