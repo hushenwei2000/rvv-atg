@@ -130,7 +130,8 @@ def replace_results_spike(instr, first_test, spike_log):
     new = f.read()
     for i in range(len(ansList)):
         new = new.replace("5201314", ansList[i], 1)
-        new = new.replace("0xff100", fflag_ansList[i], 1)
+        if instr.startswith("vf"):
+            new = new.replace("0xff100", fflag_ansList[i], 1)
     f.close()
     f = open(des_path, "w+")
     print(new, file=f)
