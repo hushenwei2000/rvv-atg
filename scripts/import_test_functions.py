@@ -39,7 +39,6 @@ from scripts.create_test_integer.create_test_vredsum import *
 from scripts.create_test_integer.create_test_vredxor import *
 from scripts.create_test_integer.create_test_vrem import *
 from scripts.create_test_integer.create_test_vremu import *
-from scripts.create_test_integer.create_test_vrgather import *
 from scripts.create_test_integer.create_test_vrsub import *
 from scripts.create_test_integer.create_test_vsadd import *
 from scripts.create_test_integer.create_test_vsaddu import *

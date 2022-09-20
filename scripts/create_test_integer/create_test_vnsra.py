@@ -11,20 +11,20 @@ def generate_macros(f):
         print("#define TEST_N_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v14, MASK_VSEW(result), \\\n\
             li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-            vmv.v.x v2, x7; \\\n\
+            vmv.v.x v8, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
             vmv.v.x v%d, x7;"% n + " \\\n\
-            inst v14, v2, v%d; "%n + " \\\n\
+            inst v14, v8, v%d; "%n + " \\\n\
         )", file=f)
     for n in range(3, 32):
         if n %2 == 0:
             print("#define TEST_N_VV_OP_rd%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v%d, MASK_VSEW(result),"%n + " \\\n\
                 li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-                vmv.v.x v1, x7; \\\n\
+                vmv.v.x v8, x7; \\\n\
                 li x7, MASK_VSEW(val1); \\\n\
                 vmv.v.x v2, x7; \\\n\
-                inst v%d, v1, v2;"%n+" \\\n\
+                inst v%d, v8, v2;"%n+" \\\n\
         ) ", file=f)
     
     print("#define TEST_N_VV_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
@@ -32,8 +32,8 @@ def generate_macros(f):
             li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
             vmv.v.x v4, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v3, x7; \\\n\
-            inst v2, v3, v4; \\\n\
+            vmv.v.x v8, x7; \\\n\
+            inst v2, v8, v4; \\\n\
         )", file=f)
 
 
