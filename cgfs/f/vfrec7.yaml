@@ -1,4 +1,4 @@
-vfrec:
+vfrec7:
     config: 
         - check ISA:=regex(.*V.*)
     opcode: 

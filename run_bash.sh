@@ -1,8 +1,8 @@
 # python run.py -i vfadd -t f; # pass
 # python run.py -i vfclass -t f; # pass
 # python run.py -i vfcvt -t f; # failed, unrecognized opcode `vfcvt.x.f.v v14,v1'
-python run.py -i vfdiv -t f; # failed
-python run.py -i vfrdiv -t f; # failed
+# python run.py -i vfdiv -t f; # pass
+# python run.py -i vfrdiv -t f; # pass
 # python run.py -i vfmacc -t f; # pass
 # python run.py -i vfmadd -t f; # pass
 # python run.py -i vfmax -t f; # pass
@@ -16,6 +16,6 @@ python run.py -i vfrdiv -t f; # failed
 # python run.py -i vfnmadd -t f; # pass
 # python run.py -i vfnmsac -t f; # pass
 # python run.py -i vfnmsub -t f; # pass
-# python run.py -i vfrec -t f; # failed, the 1st instrution
+python run.py -i vfrec7 -t f; # failed, the 1st instrution
 # python run.py -i vfredmax -t f; # pass
 # python run.py -i vfredmin -t f; # pass
