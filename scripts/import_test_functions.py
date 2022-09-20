@@ -67,6 +67,24 @@ from scripts.create_test_integer.create_test_vwsubu import *
 
 # floating point
 from scripts.create_test_floating.create_test_vfmv import *
+from scripts.create_test_floating.create_test_vfredosum import *
+from scripts.create_test_floating.create_test_vfredusum import *
+from scripts.create_test_floating.create_test_vfrsub import *
+from scripts.create_test_floating.create_test_vfsgnj import *
+from scripts.create_test_floating.create_test_vfsgnjn import *
+from scripts.create_test_floating.create_test_vfsgnjx import *
+from scripts.create_test_floating.create_test_vfsqrt import *
+from scripts.create_test_floating.create_test_vfrsqrt7 import *
+from scripts.create_test_floating.create_test_vfsub import *
+from scripts.create_test_floating.create_test_vfwadd import *
+from scripts.create_test_floating.create_test_vfwcvt import *
+from scripts.create_test_floating.create_test_vfwmacc import *
+from scripts.create_test_floating.create_test_vfwmsac import *
+from scripts.create_test_floating.create_test_vfwmul import *
+from scripts.create_test_floating.create_test_vfwnmacc import *
+from scripts.create_test_floating.create_test_vfwnmsac import *
+from scripts.create_test_floating.create_test_vfwredsum import *
+from scripts.create_test_floating.create_test_vfwsub import *
 from scripts.create_test_floating.create_test_vfadd import *
 from scripts.create_test_floating.create_test_vfclass import *
 from scripts.create_test_floating.create_test_vfcvt import *
@@ -107,5 +125,8 @@ from scripts.create_test_mask.create_test_vfirst import *
 # permute
 from scripts.create_test_permute.create_test_vcompress import *
 from scripts.create_test_permute.create_test_vslide import *
+from scripts.create_test_permute.create_test_vmv import *
+from scripts.create_test_permute.create_test_vrgather import *
+from scripts.create_test_permute.create_test_vrgatherei16 import *
 from scripts.create_test_permute.create_test_vslide1 import *
 from scripts.create_test_permute.create_test_vmre import *

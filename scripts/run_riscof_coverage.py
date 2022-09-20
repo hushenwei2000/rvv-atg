@@ -5,7 +5,7 @@ import os
 def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, vsew, use_fail_macro):
     logging.info("Running riscof coverage: {}.{}".format(instr, suffix))
     test_path = os.path.basename(test_path)
-    cgf_path = os.path.basename(cgf_path)
+    # cgf_path = os.path.basename(cgf_path)
     isac_log_name = 'isac_log_' + suffix
     os.chdir(output_dir)
 

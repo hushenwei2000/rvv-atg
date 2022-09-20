@@ -1,0 +1,21 @@
+vfwcvt_b1:
+    config:
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode:
+      vfwcvt.xu.f.v: 0
+      vfwcvt.x.f.v: 0
+      vfwcvt.rtz.xu.f.v: 0
+      vfwcvt.rtz.x.f.v: 0
+      vfwcvt.f.xu.v: 0
+      vfwcvt.f.x.v: 0
+      vfwcvt.f.f.v: 0
+    rs2: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    op_comb: 
+      <<: *rfmt_op_comb
+    val_comb:
+      abstract_comb:
+        'ibm_b1(32, 32, "vfwcvt.xu.f.v", 2, rvv_sew = 32)': 0

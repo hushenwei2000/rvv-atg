@@ -1,0 +1,15 @@
+vfrsqrt7_b1:
+    config: 
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode: 
+      vfrsqrt7.v: 0
+    rs2: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    op_comb: 
+      <<: *rfmt_op_comb
+    val_comb:
+      abstract_comb:
+        'ibm_b1(32, 32, "vfrsqrt7.v", 2, rvv_sew = 32)': 0

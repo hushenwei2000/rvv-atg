@@ -1,0 +1,18 @@
+vfwadd_b1:
+    config:
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode:
+      vfwadd.vv: 0
+      vfwadd.vf: 0
+      vfwadd.wv: 0
+      vfwadd.wf: 0
+    rs1: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    op_comb: 
+      <<: *rfmt_op_comb
+    val_comb:
+      abstract_comb:
+        'ibm_b1(32, 32, "vfwadd.vv", 2, rvv_sew = 32)': 0

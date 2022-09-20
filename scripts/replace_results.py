@@ -127,9 +127,8 @@ def replace_results_spike(instr, first_test, spike_log):
     os.system("cp %s %s" % (first_test, des_path))
     f = open(des_path)
     new = f.read()
-
-    for i in range(len(ansList)):
-        if instr.startswith("vf") and instr not in ["vfirst"]:
+    if instr.startswith("vf"):
+        for i in range(len(fflag_ansList)):
             new = new.replace("0xff100", fflag_ansList[i], 1)
     for i in range(len(ansList)):
         new = new.replace("5201314", ansList[i], 1)
