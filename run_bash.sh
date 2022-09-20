@@ -2,6 +2,7 @@
 # python run.py -i vfclass -t f; # pass
 # python run.py -i vfcvt -t f; # failed, unrecognized opcode `vfcvt.x.f.v v14,v1'
 python run.py -i vfdiv -t f; # failed
+python run.py -i vfrdiv -t f; # failed
 # python run.py -i vfmacc -t f; # pass
 # python run.py -i vfmadd -t f; # pass
 # python run.py -i vfmax -t f; # pass
