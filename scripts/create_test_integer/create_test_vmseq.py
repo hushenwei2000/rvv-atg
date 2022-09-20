@@ -69,17 +69,17 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_VVM_OP( "+str(n)+",  %s.vv, " %
-              instr+"0x5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+              instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"0x5201314"+", "+rs1_val[i]+", "+rs2_val[i]+");",file=f)
+        print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+");",file=f)
         
         k = i%30+2
         # if(k==14):
         #     continue;
         n +=1
-        print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"0x5201314"+", "+rs1_val[i]+" , "+rs2_val[i]+");",file=f)
+        print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs1_val[i]+" , "+rs2_val[i]+");",file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -87,7 +87,7 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-              instr+"0x5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+              instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -95,7 +95,7 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-              instr+"0x5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
+              instr+"5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
         
 
 

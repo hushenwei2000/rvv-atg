@@ -11,7 +11,7 @@ def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen
 
     logging.info("Running spike: {}.{}, stage: Compiling...".format(instr, suffix))
 
-    gcc_string = "riscv64-rivai-elf-gcc -march=rv64gv         -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T %s/env/p/link.ld         -I %s/env/macros/vsew%d%s         -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64  %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(rvv_atg_root, rvv_atg_root, vsew, ("" if use_fail_macro else "_nofail"), rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
+    gcc_string = "riscv64-rivai-elf-gcc -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T %s/env/p/link.ld         -I %s/env/macros/vsew%d%s         -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64  %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(rvv_atg_root, rvv_atg_root, vsew, ("" if use_fail_macro else "_nofail"), rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
     
     print(gcc_string)
     os.system(gcc_string)
@@ -25,7 +25,7 @@ def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen
     logging.info("Running spike: {}.{}, stage: Spike Running...".format(instr, suffix))
 
     os.system("spike --isa rv64gcv -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > %s 2>&1;" %
-              (vlen, vsew, suffix, spike_log_name))
+              (vlen, vlen, suffix, spike_log_name))
 
     os.chdir(rvv_atg_root)
 

@@ -4,7 +4,7 @@ from scripts.create_test_mask.create_test_common import *
 from scripts.test_common_info import *
 import re
 
-instr = 'vpopc'
+instr = 'vfirst'
 num_elem = 0
 
 
@@ -34,7 +34,7 @@ def generate_walking_data_seg_vpopc(f):
         n = n + 1
 
 
-def generate_macros_vpopc(f, vsew):
+def generate_macros_vfirst(f, vsew):
     # generate the macro， 测试v1-v32源寄存器
     for i in range(1, 32):
         if i == 7 or i  == 14 or i == 3:
@@ -60,24 +60,23 @@ def generate_macros_vpopc(f, vsew):
 
 
 
-def generate_tests_vpopc(f, vlen, vsew, lmul):
+def generate_tests_vfirst(f, vlen, vsew, lmul):
     num_test = 1
     num_elem = int(vlen / vsew)
     vemul = int(32 / (vsew * lmul))
     if vemul == 0:
         vemul = 1
-    ########################vmpopc#################################################################################################
+    #########################vfirst####################################################################################################
     print("  #-------------------------------------------------------------",file=f)
-    print("  # %s tests" % instr,file=f)
+    print("  # vfirst tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
     for i in range(0, 2 * num_elem + 2):
-        print("TEST_VPOPC_OP( %d, vpopc.m, 5201314, walking_dat_vpopc%d );" % (num_test, i), file=f)
+        print("TEST_VPOPC_OP( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (num_test, i), file=f)
         num_test = num_test + 1
-
 
     #generate registers，覆盖不同寄存器
     print("  #-------------------------------------------------------------",file=f)
-    print("  # %s Tests (different register)" % instr,file=f)
+    print("  # vfirst Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
 
@@ -85,20 +84,21 @@ def generate_tests_vpopc(f, vlen, vsew, lmul):
         # 7, 14 used in macro, 3 is TESTNUM, 31 is rd of vsetivli
         if i == 7 or i  == 14 or i == 3 or i == 31:
             continue
-        print("TEST_VPOPC_OP_rd_%d( %d, vpopc.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
+        print("TEST_VPOPC_OP_rd_%d( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
         num_test = num_test + 1
     print()
-    for i in range(1, 32):
+    for i in range(2, 32):
         if i == 7 or i  == 14 or i == 3 or i == 31:
             continue
         # Ensure is_aligned(insn.rd(), vemul)
         if i % vemul != 0:
             continue
-        print("TEST_VPOPC_OP_rs2_%d( %d, vpopc.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
+        print("TEST_VPOPC_OP_rs2_%d( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
         num_test = num_test + 1
-        
 
-def print_ending_vpopc(vlen, vsew, f):
+
+
+def print_ending_vfirst(vlen, vsew, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
@@ -153,7 +153,7 @@ def print_ending_vpopc(vlen, vsew, f):
     ", file=f)
 
 
-def create_empty_test_vpopc(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vfirst(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     global num_elem
     num_elem = int(vlen / vsew)
     logging.info("Creating empty test for {}".format(instr))
@@ -161,15 +161,15 @@ def create_empty_test_vpopc(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vpopc(f, vsew)
+    generate_macros_vfirst(f, vsew)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vpopc(f, vlen, vsew, lmul)
+    generate_tests_vfirst(f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_vpopc(vlen, vsew, f)
+    print_ending_vfirst(vlen, vsew, f)
 
     f.close()
 

@@ -102,18 +102,21 @@ def run_integer(cwd, args, cgf, output_dir):
         args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
 
     # 4-1. Run sail and riscof coverage and extract true result from isac_log
-    (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+    # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 4-2. Or run spike to generate commit info log
-    # spike_first_log = run_spike(args.i, cwd, cgf,
-    #           output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+    spike_first_log = run_spike(args.i, cwd, cgf,
+              output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
+    search_ins = args.i
+    if args.i in ["vmsbc", "vmseq", "vmsgt", "vmsgtu", "vmsle", "vmsleu", "vmslt", "vmsltu", "vmsne"]:
+        search_ins = "vcpop"
     # 5-1. Replace old result with true results using sail and isac log
-    des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
+    # des_path = replace_results(search_ins, first_test, isac_log_first, 'sail')
 
     # 5-2. Or use spike log
-    # des_path = replace_results("vcpop", empty_test, spike_first_log, 'spike')
+    des_path = replace_results(search_ins, first_test, spike_first_log, 'spike')
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
@@ -143,7 +146,10 @@ def run_mask(cwd, args, cgf, output_dir):
     # des_path = replace_results("vcpop", empty_test, isac_log_first, 'sail')
 
     # 3-2. Or use spike log
-    des_path = replace_results("vcpop", empty_test, spike_first_log, 'spike')
+    search_ins = "vcpop"
+    if args.i in ["vfirst"]:
+        search_ins = args.i
+    des_path = replace_results(search_ins, empty_test, spike_first_log, 'spike')
 
     # 5. Run spike test generated ref_final.elf
     run_spike(args.i, cwd, cgf,
@@ -162,6 +168,7 @@ def main():
     setup_logging(args.verbose)
     output_dir = create_output(args.i, args.o)
     cgf = create_cgf_path(args.i, args.t, cwd, output_dir)
+    logging.info("RVV-ATG: instr: %s, vlen: %d, vsew: %d, lmul: %d".format(args.i, args.vlen, args.vsew, args.lmul))
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

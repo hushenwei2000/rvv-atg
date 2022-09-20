@@ -57,17 +57,17 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_AVG_WV_OP( "+str(n)+",  %s.wv, " %
-              instr+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+              instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_W_AVG_WV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
+        print("  TEST_W_AVG_WV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
         # if(k==14):
         #     continue;
         n +=1
-        print("  TEST_W_AVG_WV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_AVG_WV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # WX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -75,7 +75,7 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_AVG_WX_OP( "+str(n)+",  %s.wx, " %
-              instr+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+              instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # WI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -83,7 +83,7 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_AVG_WI_OP( "+str(n)+",  %s.wi, " %
-              instr+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+"0x5201314"+", "+rs2_val[i]+", "+" 4 "+" );", file=f)
+              instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+" 4 "+" );", file=f)
   
 
 

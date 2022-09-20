@@ -65,18 +65,18 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.vs, " %
-              instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+              instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
         n+=1
         if k%2==0:
-            print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.vs, "%instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
+            print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.vs, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
         # if(k==14):
         #     continue;
         n +=1
-        print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.vs, "%instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.vs, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
 
 
 

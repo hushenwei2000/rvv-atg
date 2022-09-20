@@ -90,6 +90,14 @@ test_ ## testnum: \
     VSET_VSEW \
     bne x14, x7, fail;
 
+#define TEST_CASE_SCALAR_SETVSEW_AFTER( testnum, testreg, correctval, code... ) \
+test_ ## testnum: \
+    code; \
+    li x7, correctval; \
+    li TESTNUM, testnum; \
+    VSET_VSEW \
+    bne testreg, x7, fail;
+
 #define TEST_CASE_AVG_VV( testnum, inst, testvs1, testreg, correctval00, correctval01, correctval10, correctval11, code... ) \
 test_ ## testnum: \
     code; \
@@ -1479,14 +1487,12 @@ test_ ## testnum: \
   )
 
 #define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \
+  TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \
     VSET_VSEW_4AVL \
     la  x2, vm_addr; \
     vle32.v v14, (x2); \
-    li x7, result; \
-    li TESTNUM, testnum; \
     inst x14, v14; \
-    VSET_VSEW \
-    bne x14, x7, fail;
+  )
 
 #define TEST_VPOPC_OP_64( testnum, inst, result, vm_addr ) \
     VSET_VSEW_4AVL \

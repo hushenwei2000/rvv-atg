@@ -7,61 +7,61 @@ import re
 instr = 'vmsbf'
 
 
-def generate_macros_vmsbf(f):
+def generate_macros_vmsbf(f, vsew):
     # generate the macro， test rs1 = v1~v31
-    print("#define TEST_VSFMB_OP_rs2_5( testnum, inst, result, src1_addr ) \\\n\
+    print("#define TEST_VSFMB_OP_rs2_6( testnum, inst, result, src1_addr ) \\\n\
     TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
-        vle32.v v6, (x1); \\\n\
-        vmseq.vi v5, v6, 1; \\\n\
-        inst v14, v5; \\\n\
+        vle%d.v v8, (x1); \\\n\
+        vmseq.vi v6, v8, 1; \\\n\
+        inst v14, v6; \\\n\
         VSET_VSEW \\\n\
-    )", file=f)
+    )"%vsew, file=f)
     print("#define TEST_VSFMB_OP_rs2_14( testnum, inst, result, src1_addr ) \\\n\
     TEST_CASE_MASK_4VL( testnum, v5, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
-        vle32.v v6, (x1); \\\n\
+        vle%d.v v6, (x1); \\\n\
         vmseq.vi v14, v6, 1; \\\n\
         inst v5, v14; \\\n\
         VSET_VSEW \\\n\
-    )", file=f)
+    )"%vsew, file=f)
     for n in range(1, 32):
-        if n == 5 or n == 14:
+        if n == 6 or n == 14:
             continue
         print("#define TEST_VSFMB_OP_rs2_%d( testnum, inst, result, src1_addr ) \\\n\
         TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
-            vle32.v v5, (x1); \\\n\
-            vmseq.vi v%d, v5, 1; \\\n\
+            vle%d.v v6, (x1); \\\n\
+            vmseq.vi v%d, v6, 1; \\\n\
             inst v14, v%d; \\\n\
             VSET_VSEW \\\n\
-        )" % (n, n, n), file=f)
+        )" % (n, vsew, n, n), file=f)
     # generate the macro， test rd = v1~v31
     print("#define TEST_VSFMB_OP_rd_1( testnum, inst, result, src1_addr ) \\\n\
         TEST_CASE_MASK_4VL( testnum, v1, result, \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
-            vle32.v v5, (x1); \\\n\
-            vmseq.vi v2, v5, 1; \\\n\
+            vle%d.v v6, (x1); \\\n\
+            vmseq.vi v2, v6, 1; \\\n\
             inst v1, v2; \\\n\
             VSET_VSEW \\\n\
-        )", file=f)
+        )"%vsew, file=f)
     for n in range(2, 32):
         print("#define TEST_VSFMB_OP_rd_%d( testnum, inst, result, src1_addr ) \\\n\
         TEST_CASE_MASK_4VL( testnum, v%d, result, \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
-            vle32.v v5, (x1); \\\n\
-            vmseq.vi v1, v5, 1; \\\n\
+            vle%d.v v6, (x1); \\\n\
+            vmseq.vi v1, v6, 1; \\\n\
             inst v%d, v1; \\\n\
             VSET_VSEW \\\n\
-        )" % (n, n, n), file=f)
+        )" % (n, n, vsew, n), file=f)
 
 
-def generate_tests_vmsbf(instr, f, vlen, vsew):
+def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
     num_test = 1
     num_elem = int(vlen / vsew)
     num_elem_plus = num_elem + 1
@@ -83,12 +83,15 @@ def generate_tests_vmsbf(instr, f, vlen, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
 
     for i in range(1, 32):
+        # Ensure is_aligned(insn.rd(), vemul), vemul = veew / (vsew * vflmul); ,veew always = sew in this test generation
+        if i % (lmul) != 0:
+            continue
         print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, instr, i % 5), file=f)
+            i, num_test, instr, i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, instr, i % 5), file=f)
+            i, num_test, instr, i % num_elem_plus), file=f)
         num_test = num_test + 1
 
     ####################vmsif#######################################################################################################
@@ -110,11 +113,11 @@ def generate_tests_vmsbf(instr, f, vlen, vsew):
 
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, "vmsif", i % 5), file=f)
+            i, num_test, "vmsif", i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, "vmsif", i % 5), file=f)
+            i, num_test, "vmsif", i % num_elem_plus), file=f)
         num_test = num_test + 1
 
     ####################vmsof#######################################################################################################
@@ -136,11 +139,11 @@ def generate_tests_vmsbf(instr, f, vlen, vsew):
 
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, "vmsof", i % 5), file=f)
+            i, num_test, "vmsof", i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, "vmsof", i % 5), file=f)
+            i, num_test, "vmsof", i % num_elem_plus), file=f)
         num_test = num_test + 1
 
 
@@ -150,12 +153,12 @@ def create_empty_test_vmsbf(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vmsbf(f)
+    generate_macros_vmsbf(f, vsew)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vmsbf(instr, f, vlen, vsew)
+    generate_tests_vmsbf(instr, f, vlen, vsew, lmul)
 
     # Common const information
     print_ending_common(vlen, vsew, f)

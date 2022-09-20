@@ -82,7 +82,7 @@ def create_empty_test(instr, xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
 def create_first_test(instr, xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
-    """Create an test file with all operands needing to be tested in the coverage report, but the expected answer is using 0x5201314, and put empty test into `output_dir`
+    """Create an test file with all operands needing to be tested in the coverage report, but the expected answer is using 5201314, and put empty test into `output_dir`
 
     Args:
       instr     : Instruction name

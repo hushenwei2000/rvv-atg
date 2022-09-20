@@ -1,0 +1,12 @@
+vpopc:
+    config:
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vpopc.m: 0
+    rs2: 
+      <<: *v_regs
+    rd: 
+      <<: *all_regs
+    val_comb:
+      abstract_comb:
+        <<: [*rs2val_walking_mask]

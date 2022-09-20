@@ -1,5 +1,69 @@
 # integer
+from scripts.create_test_integer.create_test_vand import *
 from scripts.create_test_integer.create_test_vadd import *
+from scripts.create_test_integer.create_test_vadc import *
+from scripts.create_test_integer.create_test_vdiv import *
+from scripts.create_test_integer.create_test_vdivu import *
+from scripts.create_test_integer.create_test_vmacc import *
+from scripts.create_test_integer.create_test_vmadc import *
+from scripts.create_test_integer.create_test_vmsbc import *
+from scripts.create_test_integer.create_test_vmadd import *
+from scripts.create_test_integer.create_test_vmax import *
+from scripts.create_test_integer.create_test_vmaxu import *
+from scripts.create_test_integer.create_test_vmin import *
+from scripts.create_test_integer.create_test_vminu import *
+from scripts.create_test_integer.create_test_vmseq import *
+from scripts.create_test_integer.create_test_vmsgt import *
+from scripts.create_test_integer.create_test_vmsgtu import *
+from scripts.create_test_integer.create_test_vmsle import *
+from scripts.create_test_integer.create_test_vmsleu import *
+from scripts.create_test_integer.create_test_vmslt import *
+from scripts.create_test_integer.create_test_vmsltu import *
+from scripts.create_test_integer.create_test_vmsne import *
+from scripts.create_test_integer.create_test_vmul import *
+from scripts.create_test_integer.create_test_vmulh import *
+from scripts.create_test_integer.create_test_vmulhu import *
+from scripts.create_test_integer.create_test_vmulhsu import *
+from scripts.create_test_integer.create_test_vnmsac import *
+from scripts.create_test_integer.create_test_vnmsub import *
+from scripts.create_test_integer.create_test_vnsra import *
+from scripts.create_test_integer.create_test_vnsrl import *
+from scripts.create_test_integer.create_test_vor import *
+from scripts.create_test_integer.create_test_vredand import *
+from scripts.create_test_integer.create_test_vredmax import *
+from scripts.create_test_integer.create_test_vredmaxu import *
+from scripts.create_test_integer.create_test_vredmin import *
+from scripts.create_test_integer.create_test_vredminu import *
+from scripts.create_test_integer.create_test_vredor import *
+from scripts.create_test_integer.create_test_vredsum import *
+from scripts.create_test_integer.create_test_vredxor import *
+from scripts.create_test_integer.create_test_vrem import *
+from scripts.create_test_integer.create_test_vremu import *
+from scripts.create_test_integer.create_test_vrgather import *
+from scripts.create_test_integer.create_test_vrsub import *
+from scripts.create_test_integer.create_test_vsadd import *
+from scripts.create_test_integer.create_test_vsaddu import *
+from scripts.create_test_integer.create_test_vsbc import *
+from scripts.create_test_integer.create_test_vsll import *
+from scripts.create_test_integer.create_test_vsra import *
+from scripts.create_test_integer.create_test_vsrl import *
+from scripts.create_test_integer.create_test_vssub import *
+from scripts.create_test_integer.create_test_vssubu import *
+from scripts.create_test_integer.create_test_vsub import *
+from scripts.create_test_integer.create_test_vxor import *
+from scripts.create_test_integer.create_test_vwadd import *
+from scripts.create_test_integer.create_test_vwaddu import *
+from scripts.create_test_integer.create_test_vwmacc import *
+from scripts.create_test_integer.create_test_vwmaccu import *
+from scripts.create_test_integer.create_test_vwmaccus import *
+from scripts.create_test_integer.create_test_vwmaccsu import *
+from scripts.create_test_integer.create_test_vwredsum import *
+from scripts.create_test_integer.create_test_vwredsumu import *
+from scripts.create_test_integer.create_test_vwmul import *
+from scripts.create_test_integer.create_test_vwmulu import *
+from scripts.create_test_integer.create_test_vwmulsu import *
+from scripts.create_test_integer.create_test_vwsub import *
+from scripts.create_test_integer.create_test_vwsubu import *
 
 # floating point
 from scripts.create_test_floating.create_test_vfmv import *
@@ -24,6 +88,7 @@ from scripts.create_test_floating.create_test_vfnmsub import *
 from scripts.create_test_floating.create_test_vfrec import *
 from scripts.create_test_floating.create_test_vfredmax import *
 from scripts.create_test_floating.create_test_vfredmin import *
+from scripts.create_test_floating.create_test_vfredosum import *
 
 # mask
 from scripts.create_test_mask.create_test_vmand import *
@@ -36,6 +101,8 @@ from scripts.create_test_mask.create_test_vmxor import *
 from scripts.create_test_mask.create_test_vmsbf import *
 from scripts.create_test_mask.create_test_vid import *
 from scripts.create_test_mask.create_test_viota import *
+from scripts.create_test_mask.create_test_vpopc import *
+from scripts.create_test_mask.create_test_vfirst import *
 
 # permute
 from scripts.create_test_permute.create_test_vcompress import *

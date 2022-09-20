@@ -70,19 +70,19 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_VVM_OP( "+str(n)+",  %s.vv, " %
-              instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+              instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
         n+=1
         # if(k==1 or k==2):
         #     continue;
-        print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
+        print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
         # if(k==14):
         #     continue;
         n +=1
-        print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"0x5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -90,16 +90,16 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-              instr+"0x5201314"+", "+"0x00000000"+", "+"0x00000000"+" );", file=f)
+              instr+"5201314"+", "+"0x00000000"+", "+"0x00000000"+" );", file=f)
         n +=1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-              instr+"0x5201314"+", "+"0x00000000"+", "+"0x00000011"+" );", file=f)
+              instr+"5201314"+", "+"0x00000000"+", "+"0x00000011"+" );", file=f)
         n +=1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-              instr+"0x5201314"+", "+"0xffffffff"+", "+"0x00000001"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffff"+", "+"0x00000001"+" );", file=f)
         n +=1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-              instr+"0x5201314"+", "+"0xffffffff"+", "+"0xffffffff"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffff"+", "+"0xffffffff"+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -107,13 +107,13 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n +=1
         print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-              instr+"0x5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
         n +=1
         print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-              instr+"0x5201314"+", "+"0xfffff000"+", "+"0x0"+" );", file=f)
+              instr+"5201314"+", "+"0xfffff000"+", "+"0x0"+" );", file=f)
         n +=1
         print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-              instr+"0x5201314"+", "+"0xffffeee0"+", "+"0xe"+" );", file=f)
+              instr+"5201314"+", "+"0xffffeee0"+", "+"0xe"+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VVM Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -121,13 +121,13 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n +=1
         print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-              instr+"0x5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
         n +=1
         print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-              instr+"0x5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
+              instr+"5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
         n +=1
         print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-              instr+"0x5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
+              instr+"5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VXM Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -135,13 +135,13 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n +=1
         print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-              instr+"0x5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
         n +=1
         print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-              instr+"0x5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
+              instr+"5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
         n +=1
         print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-              instr+"0x5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
+              instr+"5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VIM Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -149,13 +149,13 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(len(rs1_val)):
         n +=1
         print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-              instr+"0x5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
+              instr+"5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
         n +=1
         print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-              instr+"0x5201314"+", "+"0xfffff000"+", "+"0x1"+" );", file=f)
+              instr+"5201314"+", "+"0xfffff000"+", "+"0x1"+" );", file=f)
         n +=1
         print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-              instr+"0x5201314"+", "+"0xffffeee0"+", "+"0xf"+" );", file=f)     
+              instr+"5201314"+", "+"0xffffeee0"+", "+"0xf"+" );", file=f)     
     
 
 

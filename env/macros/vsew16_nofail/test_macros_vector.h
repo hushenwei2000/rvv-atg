@@ -86,6 +86,13 @@ test_ ## testnum: \
     vpopc.m x14, testreg; \
     VSET_VSEW
 
+#define TEST_CASE_SCALAR_SETVSEW_AFTER( testnum, testreg, correctval, code... ) \
+test_ ## testnum: \
+    code; \
+    li x7, correctval; \
+    li TESTNUM, testnum; \
+    VSET_VSEW
+
 #define TEST_CASE_AVG_VV( testnum, inst, testvs1, testreg, correctval00, correctval01, correctval10, correctval11, code... ) \
 test_ ## testnum: \
     code; \
@@ -1356,8 +1363,8 @@ test_ ## testnum: \
   TEST_CASE_MASK_4VL( testnum, v14, result, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
-    vle32.v v5, (x1); \
-    vmseq.vi v1, v5, 1; \
+    vle16.v v6, (x1); \
+    vmseq.vi v1, v6, 1; \
     inst v14, v1; \
     VSET_VSEW \
   )
@@ -1430,13 +1437,12 @@ test_ ## testnum: \
   )
 
 #define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \
+  TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \
     VSET_VSEW_4AVL \
     la  x2, vm_addr; \
     vle32.v v14, (x2); \
-    li x7, result; \
-    li TESTNUM, testnum; \
     inst x14, v14; \
-    VSET_VSEW
+  )
 
 #define TEST_VPOPC_OP_64( testnum, inst, result, vm_addr ) \
     VSET_VSEW_4AVL \
