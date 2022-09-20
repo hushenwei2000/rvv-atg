@@ -3,6 +3,27 @@ from scripts.create_test_integer.create_test_vadd import *
 
 # floating point
 from scripts.create_test_floating.create_test_vfmv import *
+from scripts.create_test_floating.create_test_vfadd import *
+from scripts.create_test_floating.create_test_vfclass import *
+from scripts.create_test_floating.create_test_vfcvt import *
+from scripts.create_test_floating.create_test_vfdiv import *
+from scripts.create_test_floating.create_test_vfrdiv import *
+from scripts.create_test_floating.create_test_vfmacc import *
+from scripts.create_test_floating.create_test_vfmadd import *
+from scripts.create_test_floating.create_test_vfmax import *
+# from scripts.create_test_floating.create_test_vfmerge import *
+from scripts.create_test_floating.create_test_vfmin import *
+from scripts.create_test_floating.create_test_vfmsac import *
+from scripts.create_test_floating.create_test_vfmsub import *
+from scripts.create_test_floating.create_test_vfmul import *
+from scripts.create_test_floating.create_test_vfncvt import *
+from scripts.create_test_floating.create_test_vfnmacc import *
+from scripts.create_test_floating.create_test_vfnmadd import *
+from scripts.create_test_floating.create_test_vfnmsac import *
+from scripts.create_test_floating.create_test_vfnmsub import *
+from scripts.create_test_floating.create_test_vfrec import *
+from scripts.create_test_floating.create_test_vfredmax import *
+from scripts.create_test_floating.create_test_vfredmin import *
 
 # mask
 from scripts.create_test_mask.create_test_vmand import *

@@ -120,8 +120,10 @@ def replace_results_spike(instr, first_test, spike_log):
             if a is not None:
                 ans = a.group(1)
                 fflag_ansList.append(ans)
-        print(fflag_ansList)
+        # print(fflag_ansList)
 
+    logging.info ("size of rd: {}".format(len(ansList)))
+    logging.info ("size of flag: {}".format(len(fflag_ansList)))
 
     des_path = first_test.replace("_first", "_second")
     des_path = des_path.replace("_empty", "_second")

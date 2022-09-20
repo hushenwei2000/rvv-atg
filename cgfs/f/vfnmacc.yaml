@@ -1,0 +1,14 @@
+vfnmacc:
+    config: 
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode: 
+      vfnmacc.vv: 0
+      vfnmacc.vf: 0
+    rs1: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(32, 32, "vfnmacc", 2, rvv_sew = 32)': 0

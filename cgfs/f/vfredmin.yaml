@@ -1,0 +1,12 @@
+vfredmin:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vfredmin.vs: 0    
+    rs2:
+      <<: *v_regs
+    rd: 
+      <<: *f_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(32, 32, "vfredmin", 2, rvv_sew = 32)': 0

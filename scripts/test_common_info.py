@@ -3,12 +3,12 @@ def print_common_header(instr, f):
     # %s.S\n\
     #-----------------------------------------------------------------------------\n\
     #\n\
-    # Test vsub instructions.\n\
+    # Test %s instructions.\n\
     #\n\n\
     #include \"model_test.h\"\n\
     #include \"arch_test.h\"\n\
     #include \"riscv_test.h\"\n\
-    #include \"test_macros_vector.h\"\n" % instr, file=f)
+    #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
 
     print("RVTEST_ISA(\"RV64RV64IMAFDCVZicsr\")\n\
     \n\
