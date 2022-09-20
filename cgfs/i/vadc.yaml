@@ -1,0 +1,16 @@
+vadc:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vadc.vvm: 0
+      vadc.vxm: 0
+      vadc.vim: 0
+    rs1: 
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+      <<: [*base_rs1val_sgn_vector , *base_rs2val_sgn_vector , *rfmt_val_comb_sgn]
+      abstract_comb:
+        'sp_dataset(32)': 0
+        <<: [*rs1val_walking_vector, *rs2val_walking_vector]
