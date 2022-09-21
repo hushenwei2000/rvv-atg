@@ -1,0 +1,18 @@
+vlse32:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vlse32.v: 0
+    rs1: 
+      <<: *all_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+        'imm_val > 0': 0
+        'imm_val < 0': 0
+        'imm_val == 0': 0
+        'imm_val == 4100': 0
+        'imm_val == -4100': 0
+        'walking_ones("imm_val", 32)': 0
+        'ea_align == 0': 0
+        'ea_align == 0 and (imm_val % 4) == 0': 0

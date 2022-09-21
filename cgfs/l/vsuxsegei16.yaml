@@ -1,0 +1,18 @@
+vsuxsegei16:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vsuxseg2ei16.v: 0
+      vsuxseg3ei16.v: 0
+      vsuxseg4ei16.v: 0
+      vsuxseg5ei16.v: 0
+      vsuxseg6ei16.v: 0
+      vsuxseg7ei16.v: 0
+      vsuxseg8ei16.v: 0
+    rs1: 
+      <<: *all_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+        'ea_align == 0': 0
+        'walking_ones("imm_val", 16)': 0
