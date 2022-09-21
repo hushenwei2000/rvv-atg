@@ -5,12 +5,10 @@ vfwmacc_b1:
     opcode:
       vfwmacc.vv: 0
       vfwmacc.vf: 0
-    rs1: 
+    rs2: 
       <<: *v_regs
     rd: 
       <<: *v_regs
-    op_comb: 
-      <<: *rfmt_op_comb
     val_comb:
       abstract_comb:
         'ibm_b1(32, 32, "vfwmacc.vv", 2, rvv_sew = 32)': 0

@@ -12,7 +12,7 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
 
 def generate_macros(f):
     for n in range(2,32):
-        print("#define TEST_W_FP_VV_OP_1%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
+        print("#define TEST_W_FP_VV_OP_2%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
         TEST_CASE_W_FP( testnum, v14, flags, val1, val2, \\\n\
             flw f0, 0(a0); \\\n\
             flw f1, 4(a0); \\\n\
@@ -21,6 +21,9 @@ def generate_macros(f):
             fcvt.d.s f0, f0; \\\n\
             fcvt.d.s f1, f1; \\\n\
             finst f2, f0, f1; \\\n\
+            VSET_VSEW_4AVL \\\n\
+            vmv.v.i v14, 0; \\\n\
+            VSET_VSEW \\\n\
             inst v14, v1, v%d;"%n+" \\\n\
         )",file=f)
 
@@ -34,6 +37,9 @@ def generate_macros(f):
             fcvt.d.s f0, f0; \\\n\
             fcvt.d.s f1, f1; \\\n\
             finst f2, f0, f1; \\\n\
+            VSET_VSEW_4AVL \\\n\
+            vmv.v.i v%d, 0;"%n+" \\\n\
+            VSET_VSEW \\\n\
             inst v%d, v1, v2;"%n+" \\\n\
         )",file=f)
 
@@ -46,6 +52,9 @@ def generate_macros(f):
             fcvt.d.s f0, f0; \\\n\
             fcvt.d.s f1, f1; \\\n\
             finst f2, f0, f1; \\\n\
+            VSET_VSEW_4AVL \\\n\
+            vmv.v.i v2, 0; \\\n\
+            VSET_VSEW \\\n\
             inst v2, v3, v4; \\\n\
         )",file=f)
 
@@ -61,32 +70,32 @@ def generate_tests(f):
     print("  # VV Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
+    for i in range(len(rs2_val)):
         n += 1
-        print("  TEST_W_FP_VV_OP( "+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP( "+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # VF Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
-    for i in range(len(rs1_val)):
+    for i in range(len(rs2_val)):
         n += 1
-        print("  TEST_W_FP_VF_OP_RV( "+str(n)+",  %s.vf, fmul.d, "%instr+"0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_VF_OP_RV( "+str(n)+",  %s.vf, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
+    for i in range(len(rs2_val)):     
         k = i % 15 + 1
         n += 1
-        print("  TEST_W_FP_VV_OP_rd%d( "%(k*2)+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP_rd%d( "%(k*2)+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
         
         k = i % 30 + 2
         if (k == 14):
             continue;
         n += 1
-        print("  TEST_W_FP_VV_OP_1%d( "%k+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP_2%d( "%k+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
 
 def print_ending(f):

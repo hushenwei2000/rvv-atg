@@ -29,12 +29,12 @@ def generate_macros(f):
         TEST_CASE_W_FP( testnum, v%d, flags, val1, val2,"%n + " \\\n\
             flw f0, 0(a0); \\\n\
             flw f1, 4(a0); \\\n\
-            vfmv.s.f v1, f0; \\\n\
-            vfmv.s.f v2, f1; \\\n\
+            vfmv.s.f v2, f0; \\\n\
+            vfmv.s.f v1, f1; \\\n\
             fcvt.d.s f0, f0; \\\n\
             fcvt.d.s f1, f1; \\\n\
             finst f2, f0, f1; \\\n\
-            inst v%d, v1, v2;"%n+" \\\n\
+            inst v%d, v2, v1;"%n+" \\\n\
         )",file=f)
 
     print("#define TEST_W_FP_VV_OP_rd2( testnum, inst, finst, flags, val1, val2 ) \\\n\

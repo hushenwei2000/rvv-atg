@@ -9,8 +9,6 @@ vfsub_b1:
       <<: *v_regs
     rd: 
       <<: *v_regs
-    op_comb: 
-      <<: *rfmt_op_comb
     val_comb:
       abstract_comb:
         'ibm_b1(32, 32, "vfsub.vv", 2, rvv_sew = 32)': 0

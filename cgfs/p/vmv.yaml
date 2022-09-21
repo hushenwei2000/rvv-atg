@@ -9,9 +9,5 @@ vmv:
     rd: 
       <<: *v_regs
     val_comb:
-      'rs2_val > 0': 0
-      'rs2_val < 0': 0
-      'rs1_val > 0': 0
-      'rs1_val < 0': 0
       abstract_comb:
         <<: [*rs1val_walking_vector,*rs2val_walking_vector]

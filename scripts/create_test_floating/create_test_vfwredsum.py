@@ -18,12 +18,12 @@ def generate_macros(f):
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
             VSET_DOUBLE_VSEW \\\n\
-            vfmv.s.f v1, f0; \\\n\
+            vfmv.s.f v%d, f0;"%n+" \\\n\
             VSET_VSEW \\\n\
-            vfmv.s.f v%d, f1;"%n+" \\\n\
+            vfmv.s.f v2, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v14, v1, v%d;"%n+" \\\n\
+            inst v14, v2, v%d;"%n+" \\\n\
         )",file=f)
 
     for n in range(4,32,2):
@@ -38,7 +38,7 @@ def generate_macros(f):
             vfmv.s.f v2, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v%d, v1, v2;"%n+" \\\n\
+            inst v%d, v2, v1;"%n+" \\\n\
         )",file=f)
 
     print("#define TEST_W_FP_WV_OP_DS_rd2( testnum, inst, finst, flags, val1, val2 ) \\\n\
@@ -52,7 +52,7 @@ def generate_macros(f):
             vfmv.s.f v4, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v2, v3, v4; \\\n\
+            inst v2, v4, v3; \\\n\
         )",file=f)
 
 
