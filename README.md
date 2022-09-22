@@ -144,7 +144,17 @@ Bugs:
 #### vsll, vsra, vsrl; vssub, vssubu; vsub; vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vxor
 
 ### Floating Points
-
+#### vfadd, vfclas, *vfcvt*, vfdiv, vfmacc, vfmax, vfmin, vfmsac, vfmsub, vfmul, `vfncvt`, vfnmacc, vfnmadd, vfnmsac, vfnmsub, vfrdiv, vfrec7, vfredmax, vfredmin
+|  Config   | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |
+|vlen128 vsew32 lmul1(default) | P P | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew64 lmul1          | x x | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew64 lmul1          | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew64 lmul1          | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew64 lmul1         | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 
 
 ### Fix Points
