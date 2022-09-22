@@ -23,7 +23,7 @@ def setup_logging(verbose):
                             level=logging.INFO)
 
 
-def create_output(instr, output):
+def create_output(args):
     """ Create output directory
 
     Args:
@@ -33,9 +33,14 @@ def create_output(instr, output):
     Returns:
       Output directory
     """
+    instr = args.i
+    output = args.o
+    vlen = args.vlen
+    vsew = args.vsew
+    lmul = args.lmul
     # Create output directory
     if output is None:
-        output = str(date.today()) + "-" + instr
+        output = str(date.today()) + "-" + instr + "-vlen" + str(vlen) + "-vsew" + str(vsew) + "-lmul" + str(lmul)
     os.system("rm -rf {}".format(output))
 
     logging.info("Creating output directory: {}".format(output))

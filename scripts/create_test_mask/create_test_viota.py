@@ -32,32 +32,32 @@ def generate_walking_answer_seg_viota(element_num, vlen, f):
             print("\t", end="", file=f)
             element_width = vlen / element_num
             print_data_width_prefix(f, element_width)
-            print("0x" + str(prefix_sum), file=f)
+            print(prefix_sum, file=f)
             if i != j + 1:
                 prefix_sum = prefix_sum + 1
         print("", file=f)
 
 
-def generate_macros_viota(f):
+def generate_macros_viota(f, vsew):
     # generate the macro， 测试v1-v32源寄存器
     print("#define TEST_VIOTA_OP_rs2_5( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v14, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle32.v v6, (x1); \\\n\
+        vle%d.v v6, (x1); \\\n\
         vmseq.vi v5, v6, 1; \\\n\
         inst v14, v5; \\\n\
-        )", file=f)
+        )"%vsew, file=f)
     print("#define TEST_VIOTA_OP_rs2_14( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v15, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle32.v v5, (x1); \\\n\
-        vmseq.vi v0, v5, 1; \\\n\
+        vle%d.v v5, (x1); \\\n\
+        vmseq.vi v14, v5, 1; \\\n\
         inst v15, v14; \\\n\
-        )", file=f)
+        )"%vsew, file=f)
 
     for n in range(1, 32):
         if n == 5 or n == 14:
@@ -67,10 +67,10 @@ def generate_macros_viota(f):
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle32.v v5, (x1); \\\n\
+        vle%d.v v5, (x1); \\\n\
         vmseq.vi v%d, v5, 1; \\\n\
         inst v14, v%d; \\\n\
-        )" % (n, n, n), file=f)
+        )" % (n,vsew, n, n), file=f)
 
     for n in range(1, 32):
         print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
@@ -78,19 +78,21 @@ def generate_macros_viota(f):
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle32.v v5, (x1); \\\n\
+        vle%d.v v5, (x1); \\\n\
         vmseq.vi v0, v5, 1; \\\n\
         inst v%d, v0; \\\n\
-        )" % (n, n, n), file=f)
+        )" % (n, n, vsew, n), file=f)
 
 
 def generate_tests_viota(instr, f, vlen, vsew):
     num_test = 1
+    num_elem = int(vlen / vsew)
+    num_elem_plus = num_elem + 1
     ####################viota######################################################################################################
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    for i in range(0, 5):
+    for i in range(0, num_elem_plus):
         print("TEST_VIOTA_OP( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
             num_test, instr, i, i), file=f)
         num_test = num_test + 1
@@ -105,11 +107,11 @@ def generate_tests_viota(instr, f, vlen, vsew):
 
     for i in range(1, 32):
         print("TEST_VIOTA_OP_rd_%d( %d,  %s.m, walking_zeros_ans%d, walking_zeros_dat%d );" % (
-            i, num_test, instr, i % 5, i % 5), file=f)
+            i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
         print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
-            i, num_test, instr, i % 5, i % 5), file=f)
+            i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
         num_test = num_test + 1
 
 
@@ -175,7 +177,7 @@ def create_empty_test_viota(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_viota(f)
+    generate_macros_viota(f, vsew)
 
     # Common header files
     print_common_header(instr, f)

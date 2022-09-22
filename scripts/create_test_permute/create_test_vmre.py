@@ -4,13 +4,12 @@ import os
 from scripts.create_test_mask.create_test_common import *
 from scripts.test_common_info import *
 import re
+from scripts.create_test_permute.const_data import walking_val_vmre 
 
 instr = 'vmre'
-walking_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -134217729, -67108865, -33554433, -16777217, -8388609, -4194305, -2097153, -1048577, -524289, -262145, -131073, -65537, -32769, -16385, -8193, -4097, -2049, -1025, -513, -257, -129, -65, -33, -
-               17, -9, -5, -3, -2, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 1431655765, 2147483647,
-               ]  # 66
+
 random_val = [-27638, 31380, -1706, 16860, 290, 11167, 1163, 9601, 30738, 2716, -3235, 22869, 10574, 31612, -22835, -32244, -10700, 21057, -1284, -15492, 18507, -5316, 13671, -10242, 7510, 24839, 23255, 12069, 1159, -11875, 14735, 28926, 9422, -8316, 12800, -669, -20647, 23675, -31930, -11842, 10331, 31463, 9984, 29467, 8191, 13985, -22552, 16163, -14600, 20609, -6356, -5132, 5225, -31914, 9822, -6743, 16895, 8525, 12604, -29640,23317, 1509, -22401, 18078, -10222, 20072, 32201, 7121, -12103, 22700, 7998, 14968, -10151, -23596, 21607, -14791, 10920, -16026, -7184, 16926, 13856, 26315, -24515, 3681, -4747, 8804, 24735, -28015, 7852, 25488, 3665, -26434, 28349, 6261, 13793, 7596, -30722, 25600, -8372, 13708] # 100 Random val in [-32768, 32767]
-walking_val = walking_val + random_val
+
 vma = False  # False to turn to undisturb
 num_elem = 0
 num_group_walking = 0
@@ -112,12 +111,12 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global walking_val_grouped
     global vma
     num_elem = int(vlen / vsew)
-    num_group_walking = int(len(walking_val) / num_elem)
+    num_group_walking = int(len(walking_val_vmre) / num_elem)
     vma = _vma
     for i in range(num_group_walking):
         temp = []
         for j in range(num_elem):
-            temp.append(walking_val[i*num_elem+j])
+            temp.append(walking_val_vmre[i*num_elem+j])
         walking_val_grouped.append(temp)
     
     path = "%s/%s_empty.S" % (output_dir, instr)

@@ -37,7 +37,7 @@ def generate_walking_answer_seg_vid(element_num, vlen, f):
         print("", file=f)
 
 
-def generate_macros_vid(f):
+def generate_macros_vid(f, vsew):
     # generate the macro， 测试v1-v32源寄存器
     for n in range(1, 32):
         print("#define TEST_VID_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
@@ -45,19 +45,21 @@ def generate_macros_vid(f):
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
             la  x7, result_addr; \\\n\
-            vle32.v v5, (x1); \\\n\
+            vle%d.v v5, (x1); \\\n\
             vmseq.vi v0, v5, 1; \\\n\
             inst v%d, v0.t; \\\n\
-        )" % (n, n, n), file=f)
+        )" % (n, n, vsew, n), file=f)
 
 
 def generate_tests_vid(instr, f, vlen, vsew):
     num_test = 1
+    num_elem = int(vlen / vsew)
+    num_elem_plus = num_elem + 1
     ####################vid######################################################################################################
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    for i in range(0, 5):
+    for i in range(0, num_elem_plus):
         print("TEST_VID_OP( %d,  %s.v, walking_ones_vid_ans%d, walking_ones_dat%d );" % (
             num_test, instr, i, i), file=f)
         num_test = num_test + 1
@@ -71,7 +73,7 @@ def generate_tests_vid(instr, f, vlen, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(1, 32):
         print("TEST_VID_OP_rd_%d( %d,  %s.v, walking_zeros_vid_ans%d, walking_zeros_dat%d );" % (
-            i, num_test, instr, i % 5, i % 5), file=f)
+            i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
         num_test = num_test + 1
 
 
@@ -137,7 +139,7 @@ def create_empty_test_vid(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vid(f)
+    generate_macros_vid(f, vsew)
 
     # Common header files
     print_common_header(instr, f)

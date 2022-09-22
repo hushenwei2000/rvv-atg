@@ -1,12 +1,11 @@
-vslide1:
+vfslide:
     config: 
       - check ISA:=regex(.*V.*)
     opcode: 
-      vslide1up.vx: 0
-      vslide1down.vx: 0
-      vslidedown.vi: 0
+      vfslide1up.vf: 0
+      vfslide1down.vf: 0
     rs1:
-      <<: *all_regs
+      <<: *f_regs
     rs2:
       <<: *v_regs
     rd: 

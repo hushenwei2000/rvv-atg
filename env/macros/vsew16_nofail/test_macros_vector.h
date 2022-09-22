@@ -205,7 +205,7 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v1, (correctval_addr_reg); \
+    vle16.v v1, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v1 ) \
@@ -1384,7 +1384,7 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     vmseq.vi v0, v5, 1; \
     inst v14, v0; \
   )
@@ -1394,7 +1394,7 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     vmseq.vi v0, v5, 1; \
     inst v1, v0.t; \
   )
@@ -1416,10 +1416,10 @@ test_ ## testnum: \
     la  x1, src_addr; \
     la  x2, rd_addr; \
     la  x3, vm_addr; \
-    vle32.v v5, (x3); \
+    vle16.v v5, (x3); \
     vmseq.vi v0, v5, 1; \
-    vle32.v v5, (x1); \
-    vle32.v v6, (x2); \
+    vle16.v v5, (x1); \
+    vle16.v v6, (x2); \
     inst v6, v5, v0; \
   )
 
@@ -1440,7 +1440,7 @@ test_ ## testnum: \
   TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \
     VSET_VSEW_4AVL \
     la  x2, vm_addr; \
-    vle32.v v14, (x2); \
+    vle16.v v14, (x2); \
     inst x14, v14; \
   )
 
@@ -1514,7 +1514,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v18, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re16.v v8, (x1); \
@@ -1530,9 +1530,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle16.v v14, (x1); \
     la  x7, result_base; \
     li x1, offset; \
     inst v14, v5, x1; \
@@ -1542,9 +1542,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle16.v v14, (x1); \
     la  x7, result_base; \
     li x1, rs1; \
     inst v14, v5, x1; \
@@ -1554,9 +1554,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle16.v v14, (x1); \
     la  x7, result_base; \
     inst v14, v5, offset_imm; \
   )
@@ -1565,9 +1565,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v14, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle16.v v5, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle16.v v14, (x1); \
     la x7, result_base; \
     la x1, f_rs1_base; \
     flw f1, 0(x1); \

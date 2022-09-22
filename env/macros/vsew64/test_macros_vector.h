@@ -1464,10 +1464,10 @@ test_ ## testnum: \
     la  x1, src_addr; \
     la  x2, rd_addr; \
     la  x3, vm_addr; \
-    vle32.v v5, (x3); \
+    vle64.v v5, (x3); \
     vmseq.vi v0, v5, 1; \
-    vle32.v v5, (x1); \
-    vle32.v v6, (x2); \
+    vle64.v v5, (x1); \
+    vle64.v v6, (x2); \
     inst v6, v5, v0; \
   )
 
@@ -1488,7 +1488,7 @@ test_ ## testnum: \
   TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \
     VSET_VSEW_4AVL \
     la  x2, vm_addr; \
-    vle32.v v14, (x2); \
+    vle64.v v14, (x2); \
     inst x14, v14; \
   )
 

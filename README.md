@@ -48,7 +48,7 @@ vma: 0(currently), 1
   - *Now cover over 99% coverage points is regarded as pass, remaining need fine tune
 - Not listed instruction are not tested yet
 ### Mask 
-#### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst
+#### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
 |  Config   | Status  |
 |  ----  | ----  |
 | vlen128 vsew8 lmul1            | -     |
@@ -70,11 +70,11 @@ vma: 0(currently), 1
 
 ### Permute 
 
-#### vslide
+#### vcompress, vmre, vmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
 |  Config   | Status  |
 |  ----  | ----  |
 | vlen128 vsew8 lmul1            | -      |
-| vlen128 vsew16 lmul1           | -      |
+| vlen128 vsew16 lmul1           | P      |
 | vlen128 vsew32 lmul1(default)  | P      |
 | vlen128 vsew64 lmul1           | -      |
 | vlen256 vsew8 lmul1            | -     |
@@ -86,7 +86,7 @@ vma: 0(currently), 1
 | vlen512 vsew32 lmul1           | P      |
 | vlen512 vsew64 lmul1           | -     |
 | vlen1024 vsew8 lmul1           | -      |
-| vlen1024 vsew16 lmul1          | -     |
+| vlen1024 vsew16 lmul1          | P     |
 | vlen1024 vsew32 lmul1          | -     |
 | vlen1024 vsew64 lmul1          | -     |
 
@@ -101,15 +101,15 @@ vma: 0(currently), 1
 |vlen128 vsew32 lmul1(default) | P P |  
 |vlen128 vsew64 lmul1          | P P |   
 |vlen256 vsew8 lmul1           | - | 
-|vlen256 vsew16 lmul1          | - |  
+|vlen256 vsew16 lmul1          | P |  
 |vlen256 vsew32 lmul1          | P P |  
 |vlen256 vsew64 lmul1          | P P |  
 |vlen512 vsew8 lmul1           | - |  
-|vlen512 vsew16 lmul1          | P P |   
+|vlen512 vsew16 lmul1          | P |   
 |vlen512 vsew32 lmul1          | P P |   
 |vlen512 vsew64 lmul1          | P P | 
 |vlen1024 vsew8 lmul1          | - |  
-|vlen1024 vsew16 lmul1         | P P | 
+|vlen1024 vsew16 lmul1         | P | 
 |vlen1024 vsew32 lmul1         | P P | 
 |vlen1024 vsew64 lmul1         | P P | 
 
@@ -126,22 +126,22 @@ Bugs:
 |vlen128 vsew64 lmul1          | P P |   
 |vlen256 vsew8 lmul1           | - | 
 |vlen256 vsew16 lmul1          | - |  
-|vlen256 vsew32 lmul1          | - |  
+|vlen256 vsew32 lmul1          | P P |  
 |vlen256 vsew64 lmul1          | - |  
 |vlen512 vsew8 lmul1           | - |  
-|vlen512 vsew16 lmul1          | - |   
-|vlen512 vsew32 lmul1          | - |   
+|vlen512 vsew16 lmul1          | P |   
+|vlen512 vsew32 lmul1          | P P |   
 |vlen512 vsew64 lmul1          | - | 
 |vlen1024 vsew8 lmul1          | - |  
-|vlen1024 vsew16 lmul1         | - | 
-|vlen1024 vsew32 lmul1         | - | 
-|vlen1024 vsew64 lmul1         | - | 
+|vlen1024 vsew16 lmul1         | P | 
+|vlen1024 vsew32 lmul1         | P P| 
+|vlen1024 vsew64 lmul1         | P P | 
 
 Bugs:
-- vnsra/l. vsew=64 fail
+- vnsra/l. vlen 128 vsew=64 fail
 
 
-#### vsll, vsra, vsrl, vssub, vssubu, vsub, vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus, vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu, vxor
+#### vsll, vsra, vsrl; vssub, vssubu; vsub; vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vxor
 
 ### Floating Points
 

@@ -128,4 +128,5 @@ from scripts.create_test_permute.create_test_vmv import *
 from scripts.create_test_permute.create_test_vrgather import *
 from scripts.create_test_permute.create_test_vrgatherei16 import *
 from scripts.create_test_permute.create_test_vslide1 import *
+from scripts.create_test_permute.create_test_vfslide import *
 from scripts.create_test_permute.create_test_vmre import *

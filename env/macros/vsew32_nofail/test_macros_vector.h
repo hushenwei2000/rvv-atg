@@ -1514,7 +1514,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v18, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re32.v v8, (x1); \

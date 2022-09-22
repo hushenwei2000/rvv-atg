@@ -8,29 +8,39 @@ instr = 'vpopc'
 num_elem = 0
 
 
-def generate_walking_data_seg_vpopc(f):
+def generate_walking_data_seg_vpopc(f, vsew):
     # Generate walking ones
     n = 0
+    if vsew == 8:
+        data_width_prefix = "byte"
+    elif vsew == 16:
+        data_width_prefix = "hword"
+    elif vsew == 32:
+        data_width_prefix = "word"
+    elif vsew == 64:
+        data_width_prefix = "dword"
     for i in range(num_elem + 1):
         print("walking_dat_vpopc%d:"%n, file=f)
-        print(".word\t0b", end="", file=f)
+        print_data_width_prefix(f, vsew)
+        print("0b", end="", file=f)
         print(i * "0", end="", file=f)
         if i != num_elem:
             print("1", end="", file=f)
         print((num_elem - i - 1) * "0", end="", file=f)
         print("", file=f)
-        print(".word\t0x0\n.word\t0x0\n.word\t0x0\n", file=f)
+        print(".%s\t0x0\n.%s\t0x0\n.%s\t0x0\n"%(data_width_prefix, data_width_prefix, data_width_prefix), file=f)
         n = n + 1
 
     for j in range(num_elem + 1):
         print("walking_dat_vpopc%d:"%n, file=f)
-        print(".word\t0b", end="", file=f)
+        print_data_width_prefix(f, vsew)
+        print("0b", end="", file=f)
         print(j * "1", end="", file=f)
         if j != num_elem:
             print("0", end="", file=f)
         print((num_elem - j - 1) * "1", end="", file=f)
         print("", file=f)
-        print(".word\t0x0\n.word\t0x0\n.word\t0x0\n", file=f)
+        print(".%s\t0x0\n.%s\t0x0\n.%s\t0x0\n"%(data_width_prefix, data_width_prefix, data_width_prefix), file=f)
         n = n + 1
 
 
@@ -43,9 +53,9 @@ def generate_macros_vpopc(f, vsew):
             TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
-                vle32.v v%d, (x2); \\\n\
+                vle%d.v v%d, (x2); \\\n\
                 inst x14, v%d; \\\n\
-            )"%(i, i, i), file=f)
+            )"%(i, vsew, i, i), file=f)
     
     for i in range(1, 32):
         if i == 7 or i  == 14 or i == 3:
@@ -54,16 +64,16 @@ def generate_macros_vpopc(f, vsew):
             TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x%d, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
-                vle32.v v14, (x2); \\\n\
+                vle%d.v v14, (x2); \\\n\
                 inst x%d, v14; \\\n\
-            )"%(i, i, i), file=f)
+            )"%(i, i, vsew, i), file=f)
 
 
 
 def generate_tests_vpopc(f, vlen, vsew, lmul):
     num_test = 1
     num_elem = int(vlen / vsew)
-    vemul = int(32 / (vsew * lmul))
+    vemul = int(vsew / (vsew * lmul))
     if vemul == 0:
         vemul = 1
     ########################vmpopc#################################################################################################
@@ -114,7 +124,7 @@ def print_ending_vpopc(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_vpopc(f)
+    generate_walking_data_seg_vpopc(f, vsew)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\

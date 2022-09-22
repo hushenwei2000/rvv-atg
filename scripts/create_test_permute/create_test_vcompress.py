@@ -75,21 +75,23 @@ def generate_walking_mask_seg(f, vlen):
             print("0" if i == j + 1 else "1", file=f)
         print("", file=f)
 
-def generate_dat_seg_vcompress(f):
+def generate_dat_seg_vcompress(f, vsew):
     global walking_val_grouped
     global num_elem
     global mask_val
     # Generate rd
     print("rd_data:", file=f)
     for i in range(num_elem):
-        print(".word\t%d" % rd_val[i], file=f)
+        print_data_width_prefix(f, vsew)
+        print("%d" % rd_val[i], file=f)
     print("", file=f)
     # Generate each group data
     for i in range(num_group_walking):
         # generate data
         print("walking_data%d:" % i, file=f)
         for j in range(num_elem):
-            print(".word\t%d" % walking_val_grouped[i][j], file=f)
+            print_data_width_prefix(f, vsew)
+            print("%d" % walking_val_grouped[i][j], file=f)
         print("", file=f)
         # generate answer
         for k in range(len(mask_val)):
@@ -98,16 +100,18 @@ def generate_dat_seg_vcompress(f):
             index = 0
             for p in range(num_elem):
                 if mask_val[k][p] == '1':
-                    print(".word\t%d" % walking_val_grouped[i][p], file=f)
+                    print_data_width_prefix(f, vsew)
+                    print("%d" % walking_val_grouped[i][p], file=f)
                     index = index + 1
                 else:
                     continue
             for p in range(index, num_elem):
-                print(".word\t%d" % (0 if vma else rd_val[p]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%d" % (0 if vma else rd_val[p]), file=f)
             print("", file=f)
 
 
-def generate_macros_vcompress(f):
+def generate_macros_vcompress(f, vsew):
     for i in range(32):
         if i == 0 or i == 5 or i == 6 or i == 15:  # 15 is used for TEST_CASE_LOOP
             continue
@@ -118,12 +122,12 @@ def generate_macros_vcompress(f):
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
-            vle32.v v5, (x3); \\\n\
+            vle%d.v v5, (x3); \\\n\
             vmseq.vi v0, v5, 1; \\\n\
-            vle32.v v5, (x1); \\\n\
-            vle32.v v%d, (x2); \\\n\
+            vle%d.v v5, (x1); \\\n\
+            vle%d.v v%d, (x2); \\\n\
             inst v%d, v5, v0; \\\n\
-        )" % (i, i, i, i), file=f)
+        )" % (i, i, vsew, vsew, vsew, i, i), file=f)
 
     for i in range(32):
         if i == 0 or i == 5 or i == 6 or i == 15:  # 15 is used for TEST_CASE_LOOP
@@ -135,12 +139,12 @@ def generate_macros_vcompress(f):
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
-            vle32.v v5, (x3); \\\n\
+            vle%d.v v5, (x3); \\\n\
             vmseq.vi v%d, v5, 1; \\\n\
-            vle32.v v5, (x1); \\\n\
-            vle32.v v6, (x2); \\\n\
+            vle%d.v v5, (x1); \\\n\
+            vle%d.v v6, (x2); \\\n\
             inst v6, v5, v%d; \\\n\
-        )" % (i, i, i), file=f)
+        )" % (i, vsew, i, vsew, vsew, i), file=f)
 
     for i in range(32):
         if i == 0 or i == 5 or i == 6 or i == 15:  # 15 is used for TEST_CASE_LOOP
@@ -152,16 +156,19 @@ def generate_macros_vcompress(f):
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
-            vle32.v v5, (x3); \\\n\
+            vle%d.v v5, (x3); \\\n\
             vmseq.vi v0, v5, 1; \\\n\
-            vle32.v v%d, (x1); \\\n\
-            vle32.v v6, (x2); \\\n\
+            vle%d.v v%d, (x1); \\\n\
+            vle%d.v v6, (x2); \\\n\
             inst v6, v%d, v0; \\\n\
-        )" % (i, i, i), file=f)
+        )" % (i, vsew, vsew, i, vsew, i), file=f)
 
 
-def generate_tests_vcompress(f):
+def generate_tests_vcompress(f, vlen, vsew, lmul):
     global mask_val
+    vemul = int(vsew / (vsew * lmul))
+    if vemul == 0:
+        vemul = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -181,6 +188,8 @@ def generate_tests_vcompress(f):
 
     for i in range(32):
         if i == 0 or i == 5 or i == 6 or i == 15:  # 15 is used for TEST_CASE_LOOP
+            continue
+        if i % vemul != 0: # guarantee is_aligned(insn.rd(), vemul)
             continue
         print("TEST_VCOMPRESS_OP_rd_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
             i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
@@ -219,7 +228,7 @@ def print_ending_vcompress(vlen, vsew, f):
 
     generate_walking_mask_seg(f, vlen)
     generate_walking_data_seg_common(int(vlen/vsew), int(vlen), f)
-    generate_dat_seg_vcompress(f)
+    generate_dat_seg_vcompress(f, vsew)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -275,12 +284,12 @@ def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vcompress(f)
+    generate_macros_vcompress(f, vsew)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vcompress(f)
+    generate_tests_vcompress(f, vlen, vsew, lmul)
 
     # Common const information
     print_ending_vcompress(vlen, vsew, f)
