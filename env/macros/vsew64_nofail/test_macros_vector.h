@@ -304,9 +304,9 @@ test_ ## testnum: \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
-  .float val1; \
-  .float val2; \
-  .double result; \
+  .word val1; \
+  .word val2; \
+  .dword result; \
   .popsection
 
 // Use feq.d to compare correctval(f2) computed by fadd.d and answer(f3) computed by vfwadd
@@ -472,7 +472,7 @@ test_ ## testnum: \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
-  .double result; \
+  .dword result; \
   .popsection
 
 //-----------------------------------------------------------------------

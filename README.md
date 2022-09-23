@@ -70,25 +70,25 @@ vma: 0(currently), 1
 
 ### Permute 
 
-#### vcompress, vmre, vmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
-|  Config   | Status  |
-|  ----  | ----  |
-| vlen128 vsew8 lmul1            | -      |
-| vlen128 vsew16 lmul1           | P      |
-| vlen128 vsew32 lmul1(default)  | P      |
-| vlen128 vsew64 lmul1           | -      |
-| vlen256 vsew8 lmul1            | -     |
-| vlen256 vsew16 lmul1           | -      |
-| vlen256 vsew32 lmul1           | -      |
-| vlen256 vsew64 lmul1           | -      |
-| vlen512 vsew8 lmul1            | -      |
-| vlen512 vsew16 lmul1           | -      |
-| vlen512 vsew32 lmul1           | P      |
-| vlen512 vsew64 lmul1           | -     |
-| vlen1024 vsew8 lmul1           | -      |
-| vlen1024 vsew16 lmul1          | P     |
-| vlen1024 vsew32 lmul1          | -     |
-| vlen1024 vsew64 lmul1          | -     |
+#### vcompress, vmre, vmv, vfmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
+|  Config   | vcompress | vmre | vmv | vfmv | vrgather | vrgatherei16 | vslide | vslide1 | vfslide |
+|  ----  | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| vlen128 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew32 lmul1(default)  |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew32 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew32 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew8 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
 
 ### Integer
 
@@ -157,5 +157,29 @@ Bugs:
 |vlen1024 vsew64 lmul1         | X X | P P | - | X X | X X | X X | X X | X X | X X | X X | X X | - | X X | X X | X X | X X | X X | P P | X X | X X |
 
 > `P` indicates *pass*, while `X` indicates *fail*. And `-` indicates *have not tested yet*.
+#### vfredosum, vfredusum, vfrsqrt7, vfrsub, vfsgnj, vfsgnjn, vfsgnjx, vfsqrt, vfsub
+|  Config   | vfredosum | vfredusum | vfrsqrt7 | vfrsub | vfsgnj | vfsgnjn | vfsgnjx | vfsqrt | vfsub |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+|vlen128 vsew32 lmul1(default) |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew64 lmul1         |  |  |  |  |  |  |  |  |  |
+
+#### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
+|  Config   | vfwadd | vfwcvt | vfwmacc | vfwmsac | vfwmul | vfwnmacc | vfwnmsac | vfwredsum | vfwsub |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+|vlen128 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew32 lmul1(default) |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew16 lmul1         |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         |  |  |  |  |  |  |  |  |  |
+
 
 ### Fix Points
