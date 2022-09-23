@@ -24,7 +24,7 @@ def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen
 
     logging.info("Running spike: {}.{}, stage: Spike Running...".format(instr, suffix))
 
-    os.system("spike --isa rv64gcv -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > %s 2>&1;" %
+    os.system("spike --isa rv64gcv_zfh -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > %s 2>&1;" %
               (vlen, vlen, suffix, spike_log_name))
 
     os.chdir(rvv_atg_root)

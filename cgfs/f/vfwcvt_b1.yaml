@@ -13,4 +13,4 @@ vfwcvt_b1:
     rs2: 
       <<: *v_regs
     rd: 
-      <<: *v_regs
+      <<: *v_even_regs

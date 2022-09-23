@@ -7,7 +7,7 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 ```
 
 - The type shall be consistent with the instruction: i (integer), f (floating point), m (mask), p (permute), x (fix point), l (load store)
-  -  Supported instruction and type can be seen in `cgfs/<type>/<instrction>.yaml`
+-  Supported instruction and type can be seen in `cgfs/<type>/<instruction>.yaml`
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
 - vsew VSEW       Selected Element Width: 8, 16, 32(default), 64
 
@@ -75,20 +75,25 @@ vma: 0(currently), 1
 |  ----  | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
 | vlen128 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
 | vlen128 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen128 vsew32 lmul1(default)  |  |  |  |  |  |  |  |  |  |
-| vlen128 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew32 lmul1(default)  |  |  | P P |  | P P | P P |  |  |  |
+| vlen128 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
 | vlen256 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
 | vlen256 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen256 vsew32 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen256 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen256 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
 | vlen512 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
 | vlen512 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen512 vsew32 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen512 vsew64 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen512 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
 | vlen1024 vsew8 lmul1           |  |  |  |  |  |  |  |  |  |
 | vlen1024 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-| vlen1024 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
-| vlen1024 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew32 lmul1          |  |  | P P |  | P P | P P |  |  |  |
+| vlen1024 vsew64 lmul1          |  |  | P P |  | P P | P P |  |  |  |
+
+note: 
+1. vmv 
+- vsew32 requires rs1val_walking_vector_unsgn
+- vsew64 requires rs1val_walking_vector
 
 ### Integer
 
@@ -173,13 +178,13 @@ Bugs:
 |  Config   | vfwadd | vfwcvt | vfwmacc | vfwmsac | vfwmul | vfwnmacc | vfwnmsac | vfwredsum | vfwsub |
 |  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
 |vlen128 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen128 vsew32 lmul1(default) |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew32 lmul1(default) | P P | P P |  |  |  |  |  |  |  |
 |vlen256 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen256 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
 |vlen512 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen512 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
 |vlen1024 vsew16 lmul1         |  |  |  |  |  |  |  |  |  |
-|vlen1024 vsew32 lmul1         |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         | P P | P P |  |  |  |  |  |  |  |
 
 
 ### Fix Points

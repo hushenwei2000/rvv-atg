@@ -7,7 +7,7 @@ vfwredsum_b1:
     rs1: 
       <<: *v_regs
     rd: 
-      <<: *v_regs
+      <<: *v_even_regs
     val_comb:
       abstract_comb:
         'ibm_b1(32, 32, "vfwredosum.vs", 2, rvv_sew = 32)': 0
