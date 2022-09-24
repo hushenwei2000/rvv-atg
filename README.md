@@ -153,8 +153,7 @@ Bugs:
 - vnsra/l. vlen 128 vsew=64 fail
 
 
-#### vsll, vsra, vsrl; vssub, vssubu; vsub; vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vxor
-
+#### vsll, vsra, vsrl; vssub, vssubu; vsub;  vxor
 
 |  Config   | Status  |
 |  ----  | ----  |
@@ -174,7 +173,25 @@ Bugs:
 |vlen1024 vsew16 lmul1         | - | 
 |vlen1024 vsew32 lmul1         | - | 
 |vlen1024 vsew64 lmul1         | - | 
+
+
+#### vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu;
 *widen instruction not support VSEW=64 (vsew should be <= 64)
+
+|  Config   | Status  |
+|  ----  | ----  |
+|vlen128 vsew8 lmul1           | P P |   
+|vlen128 vsew16 lmul1          | P P |  
+|vlen128 vsew32 lmul1(default) | P P |  
+|vlen256 vsew8 lmul1           | P P | 
+|vlen256 vsew16 lmul1          | P P |  
+|vlen256 vsew32 lmul1          | P P |  
+|vlen512 vsew8 lmul1           | P P |  
+|vlen512 vsew16 lmul1          | P P |   
+|vlen512 vsew32 lmul1          | P P |   
+|vlen1024 vsew8 lmul1          | P P |  
+|vlen1024 vsew16 lmul1         | P P | 
+|vlen1024 vsew32 lmul1         | P P | 
 
 
 ### Floating Points

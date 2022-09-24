@@ -1,6 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
+from scripts.create_test_integer.create_test_common import *
 import re
 
 instr = 'vwredsumu'
@@ -108,10 +109,10 @@ def create_first_test_vwredsumu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros_vw(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests_vw(f, rs1_val, rs2_val, instr, lmul)
 
     # Common const information
     print_common_ending(f)
