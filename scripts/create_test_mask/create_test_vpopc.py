@@ -73,7 +73,7 @@ def generate_macros_vpopc(f, vsew):
 def generate_tests_vpopc(f, vlen, vsew, lmul):
     num_test = 1
     num_elem = int(vlen / vsew)
-    vemul = int(vsew / (vsew * lmul))
+    vemul = int(vsew / vsew * lmul)
     if vemul == 0:
         vemul = 1
     ########################vmpopc#################################################################################################

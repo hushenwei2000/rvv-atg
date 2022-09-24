@@ -166,7 +166,7 @@ def generate_macros_vcompress(f, vsew):
 
 def generate_tests_vcompress(f, vlen, vsew, lmul):
     global mask_val
-    vemul = int(vsew / (vsew * lmul))
+    vemul = int(vsew / vsew * lmul)
     if vemul == 0:
         vemul = 1
     print("  #-------------------------------------------------------------", file=f)

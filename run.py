@@ -173,7 +173,7 @@ def main():
         return
     if args.t == "f":
         run_vf(cwd, args, cgf, output_dir)
-    elif args.t == "i":
+    elif args.t == "i" or args.t == "x":
         run_integer(cwd, args, cgf,  output_dir)
     elif args.t == "m" or args.t == "p":
         run_mask(cwd, args, cgf, output_dir)

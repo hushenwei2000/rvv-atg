@@ -1,51 +1,10 @@
 import logging
 import os
 from scripts.test_common_info import *
+from scripts.create_test_fixpoint.create_test_common import *
 import re
 
 instr = 'vnclip'
-
-
-def generate_macros(f):
-    for n in range(1, 32):
-            print("#define TEST_W_AVG_WV_OP_1%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
-            TEST_CASE_AVG_VV( testnum, inst, v%d, v14, result00, result01, result10, result11, "%n + " \\\n\
-                li x7, MASK_DOUBLE_VSEW(val2); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vmv.v.x v2, x7; \\\n\
-                VSET_VSEW  \\\n\
-                li x7, val1; \\\n\
-                vmv.v.x v1, x7; \\\n\
-            )", file=f)
-    for n in range(1, 32):
-        # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        print("#define TEST_W_AVG_WV_OP_rd%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
-            TEST_CASE_AVG_VV( testnum, inst, v4, v%d, result00, result01, result10, result11, "%n + " \\\n\
-                li x7, MASK_DOUBLE_VSEW(val2); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vmv.v.x v2, x7; \\\n\
-                VSET_VSEW  \\\n\
-                li x7, val1; \\\n\
-                vmv.v.x v1, x7; \\\n\
-        ) ", file=f)
-
-
-
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
 
 
 def generate_tests(f, rs1_val, rs2_val):
@@ -123,10 +82,10 @@ def create_first_test_vnclip(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros_vnclip(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul)
 
     # Common const information
     print_common_ending(f)

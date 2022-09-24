@@ -45,7 +45,7 @@ vma: 0(currently), 1
 - "-"   : Not test/support yet
 - "P"   : Test file is correct(pass Spike), but not fully cover val_comb
 - "P P" : Test file is correct and fully cover val_comb (rd, rs may not fully cover)
-  - *Now cover over 99% coverage points is regarded as pass, remaining need fine tune
+  - *Now cover over 95% coverage points is regarded as pass, remaining need some fine tune
 - Not listed instruction are not tested yet
 ### Mask 
 #### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
@@ -70,16 +70,16 @@ vma: 0(currently), 1
 
 ### Permute 
 
-#### vcompress, vmre, vmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
+#### vcompress, vmre, vmv, vrgather, vrgatherei16, vslide, vslide1, vfslide*
 |  Config   | Status  |
 |  ----  | ----  |
 | vlen128 vsew8 lmul1            | -      |
 | vlen128 vsew16 lmul1           | P      |
 | vlen128 vsew32 lmul1(default)  | P      |
-| vlen128 vsew64 lmul1           | -      |
+| vlen128 vsew64 lmul1           | P      |
 | vlen256 vsew8 lmul1            | -     |
 | vlen256 vsew16 lmul1           | -      |
-| vlen256 vsew32 lmul1           | -      |
+| vlen256 vsew32 lmul1           | P      |
 | vlen256 vsew64 lmul1           | -      |
 | vlen512 vsew8 lmul1            | -      |
 | vlen512 vsew16 lmul1           | -      |
@@ -90,6 +90,13 @@ vma: 0(currently), 1
 | vlen1024 vsew32 lmul1          | -     |
 | vlen1024 vsew64 lmul1          | -     |
 
+
+
+
+
+
+
+| *vfslide only support vsew=32 and 64|  |
 ### Integer
 
 #### vadc, vadd, vand, vdiv, vdivu, vmacc, vmadc, vmadd, vmax, vmaxu, vmin, vminu, vmsbc, vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne, vmul, vmulh, vmulhsu, vmulhu
@@ -143,6 +150,28 @@ Bugs:
 
 #### vsll, vsra, vsrl; vssub, vssubu; vsub; vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vxor
 
+
+|  Config   | Status  |
+|  ----  | ----  |
+|vlen128 vsew8 lmul1           | - |   
+|vlen128 vsew16 lmul1          | - |  
+|vlen128 vsew32 lmul1(default) | - |  
+|vlen128 vsew64 lmul1          | - |   
+|vlen256 vsew8 lmul1           | - | 
+|vlen256 vsew16 lmul1          | - |  
+|vlen256 vsew32 lmul1          | - |  
+|vlen256 vsew64 lmul1          | - |  
+|vlen512 vsew8 lmul1           | - |  
+|vlen512 vsew16 lmul1          | - |   
+|vlen512 vsew32 lmul1          | - |   
+|vlen512 vsew64 lmul1          | - | 
+|vlen1024 vsew8 lmul1          | - |  
+|vlen1024 vsew16 lmul1         | - | 
+|vlen1024 vsew32 lmul1         | - | 
+|vlen1024 vsew64 lmul1         | - | 
+*widen instruction not support VSEW=64 (vsew should be <= 64)
+
+
 ### Floating Points
 #### vfadd, vfclas, *vfcvt*, vfdiv, vfmacc, vfmax, vfmin, vfmsac, vfmsub, vfmul, `vfncvt`, vfnmacc, vfnmadd, vfnmsac, vfnmsub, vfrdiv, vfrec7, vfredmax, vfredmin
 |  Config   | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
@@ -158,3 +187,23 @@ Bugs:
 
 
 ### Fix Points
+|                             | vaadd | vaaddu | vasub | vasubu | vnclip | vnclipu | vsmul | vssra | vssrl | 
+|  ----                       | ----  | ----  |  ----  |  ----  |  ----  |  ----   |  ----  |  ---- | ----  |
+|vlen128 vsew8 lmul1          |       |        |       |        |        |         |        |       |       |
+|vlen128 vsew16 lmul1         |       |        |       |        |        |         |        |       |       |
+|vlen128 vsew32 lmul1(default)| P P   |  P P   |  P P  |   P P  |  P P   |   P P   |   P P  |  P P  |  P P  |
+|vlen128 vsew64 lmul1         | P P   |        |       |        |   /    |    /    |        |       |       |
+|vlen256 vsew8 lmul1          |       |        |       |        |        |         |        |       |       |
+|vlen256 vsew16 lmul1         |       |        |  P P  |        |        |         |        |  P P  |       |
+|vlen256 vsew32 lmul1         |       |        |       |   P P  |        |         |        |       |  P P  |
+|vlen256 vsew64 lmul1         | P P   |        |       |        |   /    |    /    |        |       |       |
+|vlen512 vsew8 lmul1          |       |  P P   |       |        |        |         |        |       |       |
+|vlen512 vsew16 lmul1         |       |        |       |        |        |   P P   |        |       |       |
+|vlen512 vsew32 lmul1         |       |        |       |        |        |         |   P P  |       |       |
+|vlen512 vsew64 lmul1         |       |        |       |   P P  |   /    |    /    |        |       |       |
+|vlen1024 vsew8 lmul1         |       |        |       |        |        |         |        |       |       |
+|vlen1024 vsew16 lmul1        | P P   |  P P   |  P P  |   P P  |  P P   |   P P   |   P P  |  P P  |  P P  |
+|vlen1024 vsew32 lmul1        |       |        |       |        |  P P   |         |   P P  |       |       |
+|vlen1024 vsew64 lmul1        |       |        |       |        |   /    |    /    |        |       |       |
+*vnclip and vnclipu not support vsew=64 because vsew will be 128
+

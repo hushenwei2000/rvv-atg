@@ -10,77 +10,77 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
            "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", ]
 
 
-def generate_fdat_seg(f):
+def generate_fdat_seg(f, vsew):
     print("fdat_rs1:", file=f)
     for i in range(len(rs1_val)):
-        print("fdat_rs1_" + str(i) + ":  .word " + rs1_val[i], file=f)
+        print("fdat_rs1_" + str(i) + ":  .%s "%("word" if vsew == 32 else "dword") + rs1_val[i], file=f)
     print("", file=f)
     print("fdat_rs2:", file=f)
     for i in range(len(rs2_val)):
-        print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
+        print("fdat_rs2_" + str(i) + ":  .%s "%("word" if vsew == 32 else "dword") + rs2_val[i], file=f)
 
 
-def generate_macros(f):
+def generate_macros(f, vsew):
     for n in range(1, 32):
         print("#define TEST_VFMVF_OP_rs_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f%d, 0(a0); \\\n\
+            fl%s f%d, 0(a0); \\\n\
             vfmv.v.f v14, f%d; \\\n\
             vfmv.f.s f8, v14; \\\n\
             fcvt.w.s x8, f8; \\\n\
             fcvt.w.s x7, f%d; \\\n\
-            bne x8, x7, fail;\n" % (n, n, n, n), file=f)
+            bne x8, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n, n), file=f)
     for n in range(1, 32):
         print("#define TEST_VFMVF_OP_rsrd_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f7, 0(a0); \\\n\
+            fl%s f7, 0(a0); \\\n\
             vfmv.v.f v%d, f7; \\\n\
             vfmv.f.s f8, v%d; \\\n\
             fcvt.w.s x8, f8; \\\n\
             fcvt.w.s x7, f7; \\\n\
-            bne x8, x7, fail;\n" % (n, n, n), file=f)
+            bne x8, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n), file=f)
     for n in range(1, 32):
         print("#define TEST_VFMVF_OP_rd_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f7, 0(a0); \\\n\
+            fl%s f7, 0(a0); \\\n\
             vfmv.v.f v14, f7; \\\n\
             vfmv.f.s f8, v14; \\\n\
             fcvt.w.s x%d, f8; \\\n\
             fcvt.w.s x7, f7; \\\n\
-            bne x%d, x7, fail;\n" % (n, n, n), file=f)
+            bne x%d, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n), file=f)
     for n in range(1, 32):
         print("#define TEST_VFMVS_OP_rs_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f%d, 0(a0); \\\n\
+            fl%s f%d, 0(a0); \\\n\
             vfmv.s.f v14, f%d; \\\n\
             vfmv.f.s f8, v14; \\\n\
             fcvt.w.s x8, f8; \\\n\
             fcvt.w.s x7, f%d; \\\n\
-            bne x8, x7, fail;\n" % (n, n, n, n), file=f)
+            bne x8, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n, n), file=f)
     for n in range(1, 32):
         print("#define TEST_VFMVS_OP_rsrd_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f7, 0(a0); \\\n\
+            fl%s f7, 0(a0); \\\n\
             vfmv.s.f v%d, f7; \\\n\
             vfmv.f.s f8, v%d; \\\n\
             fcvt.w.s x8, f8; \\\n\
             fcvt.w.s x7, f7; \\\n\
-            bne x8, x7, fail;\n" % (n, n, n), file=f)
+            bne x8, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n), file=f)
     for n in range(1, 32):
         print("#define TEST_VFMVS_OP_rd_%d( testnum, base ) \\\n\
             li TESTNUM, testnum; \\\n\
             la a0, base; \\\n\
-            flw f7, 0(a0); \\\n\
+            fl%s f7, 0(a0); \\\n\
             vfmv.s.f v14, f7; \\\n\
             vfmv.f.s f%d, v14; \\\n\
             fcvt.w.s x8, f%d; \\\n\
             fcvt.w.s x7, f7; \\\n\
-            bne x8, x7, fail;\n" % (n, n, n), file=f)
+            bne x8, x7, fail;\n" % (n, "w" if vsew == 32 else "d", n, n), file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -135,7 +135,7 @@ def generate_tests(f):
         n += 1
 
 
-def print_ending(f):
+def print_ending(f, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
     TEST_PASSFAIL\n\
@@ -151,7 +151,7 @@ def print_ending(f):
     \n\
     ", file=f)
 
-    generate_fdat_seg(f)
+    generate_fdat_seg(f, vsew)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -202,7 +202,7 @@ def create_empty_test_vfmv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     print("  TEST_VFMVF_OP( 1,  fdat_rs1_0 );", file=f)
 
     # Common const information
-    print_ending(f)
+    print_ending(f, vsew)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -226,13 +226,13 @@ def create_first_test_vfmv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, vsew)
 
     # Generate tests
     generate_tests(f)
 
     # Common const information
-    print_ending(f)
+    print_ending(f, vsew)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
