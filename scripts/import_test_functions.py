@@ -64,6 +64,17 @@ from scripts.create_test_integer.create_test_vwmulsu import *
 from scripts.create_test_integer.create_test_vwsub import *
 from scripts.create_test_integer.create_test_vwsubu import *
 
+# Fix point
+from scripts.create_test_fixpoint.create_test_vaadd import *
+from scripts.create_test_fixpoint.create_test_vaaddu import *
+from scripts.create_test_fixpoint.create_test_vasubu import *
+from scripts.create_test_fixpoint.create_test_vasub import *
+from scripts.create_test_fixpoint.create_test_vnclip import *
+from scripts.create_test_fixpoint.create_test_vnclipu import *
+from scripts.create_test_fixpoint.create_test_vsmul import *
+from scripts.create_test_fixpoint.create_test_vssra import *
+from scripts.create_test_fixpoint.create_test_vssrl import *
+
 # floating point
 from scripts.create_test_floating.create_test_vfmv import *
 from scripts.create_test_floating.create_test_vfredosum import *

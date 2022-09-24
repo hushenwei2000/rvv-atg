@@ -40,7 +40,7 @@ def create_output(args):
     lmul = args.lmul
     # Create output directory
     if output is None:
-        output = str(date.today()) + "-" + instr + "-vlen" + str(vlen) + "-vsew" + str(vsew) + "-lmul" + str(lmul)
+        output = str(date.today())[5:] + "-" + instr + "-vlen" + str(vlen) + "-vsew" + str(vsew) + "-lmul" + str(lmul)
     os.system("rm -rf {}".format(output))
 
     logging.info("Creating output directory: {}".format(output))

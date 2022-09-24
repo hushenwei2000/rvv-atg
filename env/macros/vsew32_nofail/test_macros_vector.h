@@ -98,19 +98,19 @@ test_ ## testnum: \
     code; \
     li TESTNUM, testnum; \
     csrwi vxrm, 0; \
-    inst testreg, v1, testvs1; \
+    inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
     csrwi vxrm, 1; \
-    inst testreg, v1, testvs1; \
+    inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval01); \
     csrwi vxrm, 2; \
-    inst testreg, v1, testvs1; \
+    inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval10); \
     csrwi vxrm, 3; \
-    inst testreg, v1, testvs1; \
+    inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11);
 
@@ -490,12 +490,12 @@ test_ ## testnum: \
     inst v14, v2, v1; \
   )
 
-#define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
-  TEST_CASE_AVG_VV( testnum, inst, v3, v14, result00, result01, result10, result11, \
-    li x7, MASK_VSEW(val2); \
+#define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
+  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
+    li x7, MASK_VSEW(rs1_val); \
     vmv.v.x v2, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(rs2_val); \
+    vmv.v.x v8, x7; \
   )
 
 #define TEST_ADC_VV_OP( testnum, inst, result, val1, val2 ) \
@@ -511,13 +511,13 @@ test_ ## testnum: \
   )
 
 #define TEST_W_AVG_WV_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
-  TEST_CASE_AVG_VV( testnum, inst, v3, v14, result00, result01, result10, result11, \
+  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
     li x7, MASK_DOUBLE_VSEW(val2); \
     VSET_DOUBLE_VSEW \
     vmv.v.x v2, x7; \
     VSET_VSEW \
     li x7, val1; \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
   )
 
 #define TEST_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 ) \
@@ -540,7 +540,7 @@ test_ ## testnum: \
   )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
-  TEST_CASE_AVG_VX( testnum, inst, v14, result00, result01, result10, result11, \
+  TEST_CASE_AVG_VX( testnum, inst, v24, result00, result01, result10, result11, \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v2, x7; \
     li x1, MASK_XLEN(val2); \
@@ -558,7 +558,7 @@ test_ ## testnum: \
   )
 
 #define TEST_W_AVG_WX_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
-  TEST_CASE_AVG_VX( testnum, inst, v14, result00, result01, result10, result11, \
+  TEST_CASE_AVG_VX( testnum, inst, v24, result00, result01, result10, result11, \
     li x7, MASK_DOUBLE_VSEW(val2); \
     VSET_DOUBLE_VSEW \
     vmv.v.x v2, x7; \
