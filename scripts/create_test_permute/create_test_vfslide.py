@@ -40,9 +40,9 @@ def generate_macros_vfslide(f, vlen, vsew):
                 vle%d.v v%d, (x1); \\\n\
                 la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
-                flw f1, 0(x1); \\\n\
+                fl%s f1, 0(x1); \\\n\
                 inst v%d, v5, f1; \\\n\
-            )"%(i, i, vsew, vsew, i, i), file=f)
+            )"%(i, i, vsew, vsew, i, ("w" if vsew == 32 else "d"), i), file=f)
         print(" #define TEST_VSLIDE_VF_OP_rs2_%d(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \\\n\
             TEST_CASE_LOOP( testnum, v14, x7, \\\n\
                 VSET_VSEW_4AVL \\\n\
@@ -52,9 +52,9 @@ def generate_macros_vfslide(f, vlen, vsew):
                 vle%d.v v14, (x1); \\\n\
                 la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
-                flw f1, 0(x1); \\\n\
+                fl%s f1, 0(x1); \\\n\
                 inst v14, v%d, f1; \\\n\
-            )"%(i, vsew, i, vsew, i), file=f)
+            )"%(i, vsew, i, vsew, ("w" if vsew == 32 else "d"), i), file=f)
     for i in range(1, 32):
         print(" #define TEST_VSLIDE_VF_OP_rs1_%d(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \\\n\
             TEST_CASE_LOOP( testnum, v14, x7, \\\n\
@@ -65,10 +65,9 @@ def generate_macros_vfslide(f, vlen, vsew):
                 vle%d.v v14, (x1); \\\n\
                 la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
-                flw f%d, 0(x1); \\\n\
+                fl%s f%d, 0(x1); \\\n\
                 inst v14, v5, f%d; \\\n\
-            )"%(i, vsew, vsew, i, i), file=f)
-
+            )"%(i, vsew, vsew, ("w" if vsew == 32 else "d"), i, i), file=f)
 
 def generate_tests_vfslide(f):
     n=1
@@ -98,32 +97,39 @@ def generate_tests_vfslide(f):
 
 
 
-def generate_fdat_seg_vfslide(f):
+def generate_fdat_seg_vfslide(f, vsew):
     print("f_rd_data:", file=f)
     for i in range(num_elem):
-        print("f_rd_data%d:\t.word\t%s"%(i, f_rd_val[i]), file=f)
+        print("f_rd_data%d:\t"%i, file=f)
+        print_data_width_prefix(f, vsew)
+        print("%s"%(f_rd_val[i]), file=f)
     print("",file=f)
     for i in range(num_group_f):
         # generate data
         print("f_data%d:"%i, file=f)
         for j in range(num_elem):
-            print(".word\t%s"%f_val_grouped[i][j], file=f)
+            print_data_width_prefix(f, vsew)
+            print("%s"%f_val_grouped[i][j], file=f)
         print("", file=f)
         # generate answer for vfslideup
         print("f_data_slide1upans%d:"%i, file=f)
         for j in range(num_elem):
             if j == 0:
-                print(".word\t%s"%(f_rd_val[0]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%s"%(f_rd_val[0]), file=f)
             else:
-                print(".word\t%s"%(f_val_grouped[i][j-1]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%s"%(f_val_grouped[i][j-1]), file=f)
         print("", file=f)
         # generate answer for vfslideup
         print("f_data_slide1downans%d:"%i, file=f)
         for j in range(num_elem):
             if j == num_elem - 1:
-                print(".word\t%s"%(f_rd_val[num_elem - 1]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%s"%(f_rd_val[num_elem - 1]), file=f)
             else:
-                print(".word\t%s"%(f_val_grouped[i][j+1]), file=f)
+                print_data_width_prefix(f, vsew)
+                print("%s"%(f_val_grouped[i][j+1]), file=f)
         print("", file=f)
 
 
@@ -143,7 +149,7 @@ def print_ending_vslide(f, vlen, vsew):
     \n\
     ", file=f)
 
-    generate_fdat_seg_vfslide(f)
+    generate_fdat_seg_vfslide(f, vsew)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\

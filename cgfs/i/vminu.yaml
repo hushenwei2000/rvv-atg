@@ -11,5 +11,5 @@ vminu:
     val_comb:
       <<: [*base_rs1val_sgn_vector , *base_rs2val_sgn_vector , *rfmt_val_comb_sgn]
       abstract_comb:
-        'sp_dataset(32)': 0
+        'sp_dataset(vsew)': 0
         <<: [*rs1val_walking_vector, *rs2val_walking_vector]
