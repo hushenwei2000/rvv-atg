@@ -7,7 +7,7 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 ```
 
 - The type shall be consistent with the instruction: i (integer), f (floating point), m (mask), p (permute), x (fix point), l (load store)
-  -  Supported instruction and type can be seen in `cgfs/<type>/<instrction>.yaml`
+-  Supported instruction and type can be seen in `cgfs/<type>/<instruction>.yaml`
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
 - vsew VSEW       Selected Element Width: 8, 16, 32(default), 64
 
@@ -70,25 +70,30 @@ vma: 0(currently), 1
 
 ### Permute 
 
-#### vcompress, vmre, vmv, vrgather, vrgatherei16, vslide, vslide1, vfslide*
-|  Config   | Status  |
-|  ----  | ----  |
-| vlen128 vsew8 lmul1            | -      |
-| vlen128 vsew16 lmul1           | P      |
-| vlen128 vsew32 lmul1(default)  | P      |
-| vlen128 vsew64 lmul1           | P      |
-| vlen256 vsew8 lmul1            | -     |
-| vlen256 vsew16 lmul1           | -      |
-| vlen256 vsew32 lmul1           | P      |
-| vlen256 vsew64 lmul1           | -      |
-| vlen512 vsew8 lmul1            | -      |
-| vlen512 vsew16 lmul1           | -      |
-| vlen512 vsew32 lmul1           | P      |
-| vlen512 vsew64 lmul1           | -     |
-| vlen1024 vsew8 lmul1           | -      |
-| vlen1024 vsew16 lmul1          | P     |
-| vlen1024 vsew32 lmul1          | -     |
-| vlen1024 vsew64 lmul1          | -     |
+#### vcompress, vmre, vmv, vfmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
+|  Config   | vcompress | vmre | vmv | vfmv | vrgather | vrgatherei16 | vslide | vslide1 | vfslide |
+|  ----  | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| vlen128 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen128 vsew32 lmul1(default)  |  |  | P P |  | P P | P P |  |  |  |
+| vlen128 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen256 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen256 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen256 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen512 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen512 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen512 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
+| vlen1024 vsew8 lmul1           |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+| vlen1024 vsew32 lmul1          |  |  | P P |  | P P | P P |  |  |  |
+| vlen1024 vsew64 lmul1          |  |  | P P |  | P P | P P |  |  |  |
+
+note: 
+1. vmv 
+- vsew32 requires rs1val_walking_vector_unsgn
+- vsew64 requires rs1val_walking_vector
 
 
 
@@ -174,16 +179,41 @@ Bugs:
 
 ### Floating Points
 #### vfadd, vfclas, *vfcvt*, vfdiv, vfmacc, vfmax, vfmin, vfmsac, vfmsub, vfmul, `vfncvt`, vfnmacc, vfnmadd, vfnmsac, vfnmsub, vfrdiv, vfrec7, vfredmax, vfredmin
-|  Config   | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
-|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |
-|vlen128 vsew32 lmul1(default) | P P | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen128 vsew64 lmul1          | x x | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen256 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen256 vsew64 lmul1          | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen512 vsew32 lmul1          | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen512 vsew64 lmul1          | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen1024 vsew32 lmul1         | P P |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|vlen1024 vsew64 lmul1         | x x |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|  Config   | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc |vfmadd | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+|vlen128 vsew32 lmul1(default) | P P | P P | - | P P | P P | P P | P P | P P | P P | P P | P P | - | P P | P P | P P | P P | P P | P P | P X | P X |
+|vlen128 vsew64 lmul1          | X X | P P | - | X X | X X | X X | X X | X X | X X | X X | X X | - | X X | X X | X X | X X | X X | P P | X X | X X |
+|vlen256 vsew32 lmul1          | P P | P P | - | P P | P P | P P | P P | P P | P P | P P | P P | - | P P | P P | P P | P P | P P | P P | P X | P X |
+|vlen256 vsew64 lmul1          | X X | P P | - | X X | X X | X X | X X | X X | X X | X X | X X | - | X X | X X | X X | X X | X X | P P | X X | X X |
+|vlen512 vsew32 lmul1          | P P | P P | - | P P | P P | P P | P P | P P | P P | P P | P P | - | P P | P P | P P | P P | P P | P P | P X | P X |
+|vlen512 vsew64 lmul1          | X X | P P | - | X X | X X | X X | X X | P P | X X | X X | X X | - | X X | X X | X X | X X | X X | P P | X X | X X |
+|vlen1024 vsew32 lmul1         | P P | P P | - | P P | P P | P P | P P | P P | P P | P P | P P | - | P P | P P | P P | P P | P P | P P | P X | P X |
+|vlen1024 vsew64 lmul1         | X X | P P | - | X X | X X | X X | X X | X X | X X | X X | X X | - | X X | X X | X X | X X | X X | P P | X X | X X |
+
+> `P` indicates *pass*, while `X` indicates *fail*. And `-` indicates *have not tested yet*.
+#### vfredosum, vfredusum, vfrsqrt7, vfrsub, vfsgnj, vfsgnjn, vfsgnjx, vfsqrt, vfsub
+|  Config   | vfredosum | vfredusum | vfrsqrt7 | vfrsub | vfsgnj | vfsgnjn | vfsgnjx | vfsqrt | vfsub |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+|vlen128 vsew32 lmul1(default) |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew64 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew64 lmul1         |  |  |  |  |  |  |  |  |  |
+
+#### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
+|  Config   | vfwadd | vfwcvt | vfwmacc | vfwmsac | vfwmul | vfwnmacc | vfwnmsac | vfwredsum | vfwsub |
+|  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
+|vlen128 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen128 vsew32 lmul1(default) | P P | P P |  |  |  |  |  |  |  |
+|vlen256 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
+|vlen512 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
+|vlen1024 vsew16 lmul1         |  |  |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         | P P | P P |  |  |  |  |  |  |  |
 
 
 ### Fix Points

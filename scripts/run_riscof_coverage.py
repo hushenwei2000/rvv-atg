@@ -29,7 +29,7 @@ def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, su
     
     # OR Use spike log to run isac
     logging.info("Running riscof coverage: {}.{}, stage: Spike Running...".format(instr, suffix))
-    os.system("spike --isa rv64gcv -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > spike_%s_%s.log 2>&1;" % (vlen, vlen, suffix, instr, suffix))
+    os.system("spike --isa rv64gcv_zfh -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > spike_%s_%s.log 2>&1;" % (vlen, vlen, suffix, instr, suffix))
     isac_string = "riscv_isac --verbose info coverage -d                         -t spike_%s_%s.log --parser-name spike -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, instr, isac_log_name)
 
     print(isac_string)
