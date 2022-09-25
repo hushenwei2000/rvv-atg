@@ -51,19 +51,19 @@ vma: 0(currently), 1
 #### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
 |  Config   | Status  |
 |  ----  | ----  |
-| vlen128 vsew8 lmul1            | -     |
+| vlen128 vsew8 lmul1            | P     |
 | vlen128 vsew16 lmul1           | P    |
 | vlen128 vsew32 lmul1(default)  | P P    |
 | vlen128 vsew64 lmul1           | P     |
-| vlen256 vsew8 lmul1            | -   |
+| vlen256 vsew8 lmul1            | P   |
 | vlen256 vsew16 lmul1           | P    |
 | vlen256 vsew32 lmul1           | P P    |
 | vlen256 vsew64 lmul1           | P    |
-| vlen512 vsew8 lmul1            | -    |
+| vlen512 vsew8 lmul1            | P    |
 | vlen512 vsew16 lmul1           | P     |
 | vlen512 vsew32 lmul1           | P     |
 | vlen512 vsew64 lmul1           | P    |
-| vlen1024 vsew8 lmul1           | -    |
+| vlen1024 vsew8 lmul1           | P    |
 | vlen1024 vsew16 lmul1          | P    |
 | vlen1024 vsew32 lmul1          | P    |
 | vlen1024 vsew64 lmul1          | P    |
@@ -71,30 +71,29 @@ vma: 0(currently), 1
 ### Permute 
 
 #### vcompress, vmre, vmv, vfmv, vrgather, vrgatherei16, vslide, vslide1, vfslide
-|  Config   | vcompress | vmre | vmv | vfmv | vrgather | vrgatherei16 | vslide | vslide1 | vfslide |
-|  ----  | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
-| vlen128 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
-| vlen128 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen128 vsew32 lmul1(default)  |  |  | P P |  | P P | P P |  |  |  |
-| vlen128 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
-| vlen256 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
-| vlen256 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen256 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
-| vlen256 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
-| vlen512 vsew8 lmul1            |  |  |  |  |  |  |  |  |  |
-| vlen512 vsew16 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen512 vsew32 lmul1           |  |  | P P |  | P P | P P |  |  |  |
-| vlen512 vsew64 lmul1           |  |  | P P |  | P P | P P |  |  |  |
-| vlen1024 vsew8 lmul1           |  |  |  |  |  |  |  |  |  |
-| vlen1024 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-| vlen1024 vsew32 lmul1          |  |  | P P |  | P P | P P |  |  |  |
-| vlen1024 vsew64 lmul1          |  |  | P P |  | P P | P P |  |  |  |
+|  Config                        | vcompress | vmre | vmv | vfmv | vrgather | vrgatherei16 | vslide | vslide1 | vfslide |
+|  ----                          | ----      | ---- |---- | ---- |     ---- |         ---- |   ---- |    ---- |    ---- |
+| vlen128 vsew8 lmul1            |           |      |     |   -  |          |      P       |        |         |    -    |
+| vlen128 vsew16 lmul1           |           |      |     |   -  |          |      P P     |        |         |    -    |
+| vlen128 vsew32 lmul1(default)  |           |      | P P |      |   P P    |      P P     |   P P  |         |         |
+| vlen128 vsew64 lmul1           |    P P    |  P   | P P |      |   P P    |      P P     |   P P  |   P P   |         |
+| vlen256 vsew8 lmul1            |           |      |     |   -  |          |              |        |         |    -    |
+| vlen256 vsew16 lmul1           |           |      |     |   -  |          |      P P     |        |         |    -    |
+| vlen256 vsew32 lmul1           |           |      | P P |      |   P P    |      P P     |        |         |         |
+| vlen256 vsew64 lmul1           |           |      | P P |      |   P P    |      P P     |   P P  |         |         |
+| vlen512 vsew8 lmul1            |           |      |     |   -  |          |              |        |         |    -    |
+| vlen512 vsew16 lmul1           |           |      |     |   -  |          |              |        |         |    -    |
+| vlen512 vsew32 lmul1           |           |      | P P |      |   P P    |      P P     |   P    |         |         |
+| vlen512 vsew64 lmul1           |           |      | P P |      |   P P    |      P P     |        |         |         |
+| vlen1024 vsew8 lmul1           |    P      |  P   | P P |   -  |   P      |      P       |   P    |     P   |    -    |
+| vlen1024 vsew16 lmul1          |           |      |     |   -  |          |      P P     |        |         |    -    |
+| vlen1024 vsew32 lmul1          |           |      | P P |      |   P P    |      P P     |   P    |         |    P    |
+| vlen1024 vsew64 lmul1          |           |  P   | P P |      |   P P    |      P P     |   P P  |         |         |
 
 note: 
 1. vmv 
 - vsew32 requires rs1val_walking_vector_unsgn
 - vsew64 requires rs1val_walking_vector
-
 
 
 
@@ -128,7 +127,7 @@ note:
 Bugs: 
 - vadd lack vx and vi
 
-#### vnmsac, vnmsub; vnsra, vnsrl; vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor; vrem, vremu; vrsub; vsadd, vsaddu, vsbc 
+#### vnmsac, vnmsub; vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor; vrem, vremu; vrsub; vsadd, vsaddu, vsbc 
 
 |  Config   | Status  |
 |  ----  | ----  |
@@ -148,9 +147,6 @@ Bugs:
 |vlen1024 vsew16 lmul1         | P | 
 |vlen1024 vsew32 lmul1         | P P| 
 |vlen1024 vsew64 lmul1         | P P | 
-
-Bugs:
-- vnsra/l. vlen 128 vsew=64 fail
 
 
 #### vsll, vsra, vsrl; vssub, vssubu; vsub;  vxor
@@ -175,8 +171,8 @@ Bugs:
 |vlen1024 vsew64 lmul1         | - | 
 
 
-#### vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu;
-*widen instruction not support VSEW=64 (vsew should be <= 64)
+#### vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vnsra, vnsrl; 
+* widen and narrow instruction not support VSEW=64 (vsew should be <= 64)
 
 |  Config   | Status  |
 |  ----  | ----  |

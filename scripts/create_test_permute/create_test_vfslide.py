@@ -7,20 +7,8 @@ import re
 
 instr = 'vfslide'
 f_val = ['0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
-         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001',
-         '0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
-         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001',
-         '0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
-         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001',
-         '0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
-         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001',
-         '0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
-         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001']  # 16 * 5
-f_rd_val=['0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800',
-'0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800',
-'0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800',
-'0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800',
-'0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800'] # 16 * 5
+         '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001']  # 16
+f_rd_val=['0x40400000', '0x41F8CCCC', '0x43031999', '0x40799999', '0x415E6666', '0x4303E666', '0xBF03126E', '0xBFC18937', '0xC05D2F1A', '0xC205D2F1', '0xC3A6BA5E', '0xC511D74B', '0xC0154FDF', '0x458E92A9', '0x49001125', '0x474CE800'] # 16
 vma = False  # False to turn to undisturb
 num_elem = 0
 num_group_f = 0
@@ -89,7 +77,7 @@ def generate_tests_vfslide(f):
         if i != 5 and i != 14 and i != 15:
             print("  TEST_VSLIDE_VF_OP_rd_%d( "%i + str(n) + ", vfslide1down.vf, 0, f_data_slide1downans%d, "%(i%num_group_f) + "f_rd_data, " + "f_rd_data%d"%(num_elem-1) + ", f_data%d );"%(i%num_group_f), file=f)
             n +=1
-            print("  TEST_VSLIDE_VF_OP_rs2_%d( "%i + str(n) + ", vfslide1down.vf, 0, f_data_slide1downans%d, "%(i%num_group_f) + "f_rd_data, " + "f_rd_data%d"%(num_elem-1) + ", f_data%d );"%(i%num_group_f), file=f)
+            print("  TEST_VSLIDE_VF_OP_rs2_%d( "%i + str(n) + ", vfslide1up.vf, 0, f_data_slide1upans%d, "%(i%num_group_f) + "f_rd_data, " + "f_rd_data0" + ", f_data%d );"%(i%num_group_f), file=f)
             n +=1
         if i != 1 and i != 7:
             print("  TEST_VSLIDE_VF_OP_rs1_%d( "%i + str(n) + ", vfslide1down.vf, 0, f_data_slide1downans%d, "%(i%num_group_f) + "f_rd_data, " + "f_rd_data%d"%(num_elem-1) + ", f_data%d );"%(i%num_group_f), file=f)
@@ -196,6 +184,11 @@ def create_empty_test_vfslide(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global walking_val_grouped
     global f_val_grouped
     global vma
+    global f_val
+    global f_rd_val
+    for i in range(int(num_elem / 16) + 1):
+        f_val = f_val + f_val
+        f_rd_val = f_rd_val + f_rd_val
     num_elem = int(vlen / vsew)
     num_group_f = int(len(f_val) / num_elem)
     vma = _vma

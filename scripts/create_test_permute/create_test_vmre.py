@@ -1,14 +1,12 @@
 from glob import glob
 import logging
 import os
+from random import randint
 from scripts.create_test_mask.create_test_common import *
 from scripts.test_common_info import *
 import re
-from scripts.create_test_permute.const_data import walking_val_vmre 
 
 instr = 'vmre'
-
-random_val = [-27638, 31380, -1706, 16860, 290, 11167, 1163, 9601, 30738, 2716, -3235, 22869, 10574, 31612, -22835, -32244, -10700, 21057, -1284, -15492, 18507, -5316, 13671, -10242, 7510, 24839, 23255, 12069, 1159, -11875, 14735, 28926, 9422, -8316, 12800, -669, -20647, 23675, -31930, -11842, 10331, 31463, 9984, 29467, 8191, 13985, -22552, 16163, -14600, 20609, -6356, -5132, 5225, -31914, 9822, -6743, 16895, 8525, 12604, -29640,23317, 1509, -22401, 18078, -10222, 20072, 32201, 7121, -12103, 22700, 7998, 14968, -10151, -23596, 21607, -14791, 10920, -16026, -7184, 16926, 13856, 26315, -24515, 3681, -4747, 8804, 24735, -28015, 7852, 25488, 3665, -26434, 28349, 6261, 13793, 7596, -30722, 25600, -8372, 13708] # 100 Random val in [-32768, 32767]
 
 vma = False  # False to turn to undisturb
 num_elem = 0
@@ -111,6 +109,9 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global walking_val_grouped
     global vma
     num_elem = int(vlen / vsew)
+    walking_val_vmre = []
+    for i in range(num_elem * 12):
+        walking_val_vmre.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
     num_group_walking = int(len(walking_val_vmre) / num_elem)
     vma = _vma
     for i in range(num_group_walking):

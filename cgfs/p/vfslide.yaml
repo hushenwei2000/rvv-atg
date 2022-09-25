@@ -12,4 +12,4 @@ vfslide:
       <<: *v_regs
     val_comb:
       abstract_comb:
-        <<: [*rs1val_walking_mask, *rs2val_walking_vector]
+        'ibm_b1(32, 32, "vfadd", 1, rvv_sew = 32)': 0

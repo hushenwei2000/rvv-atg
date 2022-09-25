@@ -1,18 +1,19 @@
 from glob import glob
 import logging
 import os
+from random import randint
 from scripts.create_test_mask.create_test_common import *
 from scripts.test_common_info import *
+from scripts.create_test_permute.const_data import *
 import re
 
 instr = 'vcompress'
-walking_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -134217729, -67108865, -33554433, -16777217, -8388609, -4194305, -2097153, -1048577, -524289, -262145, -131073, -65537, -32769, -16385, -8193, -4097, -2049, -1025, -513, -257, -129, -65, -33, -
-               17, -9, -5, -3, -2, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 1431655765, 2147483647]  # 66
+walking_val = []
 rd_val = [3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17,
           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
           33, 35, 36, 37, 39, 40, 41, 42, 43, 44, 45, 47,
           48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-          61, 67, 71, 73, 79, 83, 89, 97, 101]
+          61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 105, 107, 109, 111, 113, 115] # 66
 vma = False  # False to turn to undisturb
 num_elem = 0
 num_group_walking = 0
@@ -24,20 +25,17 @@ def generate_maskval():
     global num_elem
     global mask_val
     # Generate walking ones
-    print(num_elem)
     for i in range(num_elem + 1):
         val = ''
         for j in range(num_elem):
             val = val + ("1" if i == j + 1 else "0")
         mask_val.append(val)
-    print(mask_val)
     # Generate walking zeros
     for i in range(num_elem + 1):
         val = ''
         for j in range(num_elem):
             val = val + ("0" if i == j + 1 else "1")
         mask_val.append(val)
-    print(mask_val)
 
 
 def generate_walking_mask_seg(f, vlen):
@@ -272,7 +270,18 @@ def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     global num_elem
     global num_group_walking
     global walking_val_grouped
+    global walking_val
     num_elem = int(vlen / vsew)
+    if vsew == 8 or vsew == 16:
+        walking_val = coverpoints_16
+    elif vsew == 32:
+        walking_val = coverpoints_32
+    else:
+        walking_val = coverpoints_64
+    # Add walking_val_grouped values, need at least num_elem
+    for i in range(num_elem - len(walking_val)):
+        walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
+        rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
     num_group_walking = int(len(walking_val) / num_elem)
     for i in range(num_group_walking):
         temp = []

@@ -1,20 +1,21 @@
 from glob import glob
 import logging
 import os
+from random import randint
 from scripts.create_test_mask.create_test_common import *
 from scripts.test_common_info import *
+from scripts.create_test_permute.const_data import *
 import re
 
 instr = 'vslide'
 f_val = ['0x80000001', '0xBF800000', '0x807FFFFE', '0x3F800000', '0xFF7FFFFF', '0x807FFFFF', '0x00800000', '0x00000002',
          '0x007FFFFF', '0x00000001', '0x00000000', '0x80000000', '0x80855555', '0x7F7FFFFF', '0x80800000', '0x00800001']  # 16
-walking_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -134217729, -67108865, -33554433, -16777217, -8388609, -4194305, -2097153, -1048577, -524289, -262145, -131073, -65537, -32769, -16385, -8193, -4097, -2049, -1025, -513, -257, -129, -65, -33, -
-               17, -9, -5, -3, -2, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 1431655765, 2147483647]  # 66
+walking_val = []
 rd_val = [3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17,
           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
           33, 35, 36, 37, 39, 40, 41, 42, 43, 44, 45, 47,
           48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
-          61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 105, 107, 109, 111, 113, 115] # Random numbers
+          61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 105, 107, 109, 111, 113, 115] # 66
 vma = False  # False to turn to undisturb
 num_elem = 0
 num_group_walking = 0
@@ -98,7 +99,7 @@ def generate_macros_vslide(f, vlen, vsew):
             )" % (i, vsew, i, vsew, i), file=f)
 
 
-def generate_tests_vslide(f):
+def generate_tests_vslide(f, vsew):
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # vslideup.vx/vi Test    ------------------------------------------", file=f)
@@ -109,15 +110,16 @@ def generate_tests_vslide(f):
             print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " %
                   (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
             n += 1
-            print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " %
-                  (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
-            n += 1
             print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslidedown.vx, walking_data%d_slidedownans_offset_%d, " %
                   (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
             n += 1
-            print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslidedown.vi, walking_data%d_slidedownans_offset_%d, " %
-                  (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
-            n += 1
+            if k < 31:
+                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " %
+                    (i, k) + "rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
+                n += 1
+                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslidedown.vi, walking_data%d_slidedownans_offset_%d, " %
+                    (i, k) + "rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
+                n += 1
 
     print("  #-------------------------------------------------------------", file=f)
     print("  # vslideup.vx/vi Test  (Different Registers)  ------------------------------------------", file=f)
@@ -129,15 +131,16 @@ def generate_tests_vslide(f):
             print("  TEST_VSLIDE_VX_OP_rd_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
                   i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
-            print("  TEST_VSLIDE_VI_OP_rd_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
-                  i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
-            n += 1
             print("  TEST_VSLIDE_VX_OP_rs2_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
                   num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
-            print("  TEST_VSLIDE_VI_OP_rs2_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i %
-                  num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
-            n += 1
+            if i < 31:
+                print("  TEST_VSLIDE_VI_OP_rd_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
+                    i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+                n += 1
+                print("  TEST_VSLIDE_VI_OP_rs2_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i %
+                    num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+                n += 1
         if i != 1 and i != 7:
             print("  TEST_VSLIDE_VX_OP_rs1_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
                   num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
@@ -237,7 +240,18 @@ def create_empty_test_vslide(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global walking_val_grouped
     global f_val_grouped
     global vma
+    global walking_val
+    if vsew == 8 or vsew == 16:
+        walking_val = coverpoints_16
+    elif vsew == 32:
+        walking_val = coverpoints_32
+    else:
+        walking_val = coverpoints_64
     num_elem = int(vlen / vsew)
+    # Add walking_val_grouped values, need at least num_elem
+    for i in range(num_elem - len(walking_val)):
+        walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
+        rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
     num_group_walking = int(len(walking_val) / num_elem)
     num_group_f = int(len(f_val) / num_elem)
     vma = _vma
@@ -260,7 +274,7 @@ def create_empty_test_vslide(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vslide(f)
+    generate_tests_vslide(f, vsew)
 
     # Common const information
     print_ending_vslide(f, vlen, vsew)
