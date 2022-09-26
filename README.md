@@ -220,13 +220,13 @@ Bugs:
 |  Config   | vfwadd | vfwcvt | vfwmacc | vfwmsac | vfwmul | vfwnmacc | vfwnmsac | vfwredsum | vfwsub |
 |  ----  | ----  | ----  |  ----  |  ----  |  ----  |  ----  |  ----  |  ----  | ----  |
 |vlen128 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen128 vsew32 lmul1(default) | P P | P P |  |  |  |  |  |  |  |
+|vlen128 vsew32 lmul1(default) | P P | P P | P P | P P | P P | P P | P P | P P | P P |
 |vlen256 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen256 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
+|vlen256 vsew32 lmul1          | P P | P P | P P | P P | P P | P P | P P | P P | P P |
 |vlen512 vsew16 lmul1          |  |  |  |  |  |  |  |  |  |
-|vlen512 vsew32 lmul1          | P P | P P |  |  |  |  |  |  |  |
+|vlen512 vsew32 lmul1          | P P | P P | P P | P P | P P | P P | P P | P P | P P |
 |vlen1024 vsew16 lmul1         |  |  |  |  |  |  |  |  |  |
-|vlen1024 vsew32 lmul1         | P P | P P |  |  |  |  |  |  |  |
+|vlen1024 vsew32 lmul1         | P P | P P | P P | P P | P P | P P | P P | P P | P P |
 
 
 ### Fix Points

@@ -12,6 +12,8 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
 
 def generate_macros(f):
     for n in range(2,32):
+        if (n == 14):
+            continue;
         print("#define TEST_W_FP_VV_OP_NEGRESULT_2%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
         TEST_CASE_W_FP( testnum, v14, flags, val1, val2, \\\n\
             flw f0, 0(a0); \\\n\
@@ -50,7 +52,7 @@ def generate_macros(f):
             flw f0, 0(a0); \\\n\
             flw f1, 4(a0); \\\n\
             vfmv.s.f v3, f0; \\\n\
-            vfmv.s.f v4, f1; \\\n\
+            vfmv.s.f v14, f1; \\\n\
             fcvt.d.s f0, f0; \\\n\
             fcvt.d.s f1, f1; \\\n\
             finst f2, f0, f1; \\\n\
@@ -58,7 +60,7 @@ def generate_macros(f):
             VSET_VSEW_4AVL \\\n\
             vmv.v.i v2, 0; \\\n\
             VSET_VSEW \\\n\
-            inst v2, v3, v4; \\\n\
+            inst v2, v3, v14; \\\n\
         )",file=f)
 
 
