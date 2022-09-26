@@ -26,6 +26,14 @@ def generate_macros(f):
             vmv.v.x v2, x7; \\\n\
             inst v%d, v1, v2;"%n+" \\\n\
         ) ", file=f)
+        print("#define TEST_VV_OP_rd1( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v1, result, \\\n\
+            li x7, MASK_VSEW(val2); \\\n\
+            vmv.v.x v4, x7; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v3, x7; \\\n\
+            inst v1, v3, v4; \\\n\
+        )", file=f)
     print("#define TEST_VV_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
         TEST_CASE( testnum, v2, result, \\\n\
             li x7, MASK_VSEW(val2); \\\n\
@@ -75,6 +83,22 @@ def generate_tests(f, rs1_val, rs2_val):
             continue;
         n +=1
         print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VX Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    for i in range(len(rs1_val)):
+        n += 1
+        print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
+              instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VI Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+    for i in range(len(rs1_val)):
+        n += 1
+        print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %
+              instr+"5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
 
 
 def create_empty_test_vadd(xlen, vlen, vsew, lmul, vta, vma, output_dir):
