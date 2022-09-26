@@ -12,6 +12,8 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
 
 def generate_macros(f):
     for n in range(2,32):
+        if (n == 14):
+            continue;
         print("#define TEST_W_FP_WV_OP_DS_1%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
         TEST_CASE_WVWF_FP( testnum, v14, flags, val1, val2, \\\n\
             fld f0, 0(a0); \\\n\
@@ -20,10 +22,10 @@ def generate_macros(f):
             VSET_DOUBLE_VSEW \\\n\
             vfmv.s.f v%d, f0;"%n+" \\\n\
             VSET_VSEW \\\n\
-            vfmv.s.f v2, f1; \\\n\
+            vfmv.s.f v1, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v14, v2, v%d;"%n+" \\\n\
+            inst v14, v1, v%d;"%n+" \\\n\
         )",file=f)
 
     for n in range(4,32,2):
@@ -47,12 +49,12 @@ def generate_macros(f):
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
             VSET_DOUBLE_VSEW \\\n\
-            vfmv.s.f v3, f0; \\\n\
+            vfmv.s.f v14, f0; \\\n\
             VSET_VSEW \\\n\
-            vfmv.s.f v4, f1; \\\n\
+            vfmv.s.f v3, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v2, v4, v3; \\\n\
+            inst v2, v3, v14; \\\n\
         )",file=f)
 
 
