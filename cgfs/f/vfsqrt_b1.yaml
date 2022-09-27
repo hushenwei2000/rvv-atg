@@ -8,3 +8,6 @@ vfsqrt_b1:
       <<: *v_regs
     rd: 
       <<: *v_regs
+    # val_comb:
+    #   abstract_comb:
+    #     'ibm_b1(vsew, vsew, "vfsqrt.v", 1, rvv_sew = vsew)': 0

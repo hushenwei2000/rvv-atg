@@ -275,16 +275,16 @@ test_ ## testnum: \
   la  a0, test_ ## testnum ## _data ;\
   code; \
   vfmv.f.s f3, testreg; \
-  feq.s a0, f2, f3; \
+  feq.d a0, f2, f3; \
   li a3, 1; \
   frflags a1; \
   li a2, flags; \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
-  .word val1; \
-  .word val2; \
-  .word result; \
+  .dword val1; \
+  .dword val2; \
+  .dword result; \
   .popsection
 
 #define TEST_W_CASE_FP( testnum, testreg, flags, result, val1, val2, code... ) \
@@ -808,9 +808,9 @@ test_ ## testnum: \
 
 #define TEST_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
   TEST_CASE_FP( testnum, v14, flags, result, val, 0, \
-    flw f0, 0(a0); \
+    fld f0, 0(a0); \
     vfmv.s.f v1, f0; \
-    flw f2, 8(a0); \
+    fld f2, 16(a0); \
     inst v14, v1; \
   )
 
@@ -1148,20 +1148,20 @@ test_ ## testnum: \
 
 #define TEST_FP_VV_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
-    flw f0, 0(a0); \
-    flw f1, 4(a0); \
+    fld f0, 0(a0); \
+    fld f1, 8(a0); \
     vfmv.s.f v1, f0; \
     vfmv.s.f v2, f1; \
-    flw f2, 8(a0); \
+    fld f2, 16(a0); \
     inst v14, v1, v2; \
   )
 
 #define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
-    flw f0, 0(a0); \
-    flw f1, 4(a0); \
+    fld f0, 0(a0); \
+    fld f1, 8(a0); \
     vfmv.s.f v1, f0; \
-    flw f2, 8(a0); \
+    fld f2, 16(a0); \
     inst v14, v1, f1; \
   )
 

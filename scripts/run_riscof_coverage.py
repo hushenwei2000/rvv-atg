@@ -25,12 +25,12 @@ def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, su
     # EITHER Use sail log to run isac
     # logging.info("Running riscof coverage: {}.{}, stage: Sail Running...".format(instr, suffix))
     # os.system("riscv_sim_RV64 --test-signature=%s/Reference-sail_c_simulator.signature ref_%s.elf > %s_%s.log 2>&1;" % (output_dir, suffix, instr, suffix))
-    # isac_string = "riscv_isac --verbose info coverage -d                         -t %s_%s.log --parser-name c_sail -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d --vsew %d --vsew %d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, vsew, vsew, instr, isac_log_name)
+    # isac_string = "riscv_isac --verbose info coverage -d                         -t %s_%s.log --parser-name c_sail -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d --vsew %d --flen %d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, vsew, vsew, instr, isac_log_name)
     
     # OR Use spike log to run isac
     logging.info("Running riscof coverage: {}.{}, stage: Spike Running...".format(instr, suffix))
     os.system("spike --isa rv64gcv_zfh -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > spike_%s_%s.log 2>&1;" % (vlen, vlen, suffix, instr, suffix))
-    isac_string = "riscv_isac --verbose info coverage -d                         -t spike_%s_%s.log --parser-name spike -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d --vsew %d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, vsew, instr, isac_log_name)
+    isac_string = "riscv_isac --verbose info coverage -d                         -t spike_%s_%s.log --parser-name spike -o coverage_%s.rpt                         --sig-label begin_signature  end_signature                         --test-label _start _end                         -e ref_%s.elf -c %s/cgfs/dataset.yaml -c %s -x%d -v%d --vsew %d --flen %d -l %s > %s 2>&1;" %(instr, suffix, suffix, suffix, rvv_atg_root, cgf_path, xlen, vlen, vsew, vsew, instr, isac_log_name)
 
     print(isac_string)
     logging.info("Running riscof coverage: {}.{}, stage: RISCV-ISAC Running...".format(instr, suffix))

@@ -5,36 +5,59 @@ import re
 
 instr = 'vfsqrt'
 
-rs2_val = ["0x00000000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000",
-           "0x00800000", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", ]
+rs2_val_32 = ['0x00000000', '0x00000001', '0x00000002', '0x007FFFFF', '0x00800000', '0x00800001', '0x7F7FFFFF', '0x3F800000', ]
+rs2_val_64 = ['0x0000000000000000', '0x0000000000000001', '0x0000000000000002', '0x000FFFFFFFFFFFFF', '0x0010000000000000', '0x0010000000000002', '0x7FEFFFFFFFFFFFFF', '0x3FF0000000000000', ]
 
 
-def generate_macros(f):
-    for n in range(2,32):
-        print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-        TEST_CASE_FP( testnum, v14, flags, result, val1, 0, \\\n\
-            flw f0, 0(a0); \\\n\
-            vfmv.s.f v%d, f0;"%n+" \\\n\
-            flw f2, 8(a0); \\\n\
-            inst v14, v%d;"%n+" \\\n\
-        )",file=f)
-
-    for n in range(2,32):
-        print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-        TEST_CASE_FP( testnum, v%d, flags, result, val1, 0,"%n+" \\\n\
-            flw f0, 0(a0); \\\n\
-            vfmv.s.f v1, f0; \\\n\
-            flw f2, 8(a0); \\\n\
-            inst v%d, v1;"%n+" \\\n\
-        )",file=f)
-
-    print("#define TEST_FP_1OPERAND_OP_rd1( testnum, inst, flags, result, val1 ) \\\n\
-        TEST_CASE_FP( testnum, v1, flags, result, val1, 0, \\\n\
-            flw f0, 0(a0); \\\n\
-            vfmv.s.f v2, f0; \\\n\
-            flw f2, 8(a0); \\\n\
-            inst v1, v2; \\\n\
-        )",file=f)
+def generate_macros(f, vsew):
+    if vsew == 32:
+        for n in range(2,32):
+            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_FP( testnum, v14, flags, result, val1, 0, \\\n\
+                flw f0, 0(a0); \\\n\
+                vfmv.s.f v%d, f0;"%n+" \\\n\
+                flw f2, 8(a0); \\\n\
+                inst v14, v%d;"%n+" \\\n\
+            )",file=f)
+        for n in range(2,32):
+            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0,"%n+" \\\n\
+                flw f0, 0(a0); \\\n\
+                vfmv.s.f v1, f0; \\\n\
+                flw f2, 8(a0); \\\n\
+                inst v%d, v1;"%n+" \\\n\
+            )",file=f)
+        print("#define TEST_FP_1OPERAND_OP_rd1( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v1, flags, result, val1, 0, \\\n\
+                flw f0, 0(a0); \\\n\
+                vfmv.s.f v2, f0; \\\n\
+                flw f2, 8(a0); \\\n\
+                inst v1, v2; \\\n\
+            )",file=f)
+    elif vsew == 64:
+        for n in range(2,32):
+            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_FP( testnum, v14, flags, result, val1, 0, \\\n\
+                fld f0, 0(a0); \\\n\
+                vfmv.s.f v%d, f0;"%n+" \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v14, v%d;"%n+" \\\n\
+            )",file=f)
+        for n in range(2,32):
+            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0,"%n+" \\\n\
+                fld f0, 0(a0); \\\n\
+                vfmv.s.f v1, f0; \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v%d, v1;"%n+" \\\n\
+            )",file=f)
+        print("#define TEST_FP_1OPERAND_OP_rd1( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v1, flags, result, val1, 0, \\\n\
+                fld f0, 0(a0); \\\n\
+                vfmv.s.f v2, f0; \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v1, v2; \\\n\
+            )",file=f)    
 
 
 def extract_operands(f, rpt_path):
@@ -42,7 +65,12 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f):
+def generate_tests(f, vsew):
+    if vsew == 32:
+        rs2_val = rs2_val_32
+    elif vsew == 64:
+        rs2_val = rs2_val_64
+
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfsqrt.v Tests",file=f)
@@ -56,14 +84,14 @@ def generate_tests(f):
     print("  # vfsqrt.v Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs2_val)):     
+    for i in range(len(4*rs2_val)):     
         k = i % 31 + 1
         n += 1
-        print("  TEST_FP_1OPERAND_OP_rd%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+rs2_val[i]+" );",file=f)
+        print("  TEST_FP_1OPERAND_OP_rd%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+(4*rs2_val)[i]+" );",file=f)
         
         k = i % 30 + 2
         n += 1
-        print("  TEST_FP_1OPERAND_OP_2%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+rs2_val[i]+" );",file=f)
+        print("  TEST_FP_1OPERAND_OP_2%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+(4*rs2_val)[i]+" );",file=f)
 
 
 def print_ending(f):
@@ -155,10 +183,10 @@ def create_first_test_vfsqrt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, vsew)
 
     # Generate tests
-    generate_tests(f)
+    generate_tests(f, vsew)
 
     # Common const information
     print_ending(f)

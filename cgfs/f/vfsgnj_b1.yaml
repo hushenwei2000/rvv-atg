@@ -11,4 +11,4 @@ vfsgnj_b1:
       <<: *v_regs
     val_comb:
       abstract_comb:
-        'ibm_b1(32, 32, "vfsgnj.vv", 2, rvv_sew = 32)': 0
+        'ibm_b1(vsew, vsew, "vfsgnj.vv", 2, rvv_sew = vsew)': 0
