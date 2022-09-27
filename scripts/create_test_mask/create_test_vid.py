@@ -7,15 +7,14 @@ import re
 instr = 'vid'
 
 
-def generate_walking_answer_seg_vid(element_num, vlen, f):
+def generate_walking_answer_seg_vid(element_num, vlen, vsew, f):
     # Generate prefix-sum of 1 for WalkingOnes
     for i in range(element_num + 1):
         print("walking_ones_vid_ans%d:" % i, file=f)
         vid = 0
         for j in range(element_num):
             print("\t", end="", file=f)
-            element_width = vlen / element_num
-            print_data_width_prefix(f, element_width)
+            print_data_width_prefix(f, vsew)
             if i != j + 1:
                 print("0x0", file=f)  # print(vd[j])
             else:
@@ -28,8 +27,7 @@ def generate_walking_answer_seg_vid(element_num, vlen, f):
         vid = 0
         for j in range(element_num):
             print("\t", end="", file=f)
-            element_width = vlen / element_num
-            print_data_width_prefix(f, element_width)
+            print_data_width_prefix(f, vsew)
             if i == j + 1:
                 print("0x0", file=f)  # print(vd[j])
             else:
@@ -37,21 +35,25 @@ def generate_walking_answer_seg_vid(element_num, vlen, f):
         print("", file=f)
 
 
-def generate_macros_vid(f, vsew):
+def generate_macros_vid(f, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， 测试v1-v32源寄存器
     for n in range(1, 32):
+        if n % lmul != 0:
+            continue
         print("#define TEST_VID_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
             la  x7, result_addr; \\\n\
-            vle%d.v v5, (x1); \\\n\
-            vmseq.vi v0, v5, 1; \\\n\
+            vle%d.v v8, (x1); \\\n\
+            vmseq.vi v0, v8, 1; \\\n\
             inst v%d, v0.t; \\\n\
         )" % (n, n, vsew, n), file=f)
 
 
-def generate_tests_vid(instr, f, vlen, vsew):
+def generate_tests_vid(instr, f, vlen, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     num_test = 1
     num_elem = int(vlen / vsew)
     num_elem_plus = num_elem + 1
@@ -72,12 +74,14 @@ def generate_tests_vid(instr, f, vlen, vsew):
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(1, 32):
+        if i % lmul != 0:
+            continue
         print("TEST_VID_OP_rd_%d( %d,  %s.v, walking_zeros_vid_ans%d, walking_zeros_dat%d );" % (
             i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
         num_test = num_test + 1
 
 
-def print_ending_vid(vlen, vsew, f):
+def print_ending_vid(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
@@ -93,8 +97,8 @@ def print_ending_vid(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_common(int(vlen/vsew), int(vlen), f)
-    generate_walking_answer_seg_vid(int(vlen/vsew), int(vlen), f)
+    generate_walking_data_seg_common(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
+    generate_walking_answer_seg_vid(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -139,15 +143,15 @@ def create_empty_test_vid(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vid(f, vsew)
+    generate_macros_vid(f, vsew, lmul)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vid(instr, f, vlen, vsew)
+    generate_tests_vid(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_vid(vlen, vsew, f)
+    print_ending_vid(vlen, vsew, lmul, f)
 
     f.close()
 

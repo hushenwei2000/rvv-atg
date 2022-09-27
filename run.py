@@ -57,7 +57,7 @@ def run_vf(cwd, args, cgf, output_dir):
 
     # 2. Use empty tests to generate coverage report
     (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 3. Generate test with not-filled result
     first_test = create_first_test(
@@ -65,11 +65,11 @@ def run_vf(cwd, args, cgf, output_dir):
 
     # 4-1. Run sail and riscof coverage and extract true result from isac_log
     # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                    #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+                                                    #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 4-2. Or run spike to generate commit info log
     spike_first_log = run_spike(args.i, cwd, cgf,
-              output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+              output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 5-1. Replace old result with true results using sail and isac log
     # des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
@@ -79,12 +79,12 @@ def run_vf(cwd, args, cgf, output_dir):
 
     # 6. Run spike test generated ref_final.elf
     run_spike(args.i, cwd, cgf,
-              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
 def run_integer(cwd, args, cgf, output_dir):
@@ -94,7 +94,7 @@ def run_integer(cwd, args, cgf, output_dir):
 
     # 2. Use empty tests to generate coverage report
     (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 3. Generate test with not-filled result
     first_test = create_first_test(
@@ -102,11 +102,11 @@ def run_integer(cwd, args, cgf, output_dir):
 
     # 4-1. Run sail and riscof coverage and extract true result from isac_log
     # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-    #                                                   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+    #                                                   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 4-2. Or run spike to generate commit info log
     spike_first_log = run_spike(args.i, cwd, cgf,
-              output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+              output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     search_ins = args.i
     if args.i in ["vmsbc", "vmseq", "vmsgt", "vmsgtu", "vmsle", "vmsleu", "vmslt", "vmsltu", "vmsne"]:
@@ -119,11 +119,11 @@ def run_integer(cwd, args, cgf, output_dir):
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
     # 7. Run spike test generated ref_final.elf
     # run_spike(args.i, cwd, cgf,
-    #       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+    #       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
 def run_mask(cwd, args, cgf, output_dir):
@@ -135,11 +135,11 @@ def run_mask(cwd, args, cgf, output_dir):
 
     # 2-1. Run sail and riscof coverage and extract true result from isac_log
     # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-    #                                                   output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+    #                                                   output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 2-2. Or run spike to generate commit info log
     spike_first_log = run_spike(args.i, cwd, cgf,
-              output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+              output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 3-1. Replace old result with true results using sail and isac_log_first
     # des_path = replace_results("vcpop", empty_test, isac_log_first, 'sail')
@@ -152,11 +152,11 @@ def run_mask(cwd, args, cgf, output_dir):
 
     # 5. Run spike test generated ref_final.elf
     run_spike(args.i, cwd, cgf,
-              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
     
     # 4. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=True)
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
 def main():
