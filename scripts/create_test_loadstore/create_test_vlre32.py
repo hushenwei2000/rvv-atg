@@ -2,6 +2,7 @@ import logging
 import os
 from scripts.test_common_info import *
 import re
+import numpy as np
 
 name = 'vlre32'
 instr = 'vl1re32'
@@ -25,6 +26,44 @@ def generate_macros(f):
                 inst v%d, (x2); "%n + "\\\n\
         ) ", file=f)
 
+def generate_array(f, vl, vsew):
+    base = 0
+    sew = 32
+    sewlen = sew//4
+    vsewlen = vsew // 8
+    a = np.array(
+    ["0x00ff00ff", "0xff00ff00", "0x0ff00ff0", "0xf00ff00f", "0x00ff00ff", "0xff00ff00", "0x0ff00ff0", "0xf00ff00f" 
+    ]
+    )
+
+    b = np.array(["0x00000000"])
+    c = np.array(["0x00000000"])
+
+    for n in range(7):
+        c = np.concatenate((c,b))
+    k = np.concatenate((a,c))
+
+    m = np.concatenate((k,k,k))
+    d = '0x' + m[base][-sewlen:]
+    n = '0x' + m[ (vl//32)  + base ][-sewlen:]
+    d1 = '0x' + m[base + 2][-sewlen:]
+    n1 = '0x' + m[ (vl//32) + base + 2][-sewlen:]
+
+    if vsew == 64 :
+        fir_fill1 = '0x' + m[base + 1][-vsewlen:] + m[base][-vsewlen: ]
+        fir_fill2 = '0x' + m[base + 2][-2:] + m[base + 1][-8:] + m[base][-8:-2]
+        fir_fill3 = '0x' + m[base + 2][-4:] + m[base + 1][-8:] + m[base][-8:-4]
+        fir_fill4 = '0x' + m[base + 2][-6:] + m[base + 1][-8:] + m[base][-8:-6]
+    else :
+            fir_fill1 = '0x' + m[base][-8:]
+            fir_fill2 = '0x' + m[base + 1][-2:] + m[base][-8:-2]
+            fir_fill3 = '0x' + m[base + 1][-4:] + m[base][-8:-4]
+            fir_fill4 = '0x' + m[base + 1][-6:] + m[base][-8:-6]
+
+    vfill = np.array([d,n,d1,n1])
+    fir_fill = np.array([fir_fill1,fir_fill2,fir_fill3,fir_fill4])
+
+    return vfill, fir_fill
 
 
 def extract_operands(f, rpt_path):
@@ -44,7 +83,7 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, fill, fir_fill):
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -52,25 +91,25 @@ def generate_tests(f, rs1_val, rs2_val):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
         n += 1
-        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" );", file=f)
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+fir_fill[0]+", "+"0 + tdat"+" );", file=f)
         n += 1
-        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+"0x00ff00ff"+", "+"0x00ff00ff"+", "+"-12 + tdat4"+" );", file=f)
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+fill[0]+", "+fill[1]+", "+"-12 + tdat4"+" );", file=f)
         n += 1
-        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+"0x00ff00ff"+", "+"0x00ff00ff"+",  "+"-12 + tdat4"+" );", file=f)
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"-12 + tdat4"+" );", file=f)
         n += 1
-        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+"0x00ff00ff"+", "+"0x00ff00ff"+",  "+"-12 + tdat4"+" );", file=f)
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"-12 + tdat4"+" );", file=f)
         
 
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" );",file=f)
+        print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
         
         k = i%30+2
         if(k == 31):
             continue;
         n +=1
-        print("  TEST_VLRE1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" );",file=f)
+        print("  TEST_VLRE1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
     
 
 
@@ -88,7 +127,7 @@ def create_empty_test_vlre32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common const information
     #print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadlr_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -110,17 +149,17 @@ def create_first_test_vlre32(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
 
     # Extract operands
     rs1_val, rs2_val = extract_operands(f, rpt_path)
-
+    fill, fir_fill = generate_array(f, vlen, vsew)
     # Generate macros to test diffrent register
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, fill, fir_fill)
 
     # Common const information
     # print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadlr_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

@@ -74,7 +74,7 @@ def generate_tests(f, rs1_val, rs2_val):
               instr+" 16 "+", "+"0x00ff"+", "+"0xff00"+" , "+"4100"+" , "+"2 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-              instr+" 16 "+", "+"0xff00"+", "+"0x00ff"+" , "+"-4100"+" , "+"0 + tdat11"+" );", file=f)
+              instr+" 16 "+", "+"0xff00"+", "+"0x0000"+" , "+"-4100"+" , "+"0 + tsdat7"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1
@@ -103,7 +103,7 @@ def create_empty_test_vlse16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common const information
     #print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadls_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -135,7 +135,7 @@ def create_first_test_vlse16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     # Common const information
     # print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadls_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

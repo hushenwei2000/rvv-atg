@@ -68,7 +68,7 @@ def generate_tests(f, rs1_val, rs2_val):
               instr+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+" , "+"4100"+" , "+"0 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0xff00ff00"+", "+"0x00ff00ff"+" , "+"-4100"+" , "+"0 + tdat11"+" );", file=f)
+              instr+" 32 "+", "+"0xff00ff00"+", "+"0x00000000"+" , "+"-4100"+" , "+"0 + tsdat7"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1
@@ -97,7 +97,7 @@ def create_empty_test_vlse32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common const information
     #print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadls_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -129,7 +129,7 @@ def create_first_test_vlse32(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     # Common const information
     # print_common_ending(f)
     # Load const information
-    print_load_ending(f)
+    print_loadls_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
