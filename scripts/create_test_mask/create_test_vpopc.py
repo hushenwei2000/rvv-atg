@@ -44,10 +44,11 @@ def generate_walking_data_seg_vpopc(f, vsew):
         n = n + 1
 
 
-def generate_macros_vpopc(f, vsew):
+def generate_macros_vpopc(f, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， 测试v1-v32源寄存器
     for i in range(1, 32):
-        if i == 7 or i  == 14 or i == 3:
+        if i == 7 or i  == 16 or i == 3 or i % lmul != 0:
             continue
         print("#define TEST_VPOPC_OP_rs2_%d( testnum, inst, result, vm_addr ) \\\n\
             TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
@@ -58,14 +59,14 @@ def generate_macros_vpopc(f, vsew):
             )"%(i, vsew, i, i), file=f)
     
     for i in range(1, 32):
-        if i == 7 or i  == 14 or i == 3:
+        if i == 7 or i  == 16 or i == 3 or i % lmul != 0:
             continue
         print("#define TEST_VPOPC_OP_rd_%d( testnum, inst, result, vm_addr ) \\\n\
             TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x%d, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
-                vle%d.v v14, (x2); \\\n\
-                inst x%d, v14; \\\n\
+                vle%d.v v16, (x2); \\\n\
+                inst x%d, v16; \\\n\
             )"%(i, i, vsew, i), file=f)
 
 
@@ -93,13 +94,13 @@ def generate_tests_vpopc(f, vlen, vsew, lmul):
 
     for i in range(1, 32):
         # 7, 14 used in macro, 3 is TESTNUM, 31 is rd of vsetivli
-        if i == 7 or i  == 14 or i == 3 or i == 31:
+        if i == 7 or i  == 16 or i == 3 or i == 31 or i % lmul != 0:
             continue
         print("TEST_VPOPC_OP_rd_%d( %d, vpopc.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
         num_test = num_test + 1
     print()
     for i in range(1, 32):
-        if i == 7 or i  == 14 or i == 3 or i == 31:
+        if i == 7 or i  == 16 or i == 3 or i == 31 or i % lmul != 0:
             continue
         # Ensure is_aligned(insn.rd(), vemul)
         if i % vemul != 0:
@@ -171,7 +172,7 @@ def create_empty_test_vpopc(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vpopc(f, vsew)
+    generate_macros_vpopc(f, vsew, lmul)
 
     # Common header files
     print_common_header(instr, f)

@@ -38,20 +38,19 @@ def generate_maskval():
         mask_val.append(val)
 
 
-def generate_walking_mask_seg(f, vlen):
+def generate_walking_mask_seg(f, vlen, vsew):
     # Generate walking ones
     for i in range(num_elem + 1):
         print("walking_mask_dat%d:"%i, file=f)
         for j in range(num_elem):
             print("\t", end="", file=f)
-            element_width = vlen / num_elem
-            if element_width == 8:
+            if vsew == 8:
                 print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
+            elif vsew == 16:
                 print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
+            elif vsew == 32:
                 print(".word", end=" 0x", file=f)
-            elif element_width == 64:
+            elif vsew == 64:
                 print(".dword", end=" 0x", file=f)
             print("1" if i == j + 1 else "0", file=f)
         print("", file=f)
@@ -61,14 +60,13 @@ def generate_walking_mask_seg(f, vlen):
         print("walking_mask_dat%d:"%(num_elem + 1 + i), file=f)
         for j in range(num_elem):
             print("\t", end="", file=f)
-            element_width = vlen / num_elem
-            if element_width == 8:
+            if vsew == 8:
                 print(".byte", end=" 0x", file=f)
-            elif element_width == 16:
+            elif vsew == 16:
                 print(".hword", end=" 0x", file=f)
-            elif element_width == 32:
+            elif vsew == 32:
                 print(".word", end=" 0x", file=f)
-            elif element_width == 64:
+            elif vsew == 64:
                 print(".dword", end=" 0x", file=f)
             print("0" if i == j + 1 else "1", file=f)
         print("", file=f)
@@ -224,8 +222,8 @@ def print_ending_vcompress(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_mask_seg(f, vlen)
-    generate_walking_data_seg_common(int(vlen/vsew), int(vlen), f)
+    generate_walking_mask_seg(f, vlen, int(vsew))
+    generate_walking_data_seg_common(int(vlen/vsew), int(vlen), int(vsew), f)
     generate_dat_seg_vcompress(f, vsew)
 
     print("signature_x12_0:\n\

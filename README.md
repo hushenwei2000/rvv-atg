@@ -49,24 +49,24 @@ vma: 0(currently), 1
 
 #### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
 
-| Config                        | Status |
-| ----------------------------- | ------ |
-| vlen128 vsew8 lmul1           | P      |
-| vlen128 vsew16 lmul1          | P      |
-| vlen128 vsew32 lmul1(default) | P P    |
-| vlen128 vsew64 lmul1          | P      |
-| vlen256 vsew8 lmul1           | P      |
-| vlen256 vsew16 lmul1          | P      |
-| vlen256 vsew32 lmul1          | P P    |
-| vlen256 vsew64 lmul1          | P      |
-| vlen512 vsew8 lmul1           | P      |
-| vlen512 vsew16 lmul1          | P      |
-| vlen512 vsew32 lmul1          | P      |
-| vlen512 vsew64 lmul1          | P      |
-| vlen1024 vsew8 lmul1          | P      |
-| vlen1024 vsew16 lmul1         | P      |
-| vlen1024 vsew32 lmul1         | P      |
-| vlen1024 vsew64 lmul1         | P      |
+| Config                        | Status | Config                        | Status |
+| ----------------------------- | ------ | ----------------------------- | ------ |
+| vlen128 vsew8 lmul1           | P      | vlen128 vsew8 lmul4           |        |
+| vlen128 vsew16 lmul1          | P      | vlen128 vsew16 lmul4          |        |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4          | P      |
+| vlen128 vsew64 lmul1          | P      | vlen128 vsew64 lmul4          |        |
+| vlen256 vsew8 lmul1           | P      | vlen256 vsew8 lmul4           |        |
+| vlen256 vsew16 lmul1          | P      | vlen256 vsew16 lmul4          |        |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4          |        |
+| vlen256 vsew64 lmul1          | P      | vlen256 vsew64 lmul4          |        |
+| vlen512 vsew8 lmul1           | P      | vlen512 vsew8 lmul4           |        |
+| vlen512 vsew16 lmul1          | P      | vlen512 vsew16 lmul4          |        |
+| vlen512 vsew32 lmul1          | P      | vlen512 vsew32 lmul4          |        |
+| vlen512 vsew64 lmul1          | P      | vlen512 vsew64 lmul4          |        |
+| vlen1024 vsew8 lmul1          | P      | vlen1024 vsew8 lmul4          |        |
+| vlen1024 vsew16 lmul1         | P      | vlen1024 vsew16 lmul4         |        |
+| vlen1024 vsew32 lmul1         | P      | vlen1024 vsew32 lmul4         |        |
+| vlen1024 vsew64 lmul1         | P      | vlen1024 vsew64 lmul4         |        |
 
 ### Permute
 

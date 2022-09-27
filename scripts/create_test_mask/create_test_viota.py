@@ -7,14 +7,13 @@ import re
 instr = 'viota'
 
 
-def generate_walking_answer_seg_viota(element_num, vlen, f):
+def generate_walking_answer_seg_viota(element_num, vlen, vsew, f):
     # Generate prefix-sum of 1 for WalkingOnes
     for i in range(element_num + 1):
         print("walking_ones_ans%d:" % i, file=f)
         for j in range(element_num):
             print("\t", end="", file=f)
-            element_width = vlen / element_num
-            print_data_width_prefix(f, element_width)
+            print_data_width_prefix(f, vsew)
             if i == 0 or i == element_num:
                 print("0x0", file=f)
             else:
@@ -30,61 +29,64 @@ def generate_walking_answer_seg_viota(element_num, vlen, f):
         prefix_sum = 0
         for j in range(element_num):
             print("\t", end="", file=f)
-            element_width = vlen / element_num
-            print_data_width_prefix(f, element_width)
+            print_data_width_prefix(f, vsew)
             print(prefix_sum, file=f)
             if i != j + 1:
                 prefix_sum = prefix_sum + 1
         print("", file=f)
 
 
-def generate_macros_viota(f, vsew):
+def generate_macros_viota(f, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， 测试v1-v32源寄存器
-    print("#define TEST_VIOTA_OP_rs2_5( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v14, x7, \\\n\
+    print("#define TEST_VIOTA_OP_rs2_8( testnum, inst, result_addr, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle%d.v v6, (x1); \\\n\
-        vmseq.vi v5, v6, 1; \\\n\
-        inst v14, v5; \\\n\
+        vle%d.v v16, (x1); \\\n\
+        vmseq.vi v8, v16, 1; \\\n\
+        inst v16, v8; \\\n\
         )"%vsew, file=f)
-    print("#define TEST_VIOTA_OP_rs2_14( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v15, x7, \\\n\
+    print("#define TEST_VIOTA_OP_rs2_16( testnum, inst, result_addr, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle%d.v v5, (x1); \\\n\
-        vmseq.vi v14, v5, 1; \\\n\
-        inst v15, v14; \\\n\
+        vle%d.v v8, (x1); \\\n\
+        vmseq.vi v16, v8, 1; \\\n\
+        inst v8, v16; \\\n\
         )"%vsew, file=f)
 
     for n in range(1, 32):
-        if n == 5 or n == 14:
+        if n == 5 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
             continue
         print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v14, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle%d.v v5, (x1); \\\n\
-        vmseq.vi v%d, v5, 1; \\\n\
-        inst v14, v%d; \\\n\
+        vle%d.v v8, (x1); \\\n\
+        vmseq.vi v%d, v8, 1; \\\n\
+        inst v16, v%d; \\\n\
         )" % (n,vsew, n, n), file=f)
 
     for n in range(1, 32):
+        if n % lmul != 0:
+            continue
         print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
-        vle%d.v v5, (x1); \\\n\
-        vmseq.vi v0, v5, 1; \\\n\
+        vle%d.v v8, (x1); \\\n\
+        vmseq.vi v0, v8, 1; \\\n\
         inst v%d, v0; \\\n\
         )" % (n, n, vsew, n), file=f)
 
 
-def generate_tests_viota(instr, f, vlen, vsew):
+def generate_tests_viota(instr, f, vlen, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     num_test = 1
     num_elem = int(vlen / vsew)
     num_elem_plus = num_elem + 1
@@ -106,16 +108,18 @@ def generate_tests_viota(instr, f, vlen, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
 
     for i in range(1, 32):
-        print("TEST_VIOTA_OP_rd_%d( %d,  %s.m, walking_zeros_ans%d, walking_zeros_dat%d );" % (
-            i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
-        num_test = num_test + 1
+        if i % lmul == 0:
+            print("TEST_VIOTA_OP_rd_%d( %d,  %s.m, walking_zeros_ans%d, walking_zeros_dat%d );" % (
+                i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
+            num_test = num_test + 1
     for i in range(1, 32):
-        print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
-            i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
-        num_test = num_test + 1
+        if (8 + lmul - 1 < i or i + lmul - 1 < 8) and (i < 16 or 16 + lmul - 1 < i): # rs2 and rd no overlap each other
+            print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
+                i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
+            num_test = num_test + 1
 
 
-def print_ending_viota(vlen, vsew, f):
+def print_ending_viota(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
@@ -131,8 +135,8 @@ def print_ending_viota(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_common(int(vlen/vsew), int(vlen), f)
-    generate_walking_answer_seg_viota(int(vlen/vsew), int(vlen), f)
+    generate_walking_data_seg_common(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
+    generate_walking_answer_seg_viota(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -177,15 +181,15 @@ def create_empty_test_viota(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_viota(f, vsew)
+    generate_macros_viota(f, vsew, lmul)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_viota(instr, f, vlen, vsew)
+    generate_tests_viota(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_viota(vlen, vsew, f)
+    print_ending_viota(vlen, vsew, lmul, f)
 
     f.close()
 

@@ -13,15 +13,15 @@ def create_empty_test_vmxor(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_common(f)
+    generate_macros_common(f, lmul)
 
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_common(instr, f, vlen, vsew)
+    generate_tests_common(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_common(vlen, vsew, f)
+    print_ending_common(vlen, vsew, lmul, f)
 
     f.close()
 
