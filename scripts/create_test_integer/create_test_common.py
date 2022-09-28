@@ -1,5 +1,48 @@
 import re
 
+def generate_macros_vv(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(2, 32):
+        if n % lmul != 0 or n == 8 or n == 16 or n == 24:
+            continue
+        print("#define TEST_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
+            TEST_CASE( testnum, v24, result, \\\n\
+            li x7, MASK_VSEW(val2); \\\n\
+            vmv.v.x v16, x7; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v%d, x7;"% n + " \\\n\
+            inst v24, v16, v%d; "%n + " \\\n\
+        )", file=f)
+    for n in range(3, 32):
+        if n % lmul != 0 or n == 8 or n == 16 or n == 24:
+            continue
+        # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
+        print("#define TEST_VV_OP_rd%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
+        TEST_CASE( testnum, v%d, result,"%n + " \\\n\
+            li x7, MASK_VSEW(val2); \\\n\
+            vmv.v.x v16, x7; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v8, x7; \\\n\
+            inst v%d, v16, v8;"%n+" \\\n\
+        ) ", file=f)
+    print("#define TEST_VV_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v8, result, \\\n\
+            li x7, MASK_VSEW(val2); \\\n\
+            vmv.v.x v24, x7; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v16, x7; \\\n\
+            inst v8, v24, v16; \\\n\
+        )", file=f)
+    print("#define TEST_VV_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            li x7, MASK_VSEW(val2); \\\n\
+            vmv.v.x v8, x7; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v24, x7; \\\n\
+            inst v16, v8, v24; \\\n\
+        )", file=f)
+
+
 def generate_macros_vw(f, lmul):
     if lmul < 1:
         lmul = 1
@@ -77,6 +120,51 @@ def extract_operands(f, rpt_path):
                for x in rs2_val_10]
     f.close()
     return rs1_val, rs2_val
+
+def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, generate_vi = True, generate_vx = True, generate_vv = True):
+    lmul = 1 if lmul < 1 else int(lmul)
+    n = 1
+    if generate_vv:
+        print("  #-------------------------------------------------------------", file=f)
+        print("  # VV Tests", file=f)
+        print("  #-------------------------------------------------------------", file=f)
+        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+        for i in range(len(rs1_val)):
+            n += 1
+            print("  TEST_VV_OP( "+str(n)+",  %s.vv, " %
+                instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+        for i in range(100):     
+            k = i%31+1
+            if k % lmul != 0 or k == 24:
+                continue
+            n+=1
+            print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
+            
+            k = i%30+2
+            if k % lmul != 0 or k == 8 or k == 16 or k == 24:
+                continue
+            n +=1
+            print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+    
+    if generate_vx:
+        print("  #-------------------------------------------------------------", file=f)
+        print("  # VX Tests", file=f)
+        print("  #-------------------------------------------------------------", file=f)
+        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        for i in range(len(rs1_val)):
+            n += 1
+            print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
+                instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+    
+    if generate_vi:
+        print("  #-------------------------------------------------------------", file=f)
+        print("  # VI Tests", file=f)
+        print("  #-------------------------------------------------------------", file=f)
+        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+        for i in range(len(rs1_val)):
+            n += 1
+            print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %
+                instr+"5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
 
 def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, generate_wvwx = True):
     n = 1

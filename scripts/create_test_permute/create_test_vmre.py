@@ -27,7 +27,7 @@ def generate_tests_vmre(f):
     no = 1
     for i in range(num_group_walking - 9):
         # vmv1r test rd, vmv2r test rd+1, vmv4r test rd+3, vmv8r test rd+7 (all test the last register be influenced)
-        print("TEST_VMRE1_OP( %d,  vmv1r.v, walking_data%d, walking_data%d );" % (no, i, i),file=f)
+        # print("TEST_VMRE1_OP( %d,  vmv1r.v, walking_data%d, walking_data%d );" % (no, i, i),file=f)
         no = no + 1
         print("TEST_VMRE2_OP( %d,  vmv2r.v, walking_data%d, walking_data%d, walking_data%d );" % (no, i, i+1, i),file=f)
         no = no + 1
@@ -108,7 +108,7 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global num_group_walking
     global walking_val_grouped
     global vma
-    num_elem = int(vlen / vsew)
+    num_elem = int(vlen * lmul/ vsew)
     walking_val_vmre = []
     for i in range(num_elem * 12):
         walking_val_vmre.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))

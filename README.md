@@ -90,6 +90,8 @@ vma: 0(currently), 1
 | vlen1024 vsew16 lmul1         | P         | P    | P   | /    | P        | P P          | P P    | P       | /       |
 | vlen1024 vsew32 lmul1         | P         | P    | P P | P P  | P P      | P P          | P      | P       | P       |
 | vlen1024 vsew64 lmul1         | P  P      | P    | P P | P P  | P P      | P P          | P P    | P       | P       |
+| ----------------------------- | --------- | ---- | --- | ---- | -------- | ------------ | ------ | ------- | ------- |
+| vlen128 vsew32 lmul4          | P P       | X    | P P | P P  | P P      | P            | P      | P       | P       |
 
 note:
 
@@ -98,11 +100,53 @@ note:
 - vsew32 requires rs1val_walking_vector_unsgn
 - vsew64 requires rs1val_walking_vector
 
-| *vfslide only support vsew=32 and 64|  |
+1. mre NOT support lmul4 because vl set to VLMAX but vmre only move 1/2/4/8 registers
 
 ### Integer
 
-#### vadc, vadd, vand, vdiv, vdivu, vmacc, vmadc, vmadd, vmax, vmaxu, vmin, vminu, vmsbc, vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne, vmul, vmulh, vmulhsu, vmulhu
+#### Simple Arithmetic: vadc, vsbc; vadd, vand, vdiv, vdivu,  vmul, vmulh, vmulhsu, vmulhu, vsll, vsra, vsrl, vsub, vxor, vrem, vremu, vrsub, vsadd, vsaddu, vssub, vssubu, vmax, vmaxu, vmin, vminu, 
+
+| Config                        | Status | Config                        | Status |
+| ----------------------------- | ------ | ----------------------------- | ------ |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4           |        |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4          |        |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4(default) |  P P   |
+| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4          |        |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4           |        |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4          |        |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4          |        |
+| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64 lmul4          |        |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4           |        |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4          |        |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4          |        |
+| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64 lmul4          |        |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4          |        |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4         |        |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4         |        |
+| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4         |        |
+
+
+#### Multiply-Add & Add-with-Carry Subtract-with-Borrow & Comparison: vmacc, vmadd, vnmsac, vnmsub & vmadc, vmsbc & vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne
+| Config                        | Status |
+| ----------------------------- | ------ |
+| vlen128 vsew8 lmul1           | P P    |
+| vlen128 vsew16 lmul1          | P P    |
+| vlen128 vsew32 lmul1(default) | P P    |
+| vlen128 vsew64 lmul1          | P P    |
+| vlen256 vsew8 lmul1           | P P    |
+| vlen256 vsew16 lmul1          | P P    |
+| vlen256 vsew32 lmul1          | P P    |
+| vlen256 vsew64 lmul1          | P P    |
+| vlen512 vsew8 lmul1           | P P    |
+| vlen512 vsew16 lmul1          | P P    |
+| vlen512 vsew32 lmul1          | P P    |
+| vlen512 vsew64 lmul1          | P P    |
+| vlen1024 vsew8 lmul1          | P P    |
+| vlen1024 vsew16 lmul1         | P P    |
+| vlen1024 vsew32 lmul1         | P P    |
+| vlen1024 vsew64 lmul1         | P P    |
+
+#### Reduction Arithmetic:  vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor; 
 
 | Config                        | Status |
 | ----------------------------- | ------ |
@@ -123,49 +167,8 @@ note:
 | vlen1024 vsew32 lmul1         | P P    |
 | vlen1024 vsew64 lmul1         | P P    |
 
-#### vnmsac, vnmsub; vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor; vrem, vremu; vrsub; vsadd, vsaddu, vsbc
 
-| Config                        | Status |
-| ----------------------------- | ------ |
-| vlen128 vsew8 lmul1           | P P    |
-| vlen128 vsew16 lmul1          | P P    |
-| vlen128 vsew32 lmul1(default) | P P    |
-| vlen128 vsew64 lmul1          | P P    |
-| vlen256 vsew8 lmul1           | P P    |
-| vlen256 vsew16 lmul1          | P P    |
-| vlen256 vsew32 lmul1          | P P    |
-| vlen256 vsew64 lmul1          | P P    |
-| vlen512 vsew8 lmul1           | P P    |
-| vlen512 vsew16 lmul1          | P P    |
-| vlen512 vsew32 lmul1          | P P    |
-| vlen512 vsew64 lmul1          | P P    |
-| vlen1024 vsew8 lmul1          | P P    |
-| vlen1024 vsew16 lmul1         | P P    |
-| vlen1024 vsew32 lmul1         | P P    |
-| vlen1024 vsew64 lmul1         | P P    |
-
-#### vsll, vsra, vsrl; vssub, vssubu; vsub;  vxor
-
-| Config                        | Status |
-| ----------------------------- | ------ |
-| vlen128 vsew8 lmul1           | P P    |
-| vlen128 vsew16 lmul1          | P P    |
-| vlen128 vsew32 lmul1(default) | P P    |
-| vlen128 vsew64 lmul1          | P P    |
-| vlen256 vsew8 lmul1           | P P    |
-| vlen256 vsew16 lmul1          | P P    |
-| vlen256 vsew32 lmul1          | P P    |
-| vlen256 vsew64 lmul1          | P P    |
-| vlen512 vsew8 lmul1           | P P    |
-| vlen512 vsew16 lmul1          | P P    |
-| vlen512 vsew32 lmul1          | P P    |
-| vlen512 vsew64 lmul1          | P P    |
-| vlen1024 vsew8 lmul1          | P P    |
-| vlen1024 vsew16 lmul1         | P P    |
-| vlen1024 vsew32 lmul1         | P P    |
-| vlen1024 vsew64 lmul1         | P P    |
-
-#### Widen: vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vnsra, vnsrl;
+#### Widen Arithmetic: vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vnsra, vnsrl;
 
 * widen and narrow instruction not support VSEW=64 (vsew should be <= 64)
 
@@ -248,6 +251,7 @@ note:
 | vlen1024 vsew32 lmul1                                            | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 | vlen1024 vsew64 lmul1                                            | P P   | P P    | P P   | P P    | /      | /       | P P   | P P   | P P   |
 | *vnclip and vnclipu not support vsew=64 because vsew will be 128 |       |        |       |        |        |         |       |       |       |
+| vlen128 vsew32 lmul4                                             | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 
 ### LOAD
 
@@ -272,3 +276,10 @@ note:
 | vlen1024 vsew64 lmul1                                                                                                                                                      | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      |          |           |           |
 | *vlsege32 not support vsew=16<br /> because spike require not pass                                                                                                       |      |       |       |       |       |        |        |       |        |        |         |          |          |          |           |           |
 | *vlssege8/16/32 now just support vlen=128<br /> and vsew=32, <br />guess that cause is vl not equals to 4<br />(maybe about index set)<br />and vsew> defined-sew(8/16/32) |      |       |       |       |       |        |        |       |        |        |         |          |          |          |           |           |
+
+## Code Explain
+### Register Alignment
+- For example,  `require_noover(insn.rd(), rd_lmul, insn.rs1(), rs1_lmul)` require rs1 and rd will not overwrite each other
+  - no overlap condition is **either** rightest rs1 is smaller than rd **or** rightest rd is smaller than rs1
+  - `((rs1 + rs1_lmul - 1 < rd) or (rd + rd_lmul - 1 < rs1))`
+  - There are many conditions like this in generating macros for different registers.

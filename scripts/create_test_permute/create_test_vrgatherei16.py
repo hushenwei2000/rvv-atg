@@ -16,52 +16,54 @@ def generate_macros(f, lmul, vsew):
     rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
     for n in range(2,32):
         # no overlap: (rs1 + rs1lmul - 1 < rd) or (rs1 > rd + lmul - 1)
-        if n == 14 or n % rs1lmul != 0 or (not (n + rs1lmul - 1 < 14 or n > 14 + lmul - 1)): # last condition is:(not( rs1 no overlap rd))
+        if n == 24 or n == 16 or n == 8 or n % rs1lmul != 0 or (not (n + rs1lmul - 1 < 14 or n > 14 + lmul - 1)): # last condition is:(not( rs1 no overlap rd))
             continue
         print("#define TEST_VV_OP_1%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+        TEST_CASE( testnum, v24, result, \\\n\
             li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v1, x7; \\\n\
+            vmv.v.x v16, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
             vmv.v.x v%d, x7;"%n + " \\\n\
-            inst v14, v1, v%d;"%n+" \\\n\
+            inst v24, v16, v%d;"%n+" \\\n\
         )",file=f)
 
-    print("#define TEST_VV_OP_114( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v13, result, \\\n\
+    print("#define TEST_VV_OP_124( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v1, x7; \\\n\
+            vmv.v.x v8, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v14, x7; \\\n\
-            inst v13, v1, v14; \\\n\
+            vmv.v.x v24, x7; \\\n\
+            inst v16, v8, v24; \\\n\
         )",file=f)
 
-    for n in range(3,32):
+    for n in range(2,32):
+        if n == 24 or n == 16 or n == 8 or n % lmul != 0:
+            continue
         if 2 + rs1lmul - 1 < n or 2 > n + lmul - 1:
             print("#define TEST_VV_OP_rd%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
             TEST_CASE( testnum, v%d, result,"%n + " \\\n\
                 li x7, MASK_VSEW(val2); \\\n\
-                vmv.v.x v1, x7; \\\n\
+                vmv.v.x v8, x7; \\\n\
                 li x7, MASK_VSEW(val1); \\\n\
-                vmv.v.x v2, x7; \\\n\
-                inst v%d, v1, v2;"%n+" \\\n\
+                vmv.v.x v16, x7; \\\n\
+                inst v%d, v8, v16;"%n+" \\\n\
             ) ",file=f)
 
-    print("#define TEST_VV_OP_rd1( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v1, result, \\\n\
+    print("#define TEST_VV_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v8, result, \\\n\
             li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v3, x7; \\\n\
+            vmv.v.x v16, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v4, x7; \\\n\
-            inst v1, v3, v4; \\\n\
+            vmv.v.x v24, x7; \\\n\
+            inst v8, v16, v24; \\\n\
         )",file=f)
-    print("#define TEST_VV_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v2, result, \\\n\
+    print("#define TEST_VV_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v3, x7; \\\n\
+            vmv.v.x v8, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v4, x7; \\\n\
-            inst v2, v3, v4; \\\n\
+            vmv.v.x v24, x7; \\\n\
+            inst v16, v8, v24; \\\n\
         )",file=f)
 
 
@@ -92,12 +94,12 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(len(rs1_val)):     
         k = i % 31 + 1
-        if 2 + rs1lmul - 1 < k or 2 > k + lmul - 1:
+        if k != 8 and k != 16 and k != 24 and k % lmul == 0 and (2 + rs1lmul - 1 < k or 2 > k + lmul - 1):
             n += 1
             print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
         
         k = i % 30 + 2
-        if k % rs1lmul == 0 and (k + rs1lmul - 1 < 14 or k > 14 + lmul - 1):
+        if k != 24 and k != 16 and k != 8 and k % rs1lmul == 0 and (k + rs1lmul - 1 < 14 or k > 14 + lmul - 1):
             n += 1
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
 

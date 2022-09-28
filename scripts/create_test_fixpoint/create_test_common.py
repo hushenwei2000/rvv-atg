@@ -5,7 +5,7 @@ def generate_macros(f, lmul):
     else:
         lmul = int(lmul)
     for n in range(1, 32):
-        if n % lmul == 0 and n != 24 and n != 8 and n != 2:
+        if n % lmul == 0 and n != 24 and n != 8 and n != 16:
             print("#define TEST_AVG_VV_OP_1_%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
             TEST_CASE_AVG_VV( testnum, inst, v%d, v24, result00, result01, result10, result11, "%n + " \\\n\
                 li x7, MASK_VSEW(val2); \\\n\
@@ -14,12 +14,12 @@ def generate_macros(f, lmul):
                 vmv.v.x v8, x7; \\\n\
             )", file=f)
     for n in range(1, 32):
-        if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 2:
+        if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 16:
             # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
             print("#define TEST_AVG_VV_OP_rd%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
-            TEST_CASE_AVG_VV( testnum, inst, v2, v%d, result00, result01, result10, result11, "%n + " \\\n\
+            TEST_CASE_AVG_VV( testnum, inst, v16, v%d, result00, result01, result10, result11, "%n + " \\\n\
                 li x7, MASK_VSEW(val2); \\\n\
-                vmv.v.x v2, x7; \\\n\
+                vmv.v.x v16, x7; \\\n\
                 li x7, MASK_VSEW(val1); \\\n\
                 vmv.v.x v8, x7; \\\n\
             ) ", file=f)
@@ -30,7 +30,7 @@ def generate_macros_vnclip(f, lmul):
     else:
         lmul = int(lmul)
     for n in range(1, 32):
-        if n % lmul == 0 and n != 24 and n != 8 and n != 2:
+        if n % lmul == 0 and n != 24 and n != 8 and n != 16:
             print("#define TEST_W_AVG_WV_OP_1%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
             TEST_CASE_AVG_VV( testnum, inst, v%d, v24, result00, result01, result10, result11, "%n + " \\\n\
                 li x7, MASK_DOUBLE_VSEW(val2); \\\n\
@@ -41,16 +41,16 @@ def generate_macros_vnclip(f, lmul):
                 vmv.v.x v8, x7; \\\n\
             )", file=f)
     for n in range(1, 32):
-        if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 2:
+        if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 16:
             # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
             print("#define TEST_W_AVG_WV_OP_rd%d( testnum, inst, result00, result01, result10, result11, val2, val1 ) "%n + " \\\n\
-                TEST_CASE_AVG_VV( testnum, inst, v4, v%d, result00, result01, result10, result11, "%n + " \\\n\
+                TEST_CASE_AVG_VV( testnum, inst, v16, v%d, result00, result01, result10, result11, "%n + " \\\n\
                     li x7, MASK_DOUBLE_VSEW(val2); \\\n\
                     VSET_DOUBLE_VSEW \\\n\
-                    vmv.v.x v2, x7; \\\n\
+                    vmv.v.x v16, x7; \\\n\
                     VSET_VSEW  \\\n\
                     li x7, val1; \\\n\
-                    vmv.v.x v1, x7; \\\n\
+                    vmv.v.x v8, x7; \\\n\
             ) ", file=f)
 
 def extract_operands(f, rpt_path):
@@ -85,12 +85,12 @@ def generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = False):
               instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
-        if k % (lmul * 2) == 0 and k != 24 and k != 8 and k != 2:
+        if k % (lmul * 2) == 0 and k != 24 and k != 8 and k != 16:
             n+=1
             print("  TEST_AVG_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
-        if k % lmul == 0 and k != 24 and k != 8 and k != 2:
+        if k % lmul == 0 and k != 24 and k != 8 and k != 16:
             n +=1
             print("  TEST_AVG_VV_OP_1_%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -127,12 +127,12 @@ def generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul):
               instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
-        if k % (lmul * 2) == 0 and k != 24 and k != 8 and k != 2:
+        if k % (lmul * 2) == 0 and k != 24 and k != 8 and k != 16:
             n+=1
             print("  TEST_W_AVG_WV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
-        if k % lmul == 0 and k != 24 and k != 8 and k != 2:
+        if k % lmul == 0 and k != 24 and k != 8 and k != 16:
             n +=1
             print("  TEST_W_AVG_WV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+"5201314"+", "+"5201314"+", "+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     print("  #-------------------------------------------------------------", file=f)

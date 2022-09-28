@@ -17,6 +17,7 @@
 #define VSET_VSEW vsetivli x31, 1, e32, m4, tu, mu;
 #define VSET_VSEW_4AVL vsetvli x31, x0, e32, m4, tu, mu;
 #define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, m4, tu, mu;
+#define VSET_CONST_VSEW(eew_num) vsetivli x31, ##eew_num, m4, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -153,22 +154,22 @@ test_ ## testnum: \
     code; \
     li TESTNUM, testnum; \
     csrwi vxrm, 0; \
-    inst v14, v2, (val2); \
+    inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
     bne x14, x7, fail; \
     csrwi vxrm, 1; \
-    inst v14, v2, (val2); \
+    inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval01); \
     bne x14, x7, fail; \
     csrwi vxrm, 2; \
-    inst v14, v2, (val2); \
+    inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval10); \
     bne x14, x7, fail; \
     csrwi vxrm, 3; \
-    inst v14, v2, (val2); \
+    inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11); \
     bne x14, x7, fail;
@@ -530,39 +531,39 @@ test_ ## testnum: \
 //-----------------------------------------------------------------------
 
 #define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v16, x7; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v2, v1; \
+    vmv.v.x v8, x7; \
+    inst v24, v16, v8; \
   )
 
 #define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
-  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
+  TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
     li x7, MASK_VSEW(rs1_val); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v16, x7; \
     li x7, MASK_VSEW(rs2_val); \
     vmv.v.x v8, x7; \
   )
 
 #define TEST_ADC_VV_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2, v0; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16, v0; \
   )
 
 #define TEST_W_AVG_WV_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
-  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
+  TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
     li x7, MASK_DOUBLE_VSEW(val2); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v16, x7; \
     VSET_VSEW \
     li x7, val1; \
     vmv.v.x v8, x7; \
@@ -580,11 +581,11 @@ test_ ## testnum: \
   )
 
 #define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v16, result, \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val1); \
-    inst v14, v2, x1; \
+    inst v16, v8, x1; \
   )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
@@ -615,34 +616,34 @@ test_ ## testnum: \
   )
 
 #define TEST_ADC_VX_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_VSEW(val2); \
-    inst v14, v1, x1, v0; \
+    inst v24, v8, x1, v0; \
   )
 
 #define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v16, result, \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v2, SEXT_IMM(val1); \
+    vmv.v.x v8, x7; \
+    inst v16, v8, SEXT_IMM(val1); \
   )
 
 #define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
-  TEST_CASE_AVG_VI( testnum, inst, v14, result00, result01, result10, result11, val2, \
+  TEST_CASE_AVG_VI( testnum, inst, v16, result00, result01, result10, result11, val2, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
   )
 
 #define TEST_W_AVG_WI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
-  TEST_CASE_AVG_VI( testnum, inst, v14, result00, result01, result10, result11, val2, \
+  TEST_CASE_AVG_VI( testnum, inst, v16, result00, result01, result10, result11, val2, \
     li x7, MASK_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
   )
 
@@ -697,13 +698,13 @@ test_ ## testnum: \
   )
 
 #define TEST_ADC_VI_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v1, SEXT_IMM(val2), v0; \
+    vmv.v.x v8, x7; \
+    inst v24, v8, SEXT_IMM(val2), v0; \
   )
 
 #define TEST_N_VV_OP( testnum, inst, result, val2, val1 ) \
@@ -1469,7 +1470,7 @@ test_ ## testnum: \
     vle32.v v8, (x3); \
     vmseq.vi v0, v8, 1; \
     vle32.v v8, (x1); \
-    vle32.v v6, (x2); \
+    vle32.v v16, (x2); \
     inst v16, v8, v0; \
   )
 
@@ -1526,30 +1527,30 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     la a0, base; \
     flw f7, 0(a0); \
-    vfmv.v.f v14, f7; \
-    vfmv.f.s f8, v14; \
+    vfmv.v.f v16, f7; \
+    vfmv.f.s f8, v16; \
     fcvt.w.s x8, f8; \
     fcvt.w.s x7, f7; \
     bne x8, x7, fail;
 
 #define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
-  TEST_CASE_LOOP( testnum, v18, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re32.v v8, (x1); \
     la x7, result_base; \
-    inst v18, v8; \
+    inst v16, v8; \
   )
 
 #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v18, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re32.v v8, (x1); \
     la x7, result_base1; \
-    inst v18, v8; \
+    inst v16, v8; \
   ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
+  TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \
     VSET_VSEW_4AVL \
     la x7, result_base2; \
   )
