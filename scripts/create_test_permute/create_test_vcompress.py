@@ -226,7 +226,11 @@ def print_ending_vcompress(vlen, vsew, lmul, f):
     ", file=f)
 
     generate_walking_mask_seg(f, vlen, int(vsew))
+<<<<<<< Updated upstream
     generate_walking_data_seg_common(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
+=======
+    generate_walking_data_seg_common(int(vlen/vsew), int(vlen), int(vsew), f)
+>>>>>>> Stashed changes
     generate_dat_seg_vcompress(f, vsew)
 
     print("signature_x12_0:\n\

@@ -114,11 +114,16 @@ test_ ## testnum: \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11);
 
+<<<<<<< Updated upstream
 #define TEST_CASE_AVG_VX( testnum, inst, testreg, vs2reg, correctval00, correctval01, correctval10, correctval11, code... ) \
+=======
+#define TEST_CASE_AVG_VX( testnum, inst, testreg, correctval00, correctval01, correctval10, correctval11, code... ) \
+>>>>>>> Stashed changes
 test_ ## testnum: \
     code; \
     li TESTNUM, testnum; \
     csrwi vxrm, 0; \
+<<<<<<< Updated upstream
     inst testreg, vs2reg, x1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
@@ -132,6 +137,21 @@ test_ ## testnum: \
     li x7, MASK_VSEW(correctval10); \
     csrwi vxrm, 3; \
     inst testreg, vs2reg, x1; \
+=======
+    inst v14, v2, x1; \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval00); \
+    csrwi vxrm, 1; \
+    inst v14, v2, x1; \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval01); \
+    csrwi vxrm, 2; \
+    inst v14, v2, x1; \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval10); \
+    csrwi vxrm, 3; \
+    inst v14, v2, x1; \
+>>>>>>> Stashed changes
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11);
 
@@ -140,6 +160,7 @@ test_ ## testnum: \
     code; \
     li TESTNUM, testnum; \
     csrwi vxrm, 0; \
+<<<<<<< Updated upstream
     inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
@@ -153,6 +174,21 @@ test_ ## testnum: \
     li x7, MASK_VSEW(correctval10); \
     csrwi vxrm, 3; \
     inst testreg, v8, (val2); \
+=======
+    inst v14, v2, (val2); \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval00); \
+    csrwi vxrm, 1; \
+    inst v14, v2, (val2); \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval01); \
+    csrwi vxrm, 2; \
+    inst v14, v2, (val2); \
+    VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    li x7, MASK_VSEW(correctval10); \
+    csrwi vxrm, 3; \
+    inst v14, v2, (val2); \
+>>>>>>> Stashed changes
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11);
 
@@ -272,7 +308,11 @@ test_ ## testnum: \
 #define TEST_CASE_FP( testnum, testreg, flags, result, val1, val2, code... ) \
 test_ ## testnum: \
   li x7, 0; \
+<<<<<<< Updated upstream
   vmv.v.x v24, x7; \
+=======
+  vmv.v.x v14, x7; \
+>>>>>>> Stashed changes
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -482,6 +522,7 @@ test_ ## testnum: \
 //-----------------------------------------------------------------------
 
 #define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, MASK_VSEW(val2); \
     vmv.v.x v16, x7; \
@@ -494,11 +535,26 @@ test_ ## testnum: \
   TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
     li x7, MASK_VSEW(rs1_val); \
     vmv.v.x v16, x7; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    inst v14, v2, v1; \
+  )
+
+#define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
+  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
+    li x7, MASK_VSEW(rs1_val); \
+    vmv.v.x v2, x7; \
+>>>>>>> Stashed changes
     li x7, MASK_VSEW(rs2_val); \
     vmv.v.x v8, x7; \
   )
 
 #define TEST_ADC_VV_OP( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, 0; \
     vmv.v.x v8, x7; \
@@ -515,12 +571,31 @@ test_ ## testnum: \
     li x7, MASK_DOUBLE_VSEW(val2); \
     VSET_DOUBLE_VSEW \
     vmv.v.x v16, x7; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2, v0; \
+  )
+
+#define TEST_W_AVG_WV_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
+  TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
+    li x7, MASK_DOUBLE_VSEW(val2); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+>>>>>>> Stashed changes
     VSET_VSEW \
     li x7, val1; \
     vmv.v.x v8, x7; \
   )
 
 #define TEST_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, 0; \
     vmv.v.x v24, x7; \
@@ -543,11 +618,36 @@ test_ ## testnum: \
   TEST_CASE_AVG_VX( testnum, inst, v24, v8, result00, result01, result10, result11, \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v8, x7; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v14, x7; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2; \
+  )
+
+#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
+  TEST_CASE( testnum, v14, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    li x1, MASK_XLEN(val1); \
+    inst v14, v2, x1; \
+  )
+
+#define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
+  TEST_CASE_AVG_VX( testnum, inst, v24, result00, result01, result10, result11, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v2, x7; \
+>>>>>>> Stashed changes
     li x1, MASK_XLEN(val2); \
   )
 
 // For VX instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_VX_OP_RV( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, 0; \
     vmv.v.x v24, x7; \
@@ -562,11 +662,28 @@ test_ ## testnum: \
     li x7, MASK_DOUBLE_VSEW(val2); \
     VSET_DOUBLE_VSEW \
     vmv.v.x v8, x7; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v14, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_XLEN(val1); \
+    inst v14, x1, v1; \
+  )
+
+#define TEST_W_AVG_WX_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
+  TEST_CASE_AVG_VX( testnum, inst, v24, result00, result01, result10, result11, \
+    li x7, MASK_DOUBLE_VSEW(val2); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+>>>>>>> Stashed changes
     VSET_VSEW \
     li x1, val1; \
   )
 
 #define TEST_ADC_VX_OP( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, 0; \
     vmv.v.x v8, x7; \
@@ -595,10 +712,41 @@ test_ ## testnum: \
     li x7, MASK_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
     vmv.v.x v8, x7; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_VSEW(val2); \
+    inst v14, v1, x1, v0; \
+  )
+
+#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
+  TEST_CASE( testnum, v14, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v2, SEXT_IMM(val1); \
+  )
+
+#define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
+  TEST_CASE_AVG_VI( testnum, inst, v14, result00, result01, result10, result11, val2, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v2, x7; \
+  )
+
+#define TEST_W_AVG_WI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
+  TEST_CASE_AVG_VI( testnum, inst, v14, result00, result01, result10, result11, val2, \
+    li x7, MASK_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+>>>>>>> Stashed changes
     VSET_VSEW \
   )
 
 #define TEST_W_VV_OP( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE_W( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v8, x7; \
@@ -626,10 +774,40 @@ test_ ## testnum: \
     vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val2); \
     inst v24, v8, x1; \
+=======
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2; \
+  )
+
+#define TEST_W_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, 0; \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v14, x7; \
+    VSET_VSEW \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2; \
+  )
+
+#define TEST_W_VX_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_XLEN(val2); \
+    inst v14, v1, x1; \
+>>>>>>> Stashed changes
   )
 
 // For VX instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_W_VX_OP_RV( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE_W( testnum, v24, result, \
     li x7, 0; \
     VSET_DOUBLE_VSEW \
@@ -656,6 +834,34 @@ test_ ## testnum: \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v8, x7; \
     inst v24, v8, SEXT_IMM(val2), v0; \
+=======
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, 0; \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v14, x7; \
+    VSET_VSEW \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_XLEN(val1); \
+    inst v14, x1, v1; \
+  )
+
+#define TEST_W_VI_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    inst v14, v1, SEXT_IMM(val2); \
+  )
+
+#define TEST_ADC_VI_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    inst v14, v1, SEXT_IMM(val2), v0; \
+>>>>>>> Stashed changes
   )
 
 #define TEST_N_VV_OP( testnum, inst, result, val2, val1 ) \
@@ -707,6 +913,7 @@ test_ ## testnum: \
   )
 
 #define TEST_W_WV_OP( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE_W( testnum, v24, result, \
     li x7, SEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
@@ -762,6 +969,63 @@ test_ ## testnum: \
     li x7, ZEXT_DOUBLE_VSEW(val1); \
     vmv.v.x v8, x7; \
     inst v24, v8, SEXT_IMM(val2); \
+=======
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, SEXT_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+    VSET_VSEW \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v1, x7; \
+    inst v14, v2, v1; \
+  )
+
+#define TEST_W_WX_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, SEXT_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+    VSET_VSEW \
+    li x1, MASK_XLEN(val2); \
+    inst v14, v2, x1; \
+  )
+
+#define TEST_W_WI_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, SEXT_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+    VSET_VSEW \
+    inst v14, v2, SEXT_IMM(val2); \
+  )
+
+#define TEST_W_WVU_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, ZEXT_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+    VSET_VSEW \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v1, x7; \
+    inst v14, v2, v1; \
+  )
+
+#define TEST_W_WXU_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, ZEXT_DOUBLE_VSEW(val1); \
+    VSET_DOUBLE_VSEW \
+    vmv.v.x v2, x7; \
+    VSET_VSEW \
+    li x1, MASK_XLEN(val2); \
+    inst v14, v2, x1; \
+  )
+
+#define TEST_W_WIU_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_W( testnum, v14, result, \
+    li x7, ZEXT_DOUBLE_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    inst v14, v1, SEXT_IMM(val2); \
+>>>>>>> Stashed changes
   )
 
 
@@ -809,11 +1073,19 @@ test_ ## testnum: \
   )
 
 #define TEST_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
+<<<<<<< Updated upstream
   TEST_CASE_FP( testnum, v24, flags, result, val, 0, \
     flw f0, 0(a0); \
     vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
     inst v24, v8; \
+=======
+  TEST_CASE_FP( testnum, v14, flags, result, val, 0, \
+    flw f0, 0(a0); \
+    vfmv.s.f v1, f0; \
+    flw f2, 8(a0); \
+    inst v14, v1; \
+>>>>>>> Stashed changes
   )
 
 #define TEST_W_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
@@ -836,15 +1108,23 @@ test_ ## testnum: \
 
 // TEST_CASE wont check flags so check here
 #define TEST_FP_HEX_1OPERAND_OP( testnum, inst, flags, result, val ) \
+<<<<<<< Updated upstream
   TEST_CASE( testnum, v24, result, \
     li x7, MASK_VSEW(val); \
     vmv.v.x v8, x7; \
     inst v24, v8; \
+=======
+  TEST_CASE( testnum, v14, result, \
+    li x7, MASK_VSEW(val); \
+    vmv.v.x v1, x7; \
+    inst v14, v1; \
+>>>>>>> Stashed changes
     frflags a1; \
     li a2, flags; \
   )
 
 #define TEST_VVM_OP( testnum, inst, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE_MASK( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v8, x7; \
@@ -899,6 +1179,61 @@ test_ ## testnum: \
     li x7, MASK_VSEW(val1); \
     vmv.v.x v8, x7; \
     inst v24, v8, SEXT_IMM(val2), v0; \
+=======
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2; \
+  )
+
+#define TEST_VXM_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_XLEN(val2); \
+    inst v14, v1, x1; \
+  )
+
+#define TEST_VIM_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    inst v14, v1, SEXT_IMM(val2); \
+  )
+
+#define TEST_ADC_VVM_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v2, x7; \
+    inst v14, v1, v2, v0; \
+  )
+
+#define TEST_ADC_VXM_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
+    li x1, MASK_VSEW(val2); \
+    inst v14, v1, x1, v0; \
+  )
+
+#define TEST_ADC_VIM_OP( testnum, inst, result, val1, val2 ) \
+  TEST_CASE_MASK( testnum, v14, result, \
+    li x7, 0; \
+    vmv.v.x v7, x7; \
+    vmsne.vi v0, v7, 0; \
+    li x7, MASK_VSEW(val1); \
+    inst v14, v1, SEXT_IMM(val2), v0; \
+>>>>>>> Stashed changes
   )
 
 #define TEST_FP_VVM_OP( testnum, inst, flags, result, val1, val2 ) \
@@ -1150,6 +1485,7 @@ test_ ## testnum: \
   )
 
 #define TEST_FP_VV_OP( testnum, inst, flags, result, val1, val2 ) \
+<<<<<<< Updated upstream
   TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
@@ -1166,6 +1502,24 @@ test_ ## testnum: \
     vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
     inst v24, v8, f1; \
+=======
+  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+    flw f0, 0(a0); \
+    flw f1, 4(a0); \
+    vfmv.s.f v1, f0; \
+    vfmv.s.f v2, f1; \
+    flw f2, 8(a0); \
+    inst v14, v1, v2; \
+  )
+
+#define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
+  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+    flw f0, 0(a0); \
+    flw f1, 4(a0); \
+    vfmv.s.f v1, f0; \
+    flw f2, 8(a0); \
+    inst v14, v1, f1; \
+>>>>>>> Stashed changes
   )
 
 #define TEST_FP_VF_OP_AFTER_VMSEQ( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 ) \
@@ -1474,27 +1828,48 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     la a0, base; \
     flw f7, 0(a0); \
+<<<<<<< Updated upstream
     vfmv.v.f v16, f7; \
     vfmv.f.s f8, v16; \
+=======
+    vfmv.v.f v14, f7; \
+    vfmv.f.s f8, v14; \
+>>>>>>> Stashed changes
     fcvt.w.s x8, f8; \
     fcvt.w.s x7, f7;
 
 #define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
+<<<<<<< Updated upstream
   TEST_CASE_LOOP( testnum, v16, x7, \
+=======
+  TEST_CASE_LOOP( testnum, v18, x7, \
+>>>>>>> Stashed changes
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re32.v v8, (x1); \
     la x7, result_base; \
+<<<<<<< Updated upstream
     inst v16, v8; \
   )
 
 #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
   TEST_CASE_LOOP( testnum, v16, x7, \
+=======
+    inst v18, v8; \
+  )
+
+#define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
+  TEST_CASE_LOOP( testnum, v18, x7, \
+>>>>>>> Stashed changes
     VSET_VSEW_4AVL \
     la  x1, base; \
     vl8re32.v v8, (x1); \
     la x7, result_base1; \
+<<<<<<< Updated upstream
     inst v16, v8; \
+=======
+    inst v18, v8; \
+>>>>>>> Stashed changes
   ) \
   TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
     VSET_VSEW_4AVL \
