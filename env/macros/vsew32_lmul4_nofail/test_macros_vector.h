@@ -272,7 +272,7 @@ test_ ## testnum: \
 #define TEST_CASE_FP( testnum, testreg, flags, result, val1, val2, code... ) \
 test_ ## testnum: \
   li x7, 0; \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -809,11 +809,11 @@ test_ ## testnum: \
   )
 
 #define TEST_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val, 0, \
+  TEST_CASE_FP( testnum, v24, flags, result, val, 0, \
     flw f0, 0(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
-    inst v14, v1; \
+    inst v24, v8; \
   )
 
 #define TEST_W_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
@@ -836,10 +836,10 @@ test_ ## testnum: \
 
 // TEST_CASE wont check flags so check here
 #define TEST_FP_HEX_1OPERAND_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, MASK_VSEW(val); \
-    vmv.v.x v1, x7; \
-    inst v14, v1; \
+    vmv.v.x v8, x7; \
+    inst v24, v8; \
     frflags a1; \
     li a2, flags; \
   )
@@ -1149,22 +1149,22 @@ test_ ## testnum: \
   )
 
 #define TEST_FP_VV_OP( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
-    vfmv.s.f v2, f1; \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v16, f1; \
     flw f2, 8(a0); \
-    inst v14, v1, v2; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
-    inst v14, v1, f1; \
+    inst v24, v8, f1; \
   )
 
 #define TEST_FP_VF_OP_AFTER_VMSEQ( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 ) \

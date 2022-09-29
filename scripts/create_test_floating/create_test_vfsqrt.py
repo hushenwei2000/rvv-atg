@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-import re
+from scripts.create_test_floating.create_test_common import valid_aligned_regs
 
 instr = 'vfsqrt'
 
@@ -9,55 +9,50 @@ rs2_val_32 = ['0x00000000', '0x00000001', '0x00000002', '0x007FFFFF', '0x0080000
 rs2_val_64 = ['0x0000000000000000', '0x0000000000000001', '0x0000000000000002', '0x000FFFFFFFFFFFFF', '0x0010000000000000', '0x0010000000000002', '0x7FEFFFFFFFFFFFFF', '0x3FF0000000000000', ]
 
 
-def generate_macros(f, vsew):
+def generate_macros(f, vsew, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     if vsew == 32:
-        for n in range(2,32):
-            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_FP( testnum, v14, flags, result, val1, 0, \\\n\
+        for n in range(1,32):
+            if n % lmul != 0: continue
+            rd = valid_aligned_regs(n)[0]
+            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0, \\\n\
                 flw f0, 0(a0); \\\n\
-                vfmv.s.f v%d, f0;"%n+" \\\n\
+                vfmv.s.f v%d, f0; \\\n\
                 flw f2, 8(a0); \\\n\
-                inst v14, v%d;"%n+" \\\n\
-            )",file=f)
-        for n in range(2,32):
-            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0,"%n+" \\\n\
+                inst v%d, v%d; \\\n\
+            )"%(n, rd, n, rd, n),file=f)
+        for n in range(1,32):
+            if n % lmul != 0: continue
+            rs2 = valid_aligned_regs(n)[0]
+            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0, \\\n\
                 flw f0, 0(a0); \\\n\
-                vfmv.s.f v1, f0; \\\n\
+                vfmv.s.f v%d, f0; \\\n\
                 flw f2, 8(a0); \\\n\
-                inst v%d, v1;"%n+" \\\n\
-            )",file=f)
-        print("#define TEST_FP_1OPERAND_OP_rd1( testnum, inst, flags, result, val1 ) \\\n\
-            TEST_CASE_FP( testnum, v1, flags, result, val1, 0, \\\n\
-                flw f0, 0(a0); \\\n\
-                vfmv.s.f v2, f0; \\\n\
-                flw f2, 8(a0); \\\n\
-                inst v1, v2; \\\n\
-            )",file=f)
+                inst v%d, v%d; \\\n\
+            )"%(n, n, rs2, n, rs2),file=f)
     elif vsew == 64:
-        for n in range(2,32):
-            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_FP( testnum, v14, flags, result, val1, 0, \\\n\
+        for n in range(1,32):
+            if n % lmul != 0: continue
+            rd = valid_aligned_regs(n)[0]
+            print("#define TEST_FP_1OPERAND_OP_2%d( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0, \\\n\
                 fld f0, 0(a0); \\\n\
-                vfmv.s.f v%d, f0;"%n+" \\\n\
+                vfmv.s.f v%d, f0; \\\n\
                 fld f2, 16(a0); \\\n\
-                inst v14, v%d;"%n+" \\\n\
-            )",file=f)
-        for n in range(2,32):
-            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0,"%n+" \\\n\
+                inst v%d, v%d; \\\n\
+            )"%(n, rd, n, rd, n),file=f)
+        for n in range(1,32):
+            if n % lmul != 0: continue
+            rs2 = valid_aligned_regs(n)[0]
+            print("#define TEST_FP_1OPERAND_OP_rd%d( testnum, inst, flags, result, val1 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, 0, \\\n\
                 fld f0, 0(a0); \\\n\
-                vfmv.s.f v1, f0; \\\n\
+                vfmv.s.f v%d, f0; \\\n\
                 fld f2, 16(a0); \\\n\
-                inst v%d, v1;"%n+" \\\n\
-            )",file=f)
-        print("#define TEST_FP_1OPERAND_OP_rd1( testnum, inst, flags, result, val1 ) \\\n\
-            TEST_CASE_FP( testnum, v1, flags, result, val1, 0, \\\n\
-                fld f0, 0(a0); \\\n\
-                vfmv.s.f v2, f0; \\\n\
-                fld f2, 16(a0); \\\n\
-                inst v1, v2; \\\n\
-            )",file=f)    
+                inst v%d, v%d; \\\n\
+            )"%(n, n, rs2, n, rs2),file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -65,7 +60,7 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f, vsew):
+def generate_tests(f, vsew, lmul):
     if vsew == 32:
         rs2_val = rs2_val_32
     elif vsew == 64:
@@ -86,10 +81,10 @@ def generate_tests(f, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(len(4*rs2_val)):     
         k = i % 31 + 1
+        if k % lmul != 0: continue
         n += 1
         print("  TEST_FP_1OPERAND_OP_rd%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+(4*rs2_val)[i]+" );",file=f)
-        
-        k = i % 30 + 2
+
         n += 1
         print("  TEST_FP_1OPERAND_OP_2%d( "%k+str(n)+",  vfsqrt.v, 0xff100, 5201314, "+(4*rs2_val)[i]+" );",file=f)
 
@@ -183,10 +178,10 @@ def create_first_test_vfsqrt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew)
+    generate_macros(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, vsew)
+    generate_tests(f, vsew, lmul)
 
     # Common const information
     print_ending(f)

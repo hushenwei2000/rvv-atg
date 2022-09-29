@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-import re
+from scripts.create_test_floating.create_test_common import valid_aligned_regs
 
 instr = 'vfrsqrt7'
 
@@ -9,35 +9,30 @@ rs2_val_32 = ['0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x0000000
 rs2_val_64 = ['0x0000000000000000', '0x8000000000000000', '0x0000000000000001', '0x8000000000000001', '0x0000000000000002', '0x8000000000000002', '0x000FFFFFFFFFFFFF', '0x800FFFFFFFFFFFFF', '0x0010000000000000', '0x8010000000000000', '0x0010000000000002', '0x8010000000000002', '0x7FEFFFFFFFFFFFFF', '0xFFEFFFFFFFFFFFFF', '0x3FF0000000000000', '0xBF80000000000000', ]
 
 
-def generate_macros(f):
-    for n in range(2,32):
-        print("#define TEST_FP_HEX_1OPERAND_OP_2%d( testnum, inst, flags, result, val )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+def generate_macros(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(1,32):
+        if n % lmul != 0: continue
+        rd = valid_aligned_regs(n)[0]
+        print("#define TEST_FP_HEX_1OPERAND_OP_2%d( testnum, inst, flags, result, val ) \\\n\
+        TEST_CASE( testnum, v%d, result, \\\n\
             li x7, MASK_VSEW(val); \\\n\
-            vmv.v.x v%d, x7;"%n + " \\\n\
-            inst v14, v%d;"%n + " \\\n\
+            vmv.v.x v%d, x7; \\\n\
+            inst v%d, v%d; \\\n\
             frflags a1; \\\n\
             li a2, flags; \\\n\
-        )",file=f)
-
-    for n in range(2,32):
-        print("#define TEST_FP_HEX_1OPERAND_OP_rd%d( testnum, inst, flags, result, val )"%n + " \\\n\
-        TEST_CASE( testnum, v%d, result,"%n + " \\\n\
+        )"%(n, rd, n, rd, n),file=f)
+    for n in range(1,32):
+        if n % lmul != 0: continue
+        rs2 = valid_aligned_regs(n)[0]
+        print("#define TEST_FP_HEX_1OPERAND_OP_rd%d( testnum, inst, flags, result, val ) \\\n\
+        TEST_CASE( testnum, v%d, result, \\\n\
             li x7, MASK_VSEW(val); \\\n\
-            vmv.v.x v1, x7; \\\n\
-            inst v%d, v1;"%n + " \\\n\
+            vmv.v.x v%d, x7; \\\n\
+            inst v%d, v%d; \\\n\
             frflags a1; \\\n\
             li a2, flags; \\\n\
-        )",file=f)
-
-    print("#define TEST_FP_HEX_1OPERAND_OP_rd1( testnum, inst, flags, result, val ) \\\n\
-        TEST_CASE( testnum, v1, result, \\\n\
-            li x7, MASK_VSEW(val); \\\n\
-            vmv.v.x v2, x7; \\\n\
-            inst v1, v2; \\\n\
-            frflags a1; \\\n\
-            li a2, flags; \\\n\
-        )",file=f)
+        )"%(n, n, rs2, n, rs2),file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -45,7 +40,7 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f, vsew):
+def generate_tests(f, vsew, lmul):
     if vsew == 32:
         rs2_val = rs2_val_32
     elif vsew == 64:
@@ -66,10 +61,10 @@ def generate_tests(f, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(len(2*rs2_val)):     
         k = i % 31 + 1
+        if k % lmul != 0: continue
         n += 1
         print("  TEST_FP_HEX_1OPERAND_OP_rd%d( "%k+str(n)+",  vfrsqrt7.v, 0xff100, 5201314, "+(2*rs2_val)[i]+" );",file=f)
-        
-        k = i % 30 + 2
+
         n += 1
         print("  TEST_FP_HEX_1OPERAND_OP_2%d( "%k+str(n)+",  vfrsqrt7.v, 0xff100, 5201314, "+(2*rs2_val)[i]+" );",file=f)
 
@@ -163,10 +158,10 @@ def create_first_test_vfrsqrt7_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir, 
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, vsew)
+    generate_tests(f, vsew, lmul)
 
     # Common const information
     print_ending(f)
