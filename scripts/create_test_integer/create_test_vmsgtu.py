@@ -6,36 +6,37 @@ import re
 instr = 'vmsgtu'
 
 
-def generate_macros(f):
-    for n in range(2, 32):
+def generate_macros(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(1, 32):
         print("#define TEST_VXM_OP_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
-        TEST_CASE_MASK( testnum, v14, result,  \\\n\
+        TEST_CASE_MASK( testnum, v24, result,  \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v1, x7;  \\\n\
+            vmv.v.x v8, x7;  \\\n\
             li x%d, MASK_XLEN(val2);"%n + " \\\n\
-            inst v14, v1, x%d; "%n + " \\\n\
+            inst v24, v8, x%d; "%n + " \\\n\
         )", file=f)
-    for n in range(3, 32):
+    for n in range(1, 32):
         print("#define TEST_VXM_OP_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
         TEST_CASE_MASK( testnum, v%d, result, "%n + "\\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v1, x7; \\\n\
+            vmv.v.x v8, x7; \\\n\
             li x1, MASK_XLEN(val2); \\\n\
-            inst v%d, v1, x1; "%n + " \\\n\
+            inst v%d, v8, x1; "%n + " \\\n\
         ) ", file=f)
-    print("#define TEST_VXM_OP_rd1( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE_MASK( testnum, v1, result, \\\n\
+    print("#define TEST_VXM_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE_MASK( testnum, v8, result, \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v3, x7; \\\n\
+            vmv.v.x v16, x7; \\\n\
             li x1, MASK_XLEN(val2); \\\n\
-            inst v1, v3, x1; \\\n\
+            inst v8, v16, x1; \\\n\
         )", file=f)
-    print("#define TEST_VXM_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE_MASK( testnum, v2, result, \\\n\
+    print("#define TEST_VXM_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
+        TEST_CASE_MASK( testnum, v24, result, \\\n\
             li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v3, x7; \\\n\
+            vmv.v.x v8, x7; \\\n\
             li x1, MASK_XLEN(val2); \\\n\
-            inst v2, v3, x1; \\\n\
+            inst v24, v8, x1; \\\n\
         )", file=f)
 
 
@@ -56,7 +57,8 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
@@ -68,12 +70,14 @@ def generate_tests(f, rs1_val, rs2_val):
               instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
+        if k == 0 or k == 24 or k % (lmul * 2) != 0:
+            continue
         n+=1
         print("  TEST_VXM_OP_rd%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+");",file=f)
         
         k = i%30+2
-        # if(k==14):
-        #     continue;
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+            continue
         n +=1
         print("  TEST_VXM_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+" , "+rs2_val[i]+");",file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -123,10 +127,10 @@ def create_first_test_vmsgtu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, lmul)
 
     # Common const information
     print_common_ending(f)

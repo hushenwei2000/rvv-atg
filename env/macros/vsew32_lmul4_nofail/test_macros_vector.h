@@ -521,14 +521,14 @@ test_ ## testnum: \
   )
 
 #define TEST_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v14, x7; \
+    vmv.v.x v24, x7; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
@@ -548,13 +548,13 @@ test_ ## testnum: \
 
 // For VX instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_VX_OP_RV( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v14, x7; \
+    vmv.v.x v24, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val1); \
-    inst v14, x1, v1; \
+    inst v24, x1, v8; \
   )
 
 #define TEST_W_AVG_WX_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
@@ -599,53 +599,53 @@ test_ ## testnum: \
   )
 
 #define TEST_W_VV_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_W_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, 0; \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v14, x7; \
+    vmv.v.x v24, x7; \
     VSET_VSEW \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_W_VX_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val2); \
-    inst v14, v1, x1; \
+    inst v24, v8, x1; \
   )
 
 // For VX instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_W_VX_OP_RV( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, 0; \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v14, x7; \
+    vmv.v.x v24, x7; \
     VSET_VSEW \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val1); \
-    inst v14, x1, v1; \
+    inst v24, x1, v8; \
   )
 
 #define TEST_W_VI_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v1, SEXT_IMM(val2); \
+    vmv.v.x v8, x7; \
+    inst v24, v8, SEXT_IMM(val2); \
   )
 
 #define TEST_ADC_VI_OP( testnum, inst, result, val1, val2 ) \
@@ -707,61 +707,61 @@ test_ ## testnum: \
   )
 
 #define TEST_W_WV_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, SEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v1, x7; \
-    inst v14, v2, v1; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_W_WX_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, SEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
     li x1, MASK_XLEN(val2); \
-    inst v14, v2, x1; \
+    inst v24, v8, x1; \
   )
 
 #define TEST_W_WI_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, SEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
-    inst v14, v2, SEXT_IMM(val2); \
+    inst v24, v8, SEXT_IMM(val2); \
   )
 
 #define TEST_W_WVU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, ZEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v1, x7; \
-    inst v14, v2, v1; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_W_WXU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, ZEXT_DOUBLE_VSEW(val1); \
     VSET_DOUBLE_VSEW \
-    vmv.v.x v2, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
     li x1, MASK_XLEN(val2); \
-    inst v14, v2, x1; \
+    inst v24, v8, x1; \
   )
 
 #define TEST_W_WIU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_W( testnum, v14, result, \
+  TEST_CASE_W( testnum, v24, result, \
     li x7, ZEXT_DOUBLE_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v1, SEXT_IMM(val2); \
+    vmv.v.x v8, x7; \
+    inst v24, v8, SEXT_IMM(val2); \
   )
 
 
@@ -845,59 +845,60 @@ test_ ## testnum: \
   )
 
 #define TEST_VVM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_VXM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_XLEN(val2); \
-    inst v14, v1, x1; \
+    inst v24, v8, x1; \
   )
 
 #define TEST_VIM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v1, SEXT_IMM(val2); \
+    vmv.v.x v8, x7; \
+    inst v24, v8, SEXT_IMM(val2); \
   )
 
 #define TEST_ADC_VVM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2, v0; \
+    vmv.v.x v16, x7; \
+    inst v24, v8, v16, v0; \
   )
 
 #define TEST_ADC_VXM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     li x1, MASK_VSEW(val2); \
-    inst v14, v1, x1, v0; \
+    inst v24, v8, x1, v0; \
   )
 
 #define TEST_ADC_VIM_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE_MASK( testnum, v14, result, \
+  TEST_CASE_MASK( testnum, v24, result, \
     li x7, 0; \
-    vmv.v.x v7, x7; \
-    vmsne.vi v0, v7, 0; \
+    vmv.v.x v8, x7; \
+    vmsne.vi v0, v8, 0; \
     li x7, MASK_VSEW(val1); \
-    inst v14, v1, SEXT_IMM(val2), v0; \
+    vmv.v.x v8, x7; \
+    inst v24, v8, SEXT_IMM(val2), v0; \
   )
 
 #define TEST_FP_VVM_OP( testnum, inst, flags, result, val1, val2 ) \

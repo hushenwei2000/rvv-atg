@@ -109,7 +109,7 @@ def run_integer(cwd, args, cgf, output_dir):
               output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     search_ins = args.i
-    if args.i in ["vmsbc", "vmseq", "vmsgt", "vmsgtu", "vmsle", "vmsleu", "vmslt", "vmsltu", "vmsne"]:
+    if args.i in ["vmadc", "vmsbc", "vmseq", "vmsgt", "vmsgtu", "vmsle", "vmsleu", "vmslt", "vmsltu", "vmsne"]:
         search_ins = "vcpop"
     # 5-1. Replace old result with true results using sail and isac log
     # des_path = replace_results(search_ins, first_test, isac_log_first, 'sail')

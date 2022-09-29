@@ -127,11 +127,11 @@ note:
 
 
 #### Multiply-Add & Add-with-Carry Subtract-with-Borrow & Comparison: vmacc, vmadd, vnmsac, vnmsub & vmadc, vmsbc & vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne
-| Config                        | Status |
-| ----------------------------- | ------ |
+| Config                        | Status | Config                        | Status |
+| ----------------------------- | ------ | ----------------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    |
 | vlen128 vsew16 lmul1          | P P    |
-| vlen128 vsew32 lmul1(default) | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4          | P P    |
 | vlen128 vsew64 lmul1          | P P    |
 | vlen256 vsew8 lmul1           | P P    |
 | vlen256 vsew16 lmul1          | P P    |
@@ -148,11 +148,11 @@ note:
 
 #### Reduction Arithmetic:  vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor; 
 
-| Config                        | Status |
-| ----------------------------- | ------ |
+| Config                        | Status |Config                        | Status |
+| ----------------------------- | ------ |----------------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    |
 | vlen128 vsew16 lmul1          | P P    |
-| vlen128 vsew32 lmul1(default) | P P    |
+| vlen128 vsew32 lmul1(default) | P P    |vlen128 vsew32 lmul4          | P P    |
 | vlen128 vsew64 lmul1          | P P    |
 | vlen256 vsew8 lmul1           | P P    |
 | vlen256 vsew16 lmul1          | P P    |
@@ -172,11 +172,11 @@ note:
 
 * widen and narrow instruction not support VSEW=64 (vsew should be <= 64)
 
-| Config                        | Status |
-| ----------------------------- | ------ |
+| Config                        | Status | Config                       | Status |
+| ----------------------------- | ------ |----------------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    |
 | vlen128 vsew16 lmul1          | P P    |
-| vlen128 vsew32 lmul1(default) | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4         |  P P   |
 | vlen256 vsew8 lmul1           | P P    |
 | vlen256 vsew16 lmul1          | P P    |
 | vlen256 vsew32 lmul1          | P P    |
@@ -186,7 +186,6 @@ note:
 | vlen1024 vsew8 lmul1          | P P    |
 | vlen1024 vsew16 lmul1         | P P    |
 | vlen1024 vsew32 lmul1         | P P    |
-
 ### Floating Points
 
 #### vfadd, vfclas, *vfcvt*, vfdiv, vfmacc, vfmax, vfmin, vfmsac, vfmsub, vfmul, `vfncvt`, vfnmacc, vfnmadd, vfnmsac, vfnmsub, vfrdiv, vfrec7, vfredmax, vfredmin

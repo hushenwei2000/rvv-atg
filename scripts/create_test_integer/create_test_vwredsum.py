@@ -43,10 +43,10 @@ def create_first_test_vwredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vw(f, lmul)
+    generate_macros_vwmacc(f, lmul)
 
     # Generate tests
-    generate_tests_vw(f, rs1_val, rs2_val, instr, lmul)
+    generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vs', generate_vxrv=False)
 
     # Common const information
     print_common_ending(f)

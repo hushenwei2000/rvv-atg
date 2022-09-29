@@ -944,6 +944,7 @@ test_ ## testnum: \
     vmv.v.x v7, x7; \
     vmsne.vi v0, v7, 0; \
     li x7, MASK_VSEW(val1); \
+    vmv.v.x v1, x7; \
     inst v14, v1, SEXT_IMM(val2), v0; \
   )
 
