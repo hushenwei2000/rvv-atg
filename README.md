@@ -193,13 +193,13 @@ note:
 | Config                        | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc | vfmadd | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
 | ----------------------------- | ----- | ------ | ------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | -------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
 | vlen128 vsew32 lmul1(default) | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P X      | P X      |
-| vlen128 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | X X    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
+| vlen128 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
 | vlen256 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P X      | P X      |
-| vlen256 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | X X    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
+| vlen256 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
 | vlen512 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P X      | P X      |
-| vlen512 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | X X    | X X   | P P   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
+| vlen512 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | X X   | P P   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
 | vlen1024 vsew32 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P X      | P X      |
-| vlen1024 vsew64 lmul1         | P P   | P P    | -       | P P   | P P    | X X    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
+| vlen1024 vsew64 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | X X   | X X   | X X    | X X    | X X   | -        | X X     | X X     | X X     | X X     | X X    | P P    | X X      | X X      |
 
 > `P` indicates *pass*, while `X` indicates *fail*. And `-` indicates *have not tested yet*.
 
