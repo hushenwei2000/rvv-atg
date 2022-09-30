@@ -4,22 +4,14 @@ then
         echo "Example: bash run_bash.sh vfadd \n"
         echo "Or example: bash run_bash.sh vfclass \n"
 else
-        python run.py -i $1 -t f --vlen 128 --vsew 8; # pass
-        python run.py -i $1 -t f --vlen 128 --vsew 16; # pass
-        python run.py -i $1 -t f --vlen 128 --vsew 32; # pass
-        python run.py -i $1 -t f --vlen 128 --vsew 64; # pass
-        python run.py -i $1 -t f --vlen 256 --vsew 8; # pass
-        python run.py -i $1 -t f --vlen 256 --vsew 16; # pass
-        python run.py -i $1 -t f --vlen 256 --vsew 32; # pass
-        python run.py -i $1 -t f --vlen 256 --vsew 64; # pass
-        python run.py -i $1 -t f --vlen 512 --vsew 8; # pass
-        python run.py -i $1 -t f --vlen 512 --vsew 16; # pass
-        python run.py -i $1 -t f --vlen 512 --vsew 32; # pass
-        python run.py -i $1 -t f --vlen 512 --vsew 64; # pass
-        python run.py -i $1 -t f --vlen 1024 --vsew 8; # pass 
-        python run.py -i $1 -t f --vlen 1024 --vsew 16; # pass
-        python run.py -i $1 -t f --vlen 1024 --vsew 32; # pass
-        python run.py -i $1 -t f --vlen 1024 --vsew 64; # pass
+        python run.py -i $1 -t f --vlen 128 --vsew 32; 
+        python run.py -i $1 -t f --vlen 128 --vsew 64; 
+        python run.py -i $1 -t f --vlen 256 --vsew 32; 
+        python run.py -i $1 -t f --vlen 256 --vsew 64; 
+        python run.py -i $1 -t f --vlen 512 --vsew 32; 
+        python run.py -i $1 -t f --vlen 512 --vsew 64; 
+        python run.py -i $1 -t f --vlen 1024 --vsew 32; 
+        python run.py -i $1 -t f --vlen 1024 --vsew 64; 
 fi
 # python run.py -i vfclass -t f; # pass
 # python run.py -i vfcvt -t f; # failed, illegal operands `vfcvt.rtz.x.f.v v2 v1'
