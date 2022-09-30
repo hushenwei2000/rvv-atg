@@ -292,7 +292,7 @@ test_ ## testnum: \
 #define TEST_W_CASE_FP( testnum, testreg, flags, result, val1, val2, code... ) \
 test_ ## testnum: \
   li x7, 0; \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -316,7 +316,7 @@ test_ ## testnum: \
 test_ ## testnum: \
   li x7, 0; \
   VSET_DOUBLE_VSEW \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   VSET_VSEW \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
@@ -359,7 +359,7 @@ test_ ## testnum: \
 #define TEST_CASE_WVWF_FP( testnum, testreg, flags, val1, val2, code... ) \
 test_ ## testnum: \
   li x7, 0; \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -400,7 +400,7 @@ test_ ## testnum: \
 #define TEST_CASE_FP_INT( testnum, testreg, flags, correctval_eew, correctval, val, code... ) \
 test_ ## testnum: \
   li x7, 0; \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -460,7 +460,7 @@ test_ ## testnum: \
 #define TEST_W_CASE_INT_FP( testnum, testreg, flags, result, val, code... ) \
 test_ ## testnum: \
   li x7, 0; \
-  vmv.v.x v14, x7; \
+  vmv.v.x v24, x7; \
   li  TESTNUM, testnum; \
   la  a0, test_ ## testnum ## _data ;\
   code; \
@@ -817,11 +817,11 @@ test_ ## testnum: \
   )
 
 #define TEST_W_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
-  TEST_W_CASE_FP( testnum, v14, flags, result, val, 0, \
+  TEST_W_CASE_FP( testnum, v24, flags, result, val, 0, \
     flw f0, 0(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     fld f2, 8(a0); \
-    inst v14, v1; \
+    inst v24, v8; \
   )
 
 #define TEST_N_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
@@ -1192,110 +1192,110 @@ test_ ## testnum: \
 
 // Correctval is computed by fadd.d((widen)f0, (widen)f1) -> f2
 #define TEST_W_FP_VV_OP( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_W_FP( testnum, v14, flags, val1, val2,     \
+  TEST_CASE_W_FP( testnum, v24, flags, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
-    vfmv.s.f v2, f1; \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v16, f1; \
     fcvt.d.s f0, f0; \
     fcvt.d.s f1, f1; \
     finst f2, f0, f1; \
-    inst v14, v1, v2; \
+    inst v24, v8, v16; \
   )
 
 #define TEST_W_FP_VV_OP_NEGRESULT( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_W_FP( testnum, v14, flags, val1, val2,     \
+  TEST_CASE_W_FP( testnum, v24, flags, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
-    vfmv.s.f v2, f1; \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v16, f1; \
     fcvt.d.s f0, f0; \
     fcvt.d.s f1, f1; \
     finst f2, f0, f1; \
     fneg.d f2, f2; \
-    inst v14, v1, v2; \
+    inst v24, v8, v16; \
   )
 
 // Correctval is computed by fadd.d((widen)f0, (widen)f4) -> f2
 #define TEST_W_FP_VF_OP( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_W_FP( testnum, v14, flags, val1, val2,     \
+  TEST_CASE_W_FP( testnum, v24, flags, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
     flw f4, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     fcvt.d.s f0, f0; \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
-    inst v14, v1, f1; \
+    inst v24, v8, f1; \
   )
 
 #define TEST_W_FP_VF_OP_RV( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_W_FP( testnum, v14, flags, val1, val2,     \
+  TEST_CASE_W_FP( testnum, v24, flags, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
     flw f4, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     fcvt.d.s f0, f0; \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
-    inst v14, f1, v1; \
+    inst v24, f1, v8; \
   )
 
 #define TEST_W_FP_VF_OP_RV_NEGRESULT( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_W_FP( testnum, v14, flags, val1, val2,     \
+  TEST_CASE_W_FP( testnum, v24, flags, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
     flw f4, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     fcvt.d.s f0, f0; \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
     fneg.d f2, f2; \
-    inst v14, f1, v1; \
+    inst v24, f1, v8; \
   )
 
 // Operand order: inst val1, val2
 #define TEST_W_FP_WV_OP( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_WVWF_FP( testnum, v14, flags, val1, val2,  \
+  TEST_CASE_WVWF_FP( testnum, v24, flags, val1, val2,  \
     fld f0, 0(a0); \
     flw f1, 8(a0); \
     flw f4, 8(a0); \
     VSET_DOUBLE_VSEW \
-    vfmv.s.f v2, f0; \
+    vfmv.s.f v16, f0; \
     VSET_VSEW \
-    vfmv.s.f v1, f1; \
+    vfmv.s.f v8, f1; \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
-    inst v14, v2, v1; \
+    inst v24, v16, v8; \
   )
 
 // For Widen-Floating instruction that order of oprands is 'vd(2*SEW), vs2(SEW), vs1(2*SEW)'
 #define TEST_W_FP_WV_OP_DS( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_WVWF_FP( testnum, v14, flags, val1, val2,  \
+  TEST_CASE_WVWF_FP( testnum, v24, flags, val1, val2,  \
     fld f0, 0(a0); \
     flw f1, 8(a0); \
     flw f4, 8(a0); \
     VSET_DOUBLE_VSEW \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     VSET_VSEW \
-    vfmv.s.f v2, f1; \
+    vfmv.s.f v16, f1; \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
-    inst v14, v2, v1; \
+    inst v24, v16, v8; \
   )
 
 // For Widen-Floating instruction that order of oprands is 'vd(2*SEW), vs2(2*SEW), vs1(SEW)'
 #define TEST_W_FP_WF_OP( testnum, inst, finst, flags, val1, val2 ) \
-  TEST_CASE_WVWF_FP( testnum, v14, flags, val1, val2,  \
+  TEST_CASE_WVWF_FP( testnum, v24, flags, val1, val2,  \
     fld f0, 0(a0); \
     flw f1, 8(a0); \
     flw f4, 8(a0); \
     VSET_DOUBLE_VSEW \
-    vfmv.s.f v2, f0; \
+    vfmv.s.f v16, f0; \
     VSET_VSEW \
     fcvt.d.s f4, f4; \
     finst f2, f0, f4; \
-    inst v14, v2, f1; \
+    inst v24, v16, f1; \
   )
 
 #define TEST_FP_INT_OP( testnum, inst, flags, result, val ) \
@@ -1306,10 +1306,10 @@ test_ ## testnum: \
   )
 
 #define TEST_W_FP_INT_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE_FP_INT( testnum, v14, flags, __riscv_double_vsew, result, val,   \
+  TEST_CASE_FP_INT( testnum, v24, flags, __riscv_double_vsew, result, val,   \
     flw f0, 0(a0); \
-    vfmv.s.f v1, f0; \
-    inst v14, v1; \
+    vfmv.s.f v8, f0; \
+    inst v24, v8; \
   )
 
 #define TEST_N_FP_INT_OP( testnum, inst, flags, result, val ) \
@@ -1330,11 +1330,11 @@ test_ ## testnum: \
   )
 
 #define TEST_W_INT_FP_OP( testnum, inst, flags, result, val ) \
-  TEST_W_CASE_INT_FP( testnum, v14, flags, result, val,   \
+  TEST_W_CASE_INT_FP( testnum, v24, flags, result, val,   \
     li x7, MASK_VSEW(val); \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     fld f2, 0(a0); \
-    inst v14, v1; \
+    inst v24, v8; \
   )
 
 #define TEST_N_INT_FP_OP( testnum, inst, flags, result, val ) \

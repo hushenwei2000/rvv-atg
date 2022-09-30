@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-import re
+from scripts.create_test_floating.create_test_common import valid_aligned_regs
 
 instr = 'vfwredsum'
 rs1_val = ["0x00000000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000",
@@ -10,52 +10,40 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
            "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", ]
 
 
-def generate_macros(f):
-    for n in range(2,32):
-        if (n == 14):
-            continue;
-        print("#define TEST_W_FP_WV_OP_DS_1%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
-        TEST_CASE_WVWF_FP( testnum, v14, flags, val1, val2, \\\n\
+def generate_macros(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(1,32):
+        if n % lmul != 0: continue
+        rs2, rd = valid_aligned_regs(n)
+        print("#define TEST_W_FP_WV_OP_DS_1%d( testnum, inst, finst, flags, val1, val2 ) \\\n\
+        TEST_CASE_WVWF_FP( testnum, v%d, flags, val1, val2, \\\n\
             fld f0, 0(a0); \\\n\
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
             VSET_DOUBLE_VSEW \\\n\
-            vfmv.s.f v%d, f0;"%n+" \\\n\
+            vfmv.s.f v%d, f0; \\\n\
             VSET_VSEW \\\n\
-            vfmv.s.f v1, f1; \\\n\
+            vfmv.s.f v%d, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v14, v1, v%d;"%n+" \\\n\
-        )",file=f)
-
-    for n in range(4,32,2):
-        print("#define TEST_W_FP_WV_OP_DS_rd%d( testnum, inst, finst, flags, val1, val2 )"%n + " \\\n\
-        TEST_CASE_WVWF_FP( testnum, v%d, flags, val1, val2,"%n+" \\\n\
+            inst v%d, v%d, v%d; \\\n\
+        )"%(n, rd, n, rs2, rd, rs2, n),file=f)
+    for n in range(1,32):
+        if n % (2*lmul) != 0: continue
+        rs1, rs2 = valid_aligned_regs(n)
+        print("#define TEST_W_FP_WV_OP_DS_rd%d( testnum, inst, finst, flags, val1, val2 ) \\\n\
+        TEST_CASE_WVWF_FP( testnum, v%d, flags, val1, val2, \\\n\
             fld f0, 0(a0); \\\n\
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
             VSET_DOUBLE_VSEW \\\n\
-            vfmv.s.f v1, f0; \\\n\
+            vfmv.s.f v%d, f0; \\\n\
             VSET_VSEW \\\n\
-            vfmv.s.f v2, f1; \\\n\
+            vfmv.s.f v%d, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
             finst f2, f0, f4; \\\n\
-            inst v%d, v2, v1;"%n+" \\\n\
-        )",file=f)
-
-    print("#define TEST_W_FP_WV_OP_DS_rd2( testnum, inst, finst, flags, val1, val2 ) \\\n\
-        TEST_CASE_WVWF_FP( testnum, v2, flags, val1, val2, \\\n\
-            fld f0, 0(a0); \\\n\
-            flw f1, 8(a0); \\\n\
-            flw f4, 8(a0); \\\n\
-            VSET_DOUBLE_VSEW \\\n\
-            vfmv.s.f v14, f0; \\\n\
-            VSET_VSEW \\\n\
-            vfmv.s.f v3, f1; \\\n\
-            fcvt.d.s f4, f4; \\\n\
-            finst f2, f0, f4; \\\n\
-            inst v2, v3, v14; \\\n\
-        )",file=f)
+            inst v%d, v%d, v%d; \\\n\
+        )"%(n, n, rs1, rs2, n, rs2, rs1),file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -63,7 +51,7 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f):
+def generate_tests(f, lmul):
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests",file=f)
@@ -86,16 +74,15 @@ def generate_tests(f):
     print("  # vfwredosum Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
-        k = i % 15 + 1
-        n += 1
-        print("  TEST_W_FP_WV_OP_DS_rd%d( "%(k*2)+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
-        
-        k = i % 30 + 2
-        if (k == 14):
-            continue;
+    for i in range(len(rs1_val)):
+        k = i % 31 + 1
+        if k % lmul != 0: continue
         n += 1
         print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+
+        if k % (2*lmul) != 0: continue
+        n += 1
+        print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
 
 
 def print_ending(f):
@@ -187,10 +174,10 @@ def create_first_test_vfwredsum_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir,
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f)
+    generate_tests(f, lmul)
 
     # Common const information
     print_ending(f)

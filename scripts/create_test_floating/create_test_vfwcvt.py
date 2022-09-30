@@ -1,37 +1,32 @@
 import logging
 import os
 from scripts.test_common_info import *
-import re
+from scripts.create_test_floating.create_test_common import valid_aligned_regs
 
 instr = 'vfwcvt'
 rs2_val = ['0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000', '0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000', ]
 
 
-def generate_macros(f):
-    for n in range(2,32):
-        if (n == 14):
-            continue;
-        print("#define TEST_W_FP_INT_OP_2%d( testnum, inst, flags, result, val )"%n+" \\\n\
-        TEST_CASE_FP_INT( testnum, v14, flags, __riscv_double_vsew, result, val, \\\n\
+def generate_macros(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(1,32):
+        if n % lmul != 0: continue
+        rd = valid_aligned_regs(n)[0]
+        print("#define TEST_W_FP_INT_OP_2%d( testnum, inst, flags, result, val ) \\\n\
+        TEST_CASE_FP_INT( testnum, v%d, flags, __riscv_double_vsew, result, val, \\\n\
             flw f0, 0(a0); \\\n\
-            vfmv.s.f v%d, f0;"%n+" \\\n\
-            inst v14, v%d;"%n+" \\\n\
-        )",file=f)
-
-    for n in range(4,32,2):
-        print("#define TEST_W_FP_INT_OP_rd%d( testnum, inst, flags, result, val )"%n+" \\\n\
-        TEST_CASE_FP_INT( testnum, v%d, flags, __riscv_double_vsew, result, val,"%n+" \\\n\
+            vfmv.s.f v%d, f0; \\\n\
+            inst v%d, v%d; \\\n\
+        )"%(n, rd, n, rd, n),file=f)
+    for n in range(1,32):
+        if n % (2*lmul) != 0: continue
+        rs2 = valid_aligned_regs(n)[0]
+        print("#define TEST_W_FP_INT_OP_rd%d( testnum, inst, flags, result, val ) \\\n\
+        TEST_CASE_FP_INT( testnum, v%d, flags, __riscv_double_vsew, result, val, \\\n\
             flw f0, 0(a0); \\\n\
-            vfmv.s.f v1, f0; \\\n\
-            inst v%d, v1;"%n+" \\\n\
-        )",file=f)
-
-    print("#define TEST_W_FP_INT_OP_rd2( testnum, inst, flags, result, val ) \\\n\
-        TEST_CASE_FP_INT( testnum, v2, flags, __riscv_double_vsew, result, val, \\\n\
-            flw f0, 0(a0); \\\n\
-            vfmv.s.f v14, f0; \\\n\
-            inst v2, v14; \\\n\
-        )",file=f)
+            vfmv.s.f v%d, f0; \\\n\
+            inst v%d, v%d; \\\n\
+        )"%(n, n, rs2, n, rs2),file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -39,7 +34,7 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f):
+def generate_tests(f, lmul):
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s.xu.f.v (float to double-width unsigned integer) tests"%instr,file=f)
@@ -102,15 +97,14 @@ def generate_tests(f):
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(len(rs2_val)):     
-        k = i % 15 + 1
-        n += 1
-        print("  TEST_W_FP_INT_OP_rd%d( "%(k*2)+str(n)+",  %s.xu.f.v, 0xff100, 5201314, "%instr+rs2_val[i]+" );",file=f)
-        
-        k = i % 30 + 2
-        if (k == 14):
-            continue;
+        k = i % 31 + 1
+        if k % lmul != 0: continue
         n += 1
         print("  TEST_W_FP_INT_OP_2%d( "%k+str(n)+",  %s.xu.f.v, 0xff100, 5201314, "%instr+rs2_val[i]+" );",file=f)
+        
+        if k % (2*lmul) != 0: continue
+        n += 1
+        print("  TEST_W_FP_INT_OP_rd%d( "%k+str(n)+",  %s.xu.f.v, 0xff100, 5201314, "%instr+rs2_val[i]+" );",file=f)
 
 
 def print_ending(f):
@@ -202,10 +196,10 @@ def create_first_test_vfwcvt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f)
+    generate_tests(f, lmul)
 
     # Common const information
     print_ending(f)
