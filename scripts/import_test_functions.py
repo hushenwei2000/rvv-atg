@@ -103,7 +103,7 @@ from scripts.create_test_floating.create_test_vfrdiv import *
 from scripts.create_test_floating.create_test_vfmacc import *
 from scripts.create_test_floating.create_test_vfmadd import *
 from scripts.create_test_floating.create_test_vfmax import *
-# from scripts.create_test_floating.create_test_vfmerge import *
+from scripts.create_test_floating.create_test_vfmerge import *
 from scripts.create_test_floating.create_test_vfmin import *
 from scripts.create_test_floating.create_test_vfmsac import *
 from scripts.create_test_floating.create_test_vfmsub import *
