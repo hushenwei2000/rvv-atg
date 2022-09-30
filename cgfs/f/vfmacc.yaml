@@ -11,4 +11,4 @@ vfmacc:
       <<: *v_regs
     val_comb:
       abstract_comb:
-        'ibm_b1(32, 32, "vfmacc", 2, rvv_sew = 32)': 0
+        'ibm_b1(vsew, vsew, "vfmacc", 2, rvv_sew = vsew)': 0
