@@ -141,3 +141,52 @@ from scripts.create_test_permute.create_test_vrgatherei16 import *
 from scripts.create_test_permute.create_test_vslide1 import *
 from scripts.create_test_permute.create_test_vfslide import *
 from scripts.create_test_permute.create_test_vmre import *
+
+# load 
+from scripts.create_test_loadstore.create_test_vle8 import *
+from scripts.create_test_loadstore.create_test_vle16 import *
+from scripts.create_test_loadstore.create_test_vle32 import *
+from scripts.create_test_loadstore.create_test_vle64 import *
+from scripts.create_test_loadstore.create_test_vlse8 import *
+from scripts.create_test_loadstore.create_test_vlse16 import *
+from scripts.create_test_loadstore.create_test_vlse32 import *
+from scripts.create_test_loadstore.create_test_vlse64 import *
+from scripts.create_test_loadstore.create_test_vlre8 import *
+from scripts.create_test_loadstore.create_test_vlre16 import *
+from scripts.create_test_loadstore.create_test_vlre32 import *
+from scripts.create_test_loadstore.create_test_vlsege8 import *
+from scripts.create_test_loadstore.create_test_vlsege16 import *
+from scripts.create_test_loadstore.create_test_vlsege32 import *
+from scripts.create_test_loadstore.create_test_vlssege8 import *
+from scripts.create_test_loadstore.create_test_vlssege16 import *
+from scripts.create_test_loadstore.create_test_vlssege32 import *
+from scripts.create_test_loadstore.create_test_vluxei8 import *
+from scripts.create_test_loadstore.create_test_vluxei16 import *
+from scripts.create_test_loadstore.create_test_vluxei32 import *
+from scripts.create_test_loadstore.create_test_vluxsegei8 import *
+from scripts.create_test_loadstore.create_test_vluxsegei16 import *
+from scripts.create_test_loadstore.create_test_vluxsegei32 import *
+
+#store
+from scripts.create_test_loadstore.create_test_vse8 import *
+from scripts.create_test_loadstore.create_test_vse16 import *
+from scripts.create_test_loadstore.create_test_vse32 import *
+from scripts.create_test_loadstore.create_test_vs1r import *
+from scripts.create_test_loadstore.create_test_vs2r import *
+from scripts.create_test_loadstore.create_test_vs4r import *
+from scripts.create_test_loadstore.create_test_vs8r import *
+from scripts.create_test_loadstore.create_test_vsse8 import *
+from scripts.create_test_loadstore.create_test_vsse16 import *
+from scripts.create_test_loadstore.create_test_vsse32 import *
+from scripts.create_test_loadstore.create_test_vssege8 import *
+from scripts.create_test_loadstore.create_test_vssege16 import *
+from scripts.create_test_loadstore.create_test_vssege32 import *
+from scripts.create_test_loadstore.create_test_vsssege8 import *
+from scripts.create_test_loadstore.create_test_vsssege16 import *
+from scripts.create_test_loadstore.create_test_vsssege32 import *
+from scripts.create_test_loadstore.create_test_vsuxei8 import *
+from scripts.create_test_loadstore.create_test_vsuxei16 import *
+from scripts.create_test_loadstore.create_test_vsuxei32 import *
+from scripts.create_test_loadstore.create_test_vsuxsegei8 import *
+from scripts.create_test_loadstore.create_test_vsuxsegei16 import *
+from scripts.create_test_loadstore.create_test_vsuxsegei32 import *

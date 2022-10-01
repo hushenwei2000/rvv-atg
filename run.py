@@ -19,7 +19,7 @@ def parse_args(cwd):
     parser.add_argument("--xlen", type=int, default="64",
                         help="XLEN Value for the ISA: \
                             32, 64(default)")
-    parser.add_argument("--flen", type=int, default="32",
+    parser.add_argument("--flen", type=int, default="-1",
                         help="FLEN Value for the ISA: \
                             32(default), 64")
     parser.add_argument("--vlen", type=int, default="128",
@@ -158,12 +158,52 @@ def run_mask(cwd, args, cgf, output_dir):
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
                                                       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
+def run_loadstore(cwd, args, cgf, output_dir):
+    # 1. Create empty test file
+    empty_test = create_empty_test(
+        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir)
+
+    # 2. Use empty tests to generate coverage report
+    (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
+
+    # 3. Generate test with not-filled result
+    first_test = create_first_test(
+        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
+
+    # 4-1. Run sail and riscof coverage and extract true result from isac_log
+    (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
+                                                      output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
+
+    # 4-2. Or run spike to generate commit info log
+    # spike_first_log = run_spike(args.i, cwd, cgf,
+    #           output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
+
+    # 5-1. Replace old result with true results using sail and isac log
+    des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
+
+    # 5-2. Or use spike log
+    # des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
+
+    # 6. Run final riscof coverage
+    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+
+    # 7. Run spike test generated ref_final.elf
+    run_spike(args.i, cwd, cgf,
+          output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+
 
 def main():
     # Full path of current dir
     cwd = os.path.dirname(os.path.realpath(__file__))
     os.environ["RVV_ATG_ROOT"] = cwd
     args = parse_args(cwd)
+    if args.flen == -1:
+        if args.vsew == 32 or args.vsew == 64:
+            args.flen = args.vsew
+        else:
+            args.flen = 32
     setup_logging(args.verbose)
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, cwd, output_dir)
@@ -177,6 +217,8 @@ def main():
         run_integer(cwd, args, cgf,  output_dir)
     elif args.t == "m" or args.t == "p":
         run_mask(cwd, args, cgf, output_dir)
+    elif args.t == "l":
+        run_loadstore(cwd, args, cgf, output_dir)
 
 
 if __name__ == "__main__":

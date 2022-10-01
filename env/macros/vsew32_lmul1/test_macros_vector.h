@@ -202,8 +202,8 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
-    VMVXS_AND_MASK_EEW( x15, v15, eew ) \
-    VMVXS_AND_MASK_EEW( x16, v16, eew ) \
+    VMVXS_AND_MASK_EEW( x15, v9, eew ) \
+    VMVXS_AND_MASK_EEW( x16, v10, eew ) \
     VSET_VSEW \
     bne x14, x7, fail; \
     bne x15, x8, fail; \
@@ -1007,15 +1007,15 @@ test_ ## testnum: \
   )
 
 #define TEST_VLSEG3_OP( testnum, inst, eew, result1, result2, result3, base ) \
-  TEST_CASE_VLSEG3( testnum, v14, eew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
     la  x1, base; \
-    inst v14, (x1); \
+    inst v8, (x1); \
   )
 
 #define TEST_VLSEG1_OP( testnum, inst, eew, result, base ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v8, result,  \
     la  x1, base; \
-    inst v14, (x1); \
+    inst v8, (x1); \
   )
 
 #define TEST_VLRE2_OP( testnum, inst, eew, result1, result2, base ) \
@@ -1031,25 +1031,25 @@ test_ ## testnum: \
   )
 
 #define TEST_VLSSEG3_OP( testnum, inst, eew, result1, result2, result3, stride, base ) \
-  TEST_CASE_VLSEG3( testnum, v14, eew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
     la  x1, base; \
     li  x2, stride; \
-    inst v14, (x1), x2; \
+    inst v8, (x1), x2; \
   )
 
 #define TEST_VLSSEG1_OP( testnum, inst, eew, result, stride, base ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v8, result,  \
     la  x1, base; \
     li  x2, stride; \
-    inst v14, (x1), x2; \
+    inst v8, (x1), x2; \
   )
 
 #define TEST_VLXSEG3_OP( testnum, inst, index_eew, result1, result2, result3, base_data, base_index ) \
-  TEST_CASE_VLSEG3( testnum, v14, __riscv_vsew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \
     la  x1, base_data; \
     la  x6, base_index; \
     MK_VLE_INST(index_eew) v2, (x6); \
-    inst v14, (x1), v2; \
+    inst v8, (x1), v2; \
   )
 
 #define TEST_VLXSEG1_OP( testnum, inst, index_eew, result, base_data, base_index ) \
@@ -1061,7 +1061,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, base ) \
-  TEST_CASE_VLSEG3( testnum, v14, eew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
     la  x1, base; \
     li x7, MASK_EEW(result1, eew); \
     li x8, MASK_EEW(result2, eew); \
@@ -1072,7 +1072,7 @@ test_ ## testnum: \
     vmv.v.x v3, x9; \
     VSET_VSEW \
     store_inst v1, (x1); \
-    load_inst v14, (x1); \
+    load_inst v8, (x1); \
   )
 
 
@@ -1088,7 +1088,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VSSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, stride, base ) \
-  TEST_CASE_VLSEG3( testnum, v14, eew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
     la  x1, base; \
     li  x2, stride; \
     li x7, MASK_EEW(result1, eew); \
@@ -1100,7 +1100,7 @@ test_ ## testnum: \
     vmv.v.x v3, x9; \
     VSET_VSEW \
     store_inst v1, (x1), x2; \
-    load_inst v14, (x1), x2; \
+    load_inst v8, (x1), x2; \
   )
 
 #define TEST_VSSSEG1_OP( testnum, load_inst, store_inst, eew, result, stride, base ) \
@@ -1116,7 +1116,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VSXSEG3_OP( testnum, load_inst, store_inst, index_eew, result1, result2, result3, base_data, base_index ) \
-  TEST_CASE_VLSEG3( testnum, v14, __riscv_vsew, result1, result2, result3,  \
+  TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \
     la  x1, base_data; \
     la  x6, base_index; \
     MK_VLE_INST(index_eew) v5, (x6); \
@@ -1127,7 +1127,7 @@ test_ ## testnum: \
     vmv.v.x v2, x8; \
     vmv.v.x v3, x9; \
     store_inst v1, (x1), v5; \
-    load_inst v14, (x1), v5; \
+    load_inst v8, (x1), v5; \
   )
 
 #define TEST_VSXSEG1_OP( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \
