@@ -1,3 +1,4 @@
+import re
 def print_common_header(instr, f):
     print("#----------------------------------------------------------------------------- \n\
     # %s.S\n\
@@ -77,6 +78,25 @@ def print_common_ending(f):
     RVTEST_DATA_END\n\
     ", file=f)
 
+def extract_operands(f, rpt_path):
+    rs1_val = []
+    rs2_val = []
+    f = open(rpt_path)
+    line = f.read()
+    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
+    rs1_val_10 = matchObj.findall(line)
+    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
+               for x in rs1_val_10]
+    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
+    rs2_val_10 = matchObj.findall(line)
+    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
+               for x in rs2_val_10]
+    f.close()
+    return rs1_val, rs2_val
+
+def is_overlap(rd, rd_mul, rs, rs_mul):
+    return not ((rd > rs + rs_mul - 1) or (rd + rd_mul - 1 < rs))
+
 def print_data_width_prefix(f, vsew):
     if vsew == 8:
         print(".byte", end="\t", file=f)
@@ -155,6 +175,112 @@ def print_load_ending(f):
     idx64dat5:  .word 0x00000008\n\
     idx64dat6:  .word 0x00000000\n\
     idx64dat7:  .word 0x0000000c\n\
+    idx64dat8:  .word 0x00000000\n\
+    idx64dat9:  .zero 5201314\n\
+    \n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_DATA_END\n\
+    ", file=f)
+
+def print_loaddword_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_PASSFAIL\n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
+    .type tdat, @object\n\
+    .size tdat, 4128\n\
+    tdat:\n\
+    tdat1:  .dword 0x00ff00ff\n\
+    tdat2:  .dword 0xff00ff00\n\
+    tdat3:  .dword 0x0ff00ff0\n\
+    tdat4:  .dword 0xf00ff00f\n\
+    tdat5:  .dword 0x00ff00ff\n\
+    tdat6:  .dword 0xff00ff00\n\
+    tdat7:  .dword 0x0ff00ff0\n\
+    tdat8:  .dword 0xf00ff00f\n\
+    tdat9:  .zero 4064\n\
+    tdat10:  .dword 0x00ff00ff\n\
+    tdat11:  .dword 0xff00ff00\n\
+    tdat12:  .dword 0x0ff00ff0\n\
+    tdat13:  .dword 0xf00ff00f\n\
+    tdat14:  .dword 0x00ff00ff\n\
+    tdat15:  .dword 0xff00ff00\n\
+    tdat16:  .dword 0x0ff00ff0\n\
+    tdat17:  .dword 0xf00ff00f\n\
+    \n\
+    idx8dat:\n\
+    idx8dat1:  .byte 0\n\
+    idx8dat2:  .byte 8\n\
+    idx8dat3:  .byte 16\n\
+    idx8dat4:  .byte 24\n\
+    idx8dat5:  .word 0x00000000\n\
+    idx8dat6:  .word 0x00000000\n\
+    idx8dat7:  .word 0x00000000\n\
+    idx8dat8:  .zero 5201314\n\
+    \n\
+    idx16dat:\n\
+    idx16dat1:  .word 0x00080000\n\
+    idx16dat2:  .word 0x00180010\n\
+    idx16dat3:  .word 0x00280020\n\
+    idx16dat4:  .word 0x00380030\n\
+    idx16dat5:  .zero 5201314\n\
+    \n\
+    idx32dat:\n\
+    idx32dat1:  .word 0x00000000\n\
+    idx32dat2:  .word 0x00000008\n\
+    idx32dat3:  .word 0x00000010\n\
+    idx32dat4:  .word 0x00000018\n\
+    idx32dat5:  .zero 5201314\n\
+    \n\
+    idx64dat:\n\
+    idx64dat1:  .word 0x00000000\n\
+    idx64dat2:  .word 0x00000000\n\
+    idx64dat3:  .word 0x00000008\n\
+    idx64dat4:  .word 0x00000000\n\
+    idx64dat5:  .word 0x00000010\n\
+    idx64dat6:  .word 0x00000000\n\
+    idx64dat7:  .word 0x00000018\n\
     idx64dat8:  .word 0x00000000\n\
     idx64dat9:  .zero 5201314\n\
     \n\

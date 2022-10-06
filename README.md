@@ -1,5 +1,12 @@
 # RISC-V Vector Autometic Tests Generator
 
+## Prerequisite
+1. RVV Compiler
+   1. Set `gcc` and `objdump` variables in two files: `scripts/run_riscof_coverage.py` and `scripts/run_spike.py`
+2. RISCV-ISAC RVV Support
+   1. Install `https://github.com/hushenwei2000/riscv-isac-rvv`
+3. RISCOF
+   1. Just install official RISCOF
 ## Usage
 
 ```
@@ -17,9 +24,10 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 vlen: 128, 256, 512, 1024
 elen: = vlen
 vsew: 8, 16, 32, 64
+lmul: 1, 4(except load/store instr.)
 
 **Future support**
-lmul: 1/8, 1/4, 1/2, 1(currently), 2, 4, 8
+lmul: 1/8, 1/4, 1/2, 2,  8
 vta: 0(currently), 1
 vma: 0(currently), 1
 
@@ -192,16 +200,16 @@ note:
 
 | Config                        | vfadd | vfclas | *vfcvt* | vfdiv | vfmacc | vfmadd | vfmax | vfmin | vfmsac | vfmsub | vfmul | `vfncvt` | vfnmacc | vfnmadd | vfnmsac | vfnmsub | vfrdiv | vfrec7 | vfredmax | vfredmin |
 | ----------------------------- | ----- | ------ | ------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | -------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
-| vlen128 vsew32 lmul1(default) | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P X     | P P     | P X     | P P    | P P    | P P      | P P      |
-| vlen128 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | X X     | P P     | X X     | P P    | P P    | P P      | P P      |
-| vlen256 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P X     | P P     | P X     | P P    | P P    | P P      | P P      |
-| vlen256 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | X X     | P P     | X X     | P P    | P P    | P P      | P P      |
-| vlen512 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P X     | P P     | P X     | P P    | P P    | P P      | P P      |
-| vlen512 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | X X     | P P     | X X     | P P    | P P    | P P      | P P      |
-| vlen1024 vsew32 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P X     | P P     | P X     | P P    | P P    | P P      | P P      |
-| vlen1024 vsew64 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | X X     | P P     | X X     | P P    | P P    | P P      | P P      |
+| vlen128 vsew32 lmul1(default) | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen128 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen256 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen256 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen512 vsew32 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen512 vsew64 lmul1          | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen1024 vsew32 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen1024 vsew64 lmul1         | P P   | P P    | -       | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -        | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
 
-> `P` indicates *pass*, while `X` indicates *fail*. And `-` indicates *have not tested yet*.
+>  vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support
 
 #### vfredosum, vfredusum, vfrsqrt7, vfrsub, vfsgnj, vfsgnjn, vfsgnjx, vfsqrt, vfsub
 
@@ -274,26 +282,25 @@ note:
 ### LOAD
 
 
-|                                                                                                                                                                            | vle8 | vle16 | vle32 | vle64 | vlre8 | vlre16 | vlre32 | vlse8 | vlse16 | vlse32 | vlsege8 | vlsege16 | vlsege32 | vlssege8 | vlssege16 | vlssege32 |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ----- | ----- | ----- | ----- | ------ | ------ | ----- | ------ | ------ | ------- | -------- | -------- | -------- | --------- | --------- |
-| vlen128 vsew8 lmul1                                                                                                                                                        | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | -        | P P      | -         |           |
-| vlen128 vsew16 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | X X      | P P      | X X       | X X       |
-| vlen128 vsew32 lmul1(default)                                                                                                                                              | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      | P P       | P P       |
-| vlen128 vsew64 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen256 vsew8 lmul1                                                                                                                                                        | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | -        | P P      |           |           |
-| vlen256 vsew16 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | X X      | P P      |           |           |
-| vlen256 vsew32 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen256 vsew64 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen512 vsew8 lmul1                                                                                                                                                        | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | -        | P P      |           |           |
-| vlen512 vsew16 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | X X      | P P      |           |           |
-| vlen512 vsew32 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen512 vsew64 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen1024 vsew8 lmul1                                                                                                                                                       | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | -        | P P      |           |           |
-| vlen1024 vsew16 lmul1                                                                                                                                                      | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | X X      | P P      | X X       | X X       |
-| vlen1024 vsew32 lmul1                                                                                                                                                      | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| vlen1024 vsew64 lmul1                                                                                                                                                      | P P  | P P   | P P   | P P   | P P   | P P    | P P    | P P   | P P    | P P    | P P     | P P      | P P      | P P      |           |           |
-| *vlsege32 not support vsew=16<br /> because spike require not pass                                                                                                       |      |       |       |       |       |        |        |       |        |        |         |          |          |          |           |           |
-| *vlssege8/16/32 now just support vlen=128<br /> and vsew=32, <br />guess that cause is vl not equals to 4<br />(maybe about index set)<br />and vsew> defined-sew(8/16/32) |      |       |       |       |       |        |        |       |        |        |         |          |          |          |           |           |
+|                               | vle8/16/32/64 |  vlre8/16/32  | vlse8/16/32 |vls(s)ege8 |vls(s)ege16|vls(s)ege32|vluxei8/16/32 |
+| ------------------------------| ----          |  -----        | -----       |  -------  | --------  | --------  | -------      |
+| vlen128 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | X X       | X X       |   P P        ｜
+| vlen128 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen128 vsew32 lmul1(default) | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen128 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen256 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen256 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen256 vsew32 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen256 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen512 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen512 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen512 vsew32 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen512 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen1024 vsew8 lmul1          | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen1024 vsew16 lmul1         | P P           |  P P          | P P         |  P P      | P P       | X X       |   P P        ｜
+| vlen1024 vsew32 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+| vlen1024 vsew64 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P        ｜
+
 
 ## Code Explain
 ### Register Alignment

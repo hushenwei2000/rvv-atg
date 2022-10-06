@@ -87,7 +87,9 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
+    emul = 16 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -109,14 +111,14 @@ def generate_tests(f, rs1_val, rs2_val):
    
     for i in range(100):     
         k = i%31+1
-        n+=1
-        print("  TEST_VSSE_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"0 + tdat"+" );",file=f)
+        if k % emul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
+            n+=1
+            print("  TEST_VSSE_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"0 + tdat"+" );",file=f)
     
         k = i%30+2
-        if(k == 31):
-            continue;
-        n +=1
-        print("  TEST_VSSE_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"-8 + tdat8"+" );",file=f)
+        if k % emul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
+            n +=1
+            print("  TEST_VSSE_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"-8 + tdat8"+" );",file=f)
 
 
 
@@ -161,7 +163,7 @@ def create_first_test_vsse16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)

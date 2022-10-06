@@ -980,13 +980,13 @@ test_ ## testnum: \
   )
 
 #define TEST_VLXEI_OP( testnum, inst, index_eew, result1, result2, base_data, base_index ) \
-  TEST_CASE_LOAD( testnum, v14, __riscv_vsew, result1, result2, \
+  TEST_CASE_LOAD( testnum, v16, __riscv_vsew, result1, result2, \
     la  x1, base_data; \
     la  x6, base_index; \
-    vsetivli x31, 4, MK_EEW(index_eew), m4, tu, mu; \
-    MK_VLE_INST(index_eew) v2, (x6); \
+    vsetvli x31, x0, MK_EEW(index_eew), tu, mu; \
+    MK_VLE_INST(index_eew) v8, (x6); \
     VSET_VSEW_4AVL \
-    inst v14, (x1), v2; \
+    inst v16, (x1), v8; \
     VSET_VSEW \
   )
 

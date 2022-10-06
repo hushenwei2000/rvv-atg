@@ -172,26 +172,26 @@ def run_loadstore(cwd, args, cgf, output_dir):
         args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
 
     # 4-1. Run sail and riscof coverage and extract true result from isac_log
-    (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
+    # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
+                                                    #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=False)
 
     # 4-2. Or run spike to generate commit info log
     # spike_first_log = run_spike(args.i, cwd, cgf,
     #           output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.vsew, use_fail_macro=False)
 
     # 5-1. Replace old result with true results using sail and isac log
-    des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
+    # des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
 
     # 5-2. Or use spike log
     # des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+                                                      output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
     # 7. Run spike test generated ref_final.elf
     run_spike(args.i, cwd, cgf,
-          output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+          output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
 def main():
