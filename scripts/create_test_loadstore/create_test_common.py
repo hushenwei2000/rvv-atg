@@ -16,8 +16,29 @@ def extract_operands(f, rpt_path):
     f.close()
     return rs1_val, rs2_val
 
-def generate_macros_vlseg(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+def generate_vlseg3_macro(f, emul):
+    print("#define TEST_CASE_VLSEG3( testnum, testreg, eew, correctval1, correctval2, correctval3, code... ) \\\n\
+            test_ ## testnum: \\\n\
+                code; \\\n\
+                li x7, MASK_EEW(correctval1, eew); \\\n\
+                li x8, MASK_EEW(correctval2, eew); \\\n\
+                li x9, MASK_EEW(correctval3, eew); \\\n\
+                li TESTNUM, testnum; \\\n\
+                vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+                VMVXS_AND_MASK_EEW( x14, testreg, eew ) \\\n\
+                VMVXS_AND_MASK_EEW( x15, v%d, eew )"%(8+emul) + " \\\n\
+                VMVXS_AND_MASK_EEW( x16, v%d, eew )"%(8+emul*2) + "\\\n\
+                VSET_VSEW \\\n\
+                bne x14, x7, fail; \\\n\
+                bne x15, x8, fail; \\\n\
+                bne x16, x9, fail; \\\n\
+        ", file=f)
+
+def generate_macros_vlseg(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    # testreg is v8
+    generate_vlseg3_macro(f, emul)
     for n in range(1, 32):
         print("#define TEST_VLSEG1_OP_1%d( testnum, inst, eew, result, base )"%n + " \\\n\
             TEST_CASE( testnum, v8, result, \\\n\
@@ -26,15 +47,18 @@ def generate_macros_vlseg(f, lmul):
         )", file=f)
     for n in range(1, 31):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % (2*lmul) == 0:
+        if n % emul == 0:
             print("#define TEST_VLSEG1_OP_rd%d( testnum, inst, eew, result, base )"%n + " \\\n\
                 TEST_CASE( testnum, v%d, result, "%n + "\\\n\
                     la  x2, base; \\\n\
                     inst v%d, (x2); "%n + "\\\n\
             ) ", file=f)
 
-def generate_macros_vlsseg(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+def generate_macros_vlsseg(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    # testreg is v8
+    generate_vlseg3_macro(f, emul)
     for n in range(1, 32):
         print("#define TEST_VLSSEG1_OP_1%d(  testnum, inst, eew, result, stride, base )"%n + " \\\n\
             TEST_CASE( testnum, v8, result, \\\n\
@@ -44,7 +68,7 @@ def generate_macros_vlsseg(f, lmul):
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % (2*lmul) == 0:
+        if n % emul == 0:
             print("#define TEST_VLSSEG1_OP_rd%d(  testnum, inst, eew, result, stride, base )"%n + " \\\n\
                 TEST_CASE( testnum, v%d, result, "%n + "\\\n\
                     la  x1, base; \\\n\
@@ -127,3 +151,43 @@ def generate_macros_vlxei(f, vsew, lmul):
             inst v16, (x31), v8; " + "\\\n\
             VSET_VSEW \\\n\
     )", file=f)
+
+def generate_macros_vlxeiseg(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    # testreg is v8
+    generate_vlseg3_macro(f, emul)
+    for n in range(1,31):
+        print("#define TEST_VLXSEG1_OP_1%d( testnum, inst, index_eew, result, base_data, base_index  )"%n + " \\\n\
+        TEST_CASE( testnum, v14, result, \\\n\
+            la  x%d, base_data; "%n + " \\\n\
+            la  x31, base_index; \\\n\
+            MK_VLE_INST(index_eew) v2, (x31);    \\\n\
+            inst v14, (x%d), v2 ; "%n + " \\\n\
+        )",file=f)
+
+    for n in range(1,30):
+        if n == 8 or n == 16 or n % emul != 0:
+            continue
+        print("#define TEST_VLXSEG1_OP_rd%d( testnum, inst, index_eew, result, base_data, base_index )"%n + " \\\n\
+        TEST_CASE( testnum, v%d, result, "%n + "\\\n\
+            la  x1, base_data;  \\\n\
+            la  x6, base_index; \\\n\
+            MK_VLE_INST(index_eew) v31, (x6);    \\\n\
+            inst v%d, (x1), v31; "%n + " \\\n\
+        )",file=f)
+
+    print("#define TEST_VLXSEG1_OP_131( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
+        TEST_CASE( testnum, v14, result, \\\n\
+            la  x31, base_data; \\\n\
+            la  x2, base_index; \\\n\
+            MK_VLE_INST(index_eew) v2, (x2);    \\\n\
+            inst v14, (x31), v2 ;  \\\n\
+        )",file=f)
+    print("#define TEST_VLXSEG1_OP_rd30( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
+        TEST_CASE( testnum, v30, result, \\\n\
+            la  x1, base_data;  \\\n\
+            la  x6, base_index; \\\n\
+            MK_VLE_INST(index_eew) v2, (x6);    \\\n\
+            inst v30, (x1), v2 ;  \\\n\
+        )",file=f)

@@ -51,8 +51,8 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         
 
     for i in range(100):     
-        k = i%31+1
-        if k % (2*lmul) == 0 and k + 2 * emul <= 32:
+        k = i%30+1
+        if k % (2*emul) == 0 and k + 2 * emul <= 32:
             n+=1
             print("  TEST_VLSSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+" 4 "+","+"0 + tdat"+" );",file=f)
         
@@ -102,7 +102,7 @@ def create_first_test_vlssege32(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vlsseg(f, lmul)
+    generate_macros_vlsseg(f, lmul, vsew, 32)
 
     # Generate tests
     generate_tests(f, rs1_val, rs2_val, vsew, lmul)

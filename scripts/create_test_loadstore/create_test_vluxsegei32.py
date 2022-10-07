@@ -1,5 +1,6 @@
 import logging
 import os
+from scripts.create_test_loadstore.create_test_common import generate_macros_vlxeiseg
 from scripts.test_common_info import *
 import re
 
@@ -14,88 +15,42 @@ instr5 = 'vluxseg7ei32'
 instr6 = 'vluxseg8ei32'
 
 
-def generate_macros(f):
-    for n in range(1,31):
-        print("#define TEST_VLXSEG1_OP_1%d( testnum, inst, index_eew, result, base_data, base_index  )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
-            la  x%d, base_data; "%n + " \\\n\
-            la  x31, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x31);    \\\n\
-            inst v14, (x%d), v2 ; "%n + " \\\n\
-        )",file=f)
-
-    for n in range(1,30):
-        print("#define TEST_VLXSEG1_OP_rd%d( testnum, inst, index_eew, result, base_data, base_index )"%n + " \\\n\
-        TEST_CASE( testnum, v%d, result, "%n + "\\\n\
-            la  x1, base_data;  \\\n\
-            la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v31, (x6);    \\\n\
-            inst v%d, (x1), v31; "%n + " \\\n\
-        )",file=f)
-
-    print("#define TEST_VLXSEG1_OP_131( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
-            la  x31, base_data; \\\n\
-            la  x2, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x2);    \\\n\
-            inst v14, (x31), v2 ;  \\\n\
-        )",file=f)
-    print("#define TEST_VLXSEG1_OP_rd30( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
-        TEST_CASE( testnum, v30, result, \\\n\
-            la  x1, base_data;  \\\n\
-            la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x6);    \\\n\
-            inst v30, (x1), v2 ;  \\\n\
-        )",file=f)
-
-
-
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
-
-
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
+    emul = 32 / vsew * lmul
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
-        n += 1
-        print("  TEST_VLXSEG1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" , "+"idx32dat"+");", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0x0ff00ff0"+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"12 + tdat"+", "+"idx32dat"+" );", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0x0ff00ff0"+","+"-12 + tdat4"+", "+"idx32dat"+" );", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr4+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr5+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
-        n += 1
-        print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
+        if 2 * emul <= 8 and 2 + 3 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" , "+"idx32dat"+");", file=f)
+        if 3 * emul <= 8 and 8 + 3 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0x0ff00ff0"+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
+        if 4 * emul <= 8 and 8 + 4 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"12 + tdat"+", "+"idx32dat"+" );", file=f)
+        if 5 * emul <= 8 and 8 + 5 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0x0ff00ff0"+","+"-12 + tdat4"+", "+"idx32dat"+" );", file=f)
+        if 6 * emul <= 8 and 8 + 6 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr4+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
+        if 7 * emul <= 8 and 8 + 7 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr5+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
+        if 8 * emul <= 8 and 8 + 8 * emul <= 32:
+            n += 1
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
         
 
     for i in range(100):     
-        k = i%31+1
-        if(k == 31):
-            continue;
-        n+=1
-        print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");",file=f)
+        k = i%30+1
+        if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32:
+            n+=1
+            print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");",file=f)
         
         k = i%30+2
         # if(k == 31):
@@ -143,10 +98,10 @@ def create_first_test_vluxsegei32(xlen, vlen, vsew, lmul, vta, vma, output_dir, 
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros_vlxeiseg(f, lmul, vsew, 32)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)
