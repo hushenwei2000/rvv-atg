@@ -156,14 +156,14 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     # testreg is v8
-    generate_vlseg3_macro(f, emul)
+    generate_vlseg3_macro(f, 1)
     for n in range(1,31):
         print("#define TEST_VLXSEG1_OP_1%d( testnum, inst, index_eew, result, base_data, base_index  )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base_data; "%n + " \\\n\
             la  x31, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x31);    \\\n\
-            inst v14, (x%d), v2 ; "%n + " \\\n\
+            MK_VLE_INST(index_eew) v8, (x31);    \\\n\
+            inst v16, (x%d), v8 ; "%n + " \\\n\
         )",file=f)
 
     for n in range(1,30):
@@ -173,21 +173,21 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
         TEST_CASE( testnum, v%d, result, "%n + "\\\n\
             la  x1, base_data;  \\\n\
             la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v31, (x6);    \\\n\
-            inst v%d, (x1), v31; "%n + " \\\n\
+            MK_VLE_INST(index_eew) v8, (x6);    \\\n\
+            inst v%d, (x1), v8; "%n + " \\\n\
         )",file=f)
 
     print("#define TEST_VLXSEG1_OP_131( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             la  x31, base_data; \\\n\
             la  x2, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x2);    \\\n\
-            inst v14, (x31), v2 ;  \\\n\
+            MK_VLE_INST(index_eew) v8, (x2);    \\\n\
+            inst v16, (x31), v8 ;  \\\n\
         )",file=f)
     print("#define TEST_VLXSEG1_OP_rd30( testnum, inst, index_eew, result, base_data, base_index ) \\\n\
         TEST_CASE( testnum, v30, result, \\\n\
             la  x1, base_data;  \\\n\
             la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x6);    \\\n\
-            inst v30, (x1), v2 ;  \\\n\
+            MK_VLE_INST(index_eew) v8, (x6);    \\\n\
+            inst v30, (x1), v8 ;  \\\n\
         )",file=f)

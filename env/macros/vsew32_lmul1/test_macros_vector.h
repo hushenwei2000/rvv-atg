@@ -1053,11 +1053,11 @@ test_ ## testnum: \
   )
 
 #define TEST_VLXSEG1_OP( testnum, inst, index_eew, result, base_data, base_index ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v16, result,  \
     la  x1, base_data; \
     la  x6, base_index; \
-    MK_VLE_INST(index_eew) v2, (x6); \
-    inst v14, (x1), v2; \
+    MK_VLE_INST(index_eew) v8, (x6); \
+    inst v16, (x1), v8; \
   )
 
 #define TEST_VSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, base ) \
