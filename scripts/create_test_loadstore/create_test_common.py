@@ -191,3 +191,44 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
             MK_VLE_INST(index_eew) v8, (x6);    \\\n\
             inst v30, (x1), v8 ;  \\\n\
         )",file=f)
+
+def generate_macros_vse(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    for n in range(1,30):
+        print("#define TEST_VSE_OP_1%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x%d, base; "%n + " \\\n\
+            li  x30, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x30; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x%d); "%n + "\\\n\
+            load_inst v16, (x%d) ; "%n + " \\\n\
+        )",file=f)
+
+    for n in range(1,31):
+        if n == 8 or n == 16 or n == 31 or n % emul != 0:
+            continue
+        print("#define TEST_VSE_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, " + "\\\n\
+            la  x1, base;  \\\n\
+            li  x30, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v%d, x30;  "%n + "\\\n\
+            VSET_VSEW \\\n\
+            store_inst v%d, (x1); "%n + " \\\n\
+            load_inst v16, (x1); \\\n\
+        )",file=f)
+
+    print("#define TEST_VSE_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x30, base;  \\\n\
+            li  x2, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x2; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x30); \\\n\
+            load_inst v16, (x30) ;  \\\n\
+        )",file=f)
+  

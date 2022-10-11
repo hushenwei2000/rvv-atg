@@ -20,17 +20,16 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 
 ## Support Configuration
 
-**Currently Support**
-vlen: 128, 256, 512, 1024
-elen: = vlen
-vsew: 8, 16, 32, 64
-lmul: 1, 4(except load/store instr.)
+| Parameter | Numbers                 | Current Support|   Note                           |
+| ---       | ---                     | ---            |   ----                           |
+| vlen      |  128 ~ 2^16             |  128 ~ 1024    | Spike now support largest 4096   |
+| vsew      |  8, 16, 32, 64          |  8, 16, 32, 64 |                                  |
+| lmul      |1/8, 1/4, 1/2, 1, 2, 4, 8| 1, 4           |  lmul=4 except load/store        |
+| vta       |  0, 1                   |  0             |                                  |
+| vma       |  0, 1                   |  0             |                                  |
 
-**Future support**
-lmul: 1/8, 1/4, 1/2, 2,  8
-vta: 0(currently), 1
-vma: 0(currently), 1
-
+Notes:
+- elen = vlen
 ## Develop
 
 ### Add a instruction
@@ -302,6 +301,27 @@ note:
 | vlen1024 vsew16 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
 | vlen1024 vsew32 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
 | vlen1024 vsew64 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
+
+### Store
+
+|                               | vse8/16/32/64 |
+| ------------------------------| ------------  |
+| vlen128 vsew8 lmul1           |     P P       |
+| vlen128 vsew16 lmul1          |     P P       |
+| vlen128 vsew32 lmul1(default) |     P P       |
+| vlen128 vsew64 lmul1          |     P P       |
+| vlen256 vsew8 lmul1           |     P P       |
+| vlen256 vsew16 lmul1          |     P P       |
+| vlen256 vsew32 lmul1          |     P P       |
+| vlen256 vsew64 lmul1          |     P P       |
+| vlen512 vsew8 lmul1           |     P P       |
+| vlen512 vsew16 lmul1          |     P P       |
+| vlen512 vsew32 lmul1          |     P P       |
+| vlen512 vsew64 lmul1          |     P P       |
+| vlen1024 vsew8 lmul1          |     P P       |
+| vlen1024 vsew16 lmul1         |     P P       |
+| vlen1024 vsew32 lmul1         |     P P       |
+| vlen1024 vsew64 lmul1         |     P P       |
 
 
 ## Code Explain

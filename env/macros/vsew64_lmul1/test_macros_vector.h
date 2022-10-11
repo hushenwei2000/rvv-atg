@@ -1151,14 +1151,14 @@ test_ ## testnum: \
   )
 
 #define TEST_VSE_OP( testnum, load_inst, store_inst, eew, result, base ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v16, result, \
     la  x1, base; \
     li  x3, result; \
     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
-    vmv.v.x v1, x3; \
+    vmv.v.x v8, x3; \
     VSET_VSEW \
-    store_inst v1, (x1); \
-    load_inst v14, (x1); \
+    store_inst v8, (x1); \
+    load_inst v16, (x1); \
   )
 
 #define TEST_VSXEI_OP( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \
