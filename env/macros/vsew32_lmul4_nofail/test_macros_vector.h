@@ -1027,14 +1027,14 @@ test_ ## testnum: \
 
 
 #define TEST_VSSEG1_OP( testnum, load_inst, store_inst, eew, result, base ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
     vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
-    store_inst v1, (x1); \
-    load_inst v14, (x1); \
+    store_inst v8, (x1); \
+    load_inst v16, (x1); \
   )
 
 #define TEST_VSSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, stride, base ) \

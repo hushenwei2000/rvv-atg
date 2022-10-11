@@ -231,4 +231,126 @@ def generate_macros_vse(f, lmul, vsew, eew):
             store_inst v8, (x30); \\\n\
             load_inst v16, (x30) ;  \\\n\
         )",file=f)
-  
+
+def generate_macros_vsse(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    for n in range(1,29):
+        print("#define TEST_VSSE_OP_1%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x%d, base; "%n + " \\\n\
+            li  x29, stride;  \\\n\
+            li  x30, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x30; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x%d), x29; "%n + "\\\n\
+            load_inst v16, (x%d), x29 ; "%n + " \\\n\
+        )",file=f)
+
+    for n in range(1,31):
+        print("#define TEST_VSSE_OP_rd%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, "%n + "\\\n\
+            la  x1, base;  \\\n\
+            li  x2, stride; \\\n\
+            li  x3, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v%d, x3;  "%n + "\\\n\
+            VSET_VSEW \\\n\
+            store_inst v%d, (x1), x2; "%n + " \\\n\
+            load_inst v16, (x1), x2; \\\n\
+        )",file=f)
+
+    print("#define TEST_VSSE_OP_130( testnum, load_inst, store_inst, eew, result, stride, base ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x30, base;  \\\n\
+            li  x2, stride; \\\n\
+            li  x3, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x3; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x30), x2; \\\n\
+            load_inst v16, (x30), x2 ;  \\\n\
+        )",file=f)
+    print("#define TEST_VSSE_OP_129( testnum, load_inst, store_inst, eew, result, stride, base ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x29, base;  \\\n\
+            li  x2, stride; \\\n\
+            li  x3, result; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x3; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x29), x2; \\\n\
+            load_inst v16, (x29), x2 ;  \\\n\
+        )",file=f)
+
+
+def generate_macros_vsseg(f, lmul, vsew, eew):
+    emul = eew / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    print("#define TEST_CASE_VLSEG3( testnum, testreg, eew, correctval1, correctval2, correctval3, code... ) \\\n\
+            test_ ## testnum: \\\n\
+                code; \\\n\
+                li x7, MASK_EEW(correctval1, eew); \\\n\
+                li x8, MASK_EEW(correctval2, eew); \\\n\
+                li x9, MASK_EEW(correctval3, eew); \\\n\
+                li TESTNUM, testnum; \\\n\
+                vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+                VMVXS_AND_MASK_EEW( x14, testreg, eew ) \\\n\
+                VMVXS_AND_MASK_EEW( x15, v%d, eew )"%(8+emul) + " \\\n\
+                VMVXS_AND_MASK_EEW( x16, v%d, eew )"%(8+emul*2) + "\\\n\
+                VSET_VSEW \\\n\
+                bne x14, x7, fail; \\\n\
+                bne x15, x8, fail; \\\n\
+                bne x16, x9, fail; \\\n\
+        ", file=f)
+    print("#define TEST_VSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, base ) \\\n\
+        TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \\\n\
+            la  x1, base; \\\n\
+            li x7, MASK_EEW(result1, eew); \\\n\
+            li x8, MASK_EEW(result2, eew); \\\n\
+            li x9, MASK_EEW(result3, eew); \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v16, x7; \\\n\
+            vmv.v.x v%d, x8; "%(16+emul) + " \\\n\
+            vmv.v.x v%d, x9; "%(16+emul*2) + " \\\n\
+            VSET_VSEW \\\n\
+            store_inst v16, (x1); \\\n\
+            load_inst v8, (x1); \\\n\
+        )", file=f)
+    
+    for n in range(1,30):
+        print("#define TEST_VSSEG1_OP_1%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x%d, base; "%n + " \\\n\
+            li x30, MASK_EEW(result, eew);  \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x30; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x%d); "%n + "\\\n\
+            load_inst v16, (x%d); "%n + " \\\n\
+        )",file=f)
+
+    for n in range(1,31):
+        print("#define TEST_VSSEG1_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
+        TEST_CASE( testnum, v16, result, " + "\\\n\
+            la  x1, base;  \\\n\
+            li x7, MASK_EEW(result, eew); \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v%d, x7;  "%n + "\\\n\
+            VSET_VSEW \\\n\
+            store_inst v%d, (x1); "%n + " \\\n\
+            load_inst v16, (x1); \\\n\
+        )",file=f)
+
+    print("#define TEST_VSSEG1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x30, base;  \\\n\
+            li x7, MASK_EEW(result, eew);  \\\n\
+            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x7; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x30); \\\n\
+            load_inst v16, (x30);  \\\n\
+        )",file=f)
+        

@@ -304,24 +304,24 @@ note:
 
 ### Store
 
-|                               | vse8/16/32/64 |
-| ------------------------------| ------------  |
-| vlen128 vsew8 lmul1           |     P P       |
-| vlen128 vsew16 lmul1          |     P P       |
-| vlen128 vsew32 lmul1(default) |     P P       |
-| vlen128 vsew64 lmul1          |     P P       |
-| vlen256 vsew8 lmul1           |     P P       |
-| vlen256 vsew16 lmul1          |     P P       |
-| vlen256 vsew32 lmul1          |     P P       |
-| vlen256 vsew64 lmul1          |     P P       |
-| vlen512 vsew8 lmul1           |     P P       |
-| vlen512 vsew16 lmul1          |     P P       |
-| vlen512 vsew32 lmul1          |     P P       |
-| vlen512 vsew64 lmul1          |     P P       |
-| vlen1024 vsew8 lmul1          |     P P       |
-| vlen1024 vsew16 lmul1         |     P P       |
-| vlen1024 vsew32 lmul1         |     P P       |
-| vlen1024 vsew64 lmul1         |     P P       |
+|                               | vs(s)(seg)e8/16/32/64 |
+| ------------------------------| ------------          |
+| vlen128 vsew8 lmul1           |     P P               |
+| vlen128 vsew16 lmul1          |     P P               |
+| vlen128 vsew32 lmul1(default) |     P P               |
+| vlen128 vsew64 lmul1          |     P P               |
+| vlen256 vsew8 lmul1           |     P P               |
+| vlen256 vsew16 lmul1          |     P P               |
+| vlen256 vsew32 lmul1          |     P P               |
+| vlen256 vsew64 lmul1          |     P P               |
+| vlen512 vsew8 lmul1           |     P P               |
+| vlen512 vsew16 lmul1          |     P P               |
+| vlen512 vsew32 lmul1          |     P P               |
+| vlen512 vsew64 lmul1          |     P P               |
+| vlen1024 vsew8 lmul1          |     P P               |
+| vlen1024 vsew16 lmul1         |     P P               |
+| vlen1024 vsew32 lmul1         |     P P               |
+| vlen1024 vsew64 lmul1         |     P P               |
 
 
 ## Code Explain
