@@ -1232,12 +1232,12 @@ test_ ## testnum: \
 
 // For VF instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_FP_VF_OP_RV( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
-    inst v14, f1, v1; \
+    inst v24, f1, v8; \
   )
 
 // Correctval is computed by fadd.d((widen)f0, (widen)f1) -> f2
