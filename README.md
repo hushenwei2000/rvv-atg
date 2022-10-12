@@ -7,6 +7,8 @@
    1. Install `https://github.com/hushenwei2000/riscv-isac-rvv` **branch `vector`**
 3. RISCOF
    1. Just install official RISCOF
+4. Spike
+   1. Install Latest `https://github.com/riscv-software-src/riscv-isa-sim`. Before `make` , execute `../configure --enable-commitlog` . Because we need commit log.
 ## Usage
 
 ```
@@ -283,45 +285,45 @@ note:
 ### LOAD
 
 
-|                               | vle8/16/32/64 |  vlre8/16/32  | vlse8/16/32 |vls(s)ege8 |vls(s)ege16|vls(s)ege32|vluxei8/16/32|vluxeiseg8/16/32|
-| ------------------------------| ----          |  -----        | -----       |  -------  | --------  | --------  | -------     |  ------------  |
-| vlen128 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen128 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen128 vsew32 lmul1(default) | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen128 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen256 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen256 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen256 vsew32 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen256 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen512 vsew8 lmul1           | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen512 vsew16 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen512 vsew32 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen512 vsew64 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen1024 vsew8 lmul1          | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen1024 vsew16 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen1024 vsew32 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
-| vlen1024 vsew64 lmul1         | P P           |  P P          | P P         |  P P      | P P       | P P       |   P P       |      P P       |
+|                               | vle8/16/32/64 |  vlre8/16/32  | vlse8/16/32 |vls(s)ege8/16/32 |vluxei8/16/32|vluxeiseg8/16/32|
+| ------------------------------| ----          |  -----        | -----       |  -------        | -------     |  ------------  |
+| vlen128 vsew8 lmul1           | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen128 vsew16 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen128 vsew32 lmul1(default) | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen128 vsew64 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen256 vsew8 lmul1           | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen256 vsew16 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen256 vsew32 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen256 vsew64 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen512 vsew8 lmul1           | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen512 vsew16 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen512 vsew32 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen512 vsew64 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen1024 vsew8 lmul1          | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen1024 vsew16 lmul1         | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen1024 vsew32 lmul1         | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
+| vlen1024 vsew64 lmul1         | P P           |  P P          | P P         |  P P            |   P P       |      P P       |
 
 ### Store
 
-|                               | vs(s)(seg)e8/16/32/64 |
-| ------------------------------| ------------          |
-| vlen128 vsew8 lmul1           |     P P               |
-| vlen128 vsew16 lmul1          |     P P               |
-| vlen128 vsew32 lmul1(default) |     P P               |
-| vlen128 vsew64 lmul1          |     P P               |
-| vlen256 vsew8 lmul1           |     P P               |
-| vlen256 vsew16 lmul1          |     P P               |
-| vlen256 vsew32 lmul1          |     P P               |
-| vlen256 vsew64 lmul1          |     P P               |
-| vlen512 vsew8 lmul1           |     P P               |
-| vlen512 vsew16 lmul1          |     P P               |
-| vlen512 vsew32 lmul1          |     P P               |
-| vlen512 vsew64 lmul1          |     P P               |
-| vlen1024 vsew8 lmul1          |     P P               |
-| vlen1024 vsew16 lmul1         |     P P               |
-| vlen1024 vsew32 lmul1         |     P P               |
-| vlen1024 vsew64 lmul1         |     P P               |
+|                               |  vse8/16/32/64 |vs1/2/4/8r| vsse8/16/32 |vss(s)ege8/16/32 |vsuxei8/16/32|vsuxeiseg8/16/32|
+| ------------------------------|  ----          |  -----   | -----       |  -------        | -------     |  ------------  |
+| vlen128 vsew8 lmul1           |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen128 vsew16 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen128 vsew32 lmul1(default) |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen128 vsew64 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen256 vsew8 lmul1           |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen256 vsew16 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen256 vsew32 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen256 vsew64 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen512 vsew8 lmul1           |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen512 vsew16 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen512 vsew32 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen512 vsew64 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen1024 vsew8 lmul1          |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen1024 vsew16 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen1024 vsew32 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| vlen1024 vsew64 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
 
 
 ## Code Explain

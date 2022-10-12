@@ -1087,58 +1087,58 @@ test_ ## testnum: \
     load_inst v16, (x1); \
   )
 
-#define TEST_VSSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, stride, base ) \
-  TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
-    la  x1, base; \
-    li  x2, stride; \
-    li x7, MASK_EEW(result1, eew); \
-    li x8, MASK_EEW(result2, eew); \
-    li x9, MASK_EEW(result3, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
-    vmv.v.x v1, x7; \
-    vmv.v.x v2, x8; \
-    vmv.v.x v3, x9; \
-    VSET_VSEW \
-    store_inst v1, (x1), x2; \
-    load_inst v8, (x1), x2; \
-  )
+// #define TEST_VSSSEG3_OP( testnum, load_inst, store_inst, eew, result1, result2, result3, stride, base ) \
+//   TEST_CASE_VLSEG3( testnum, v8, eew, result1, result2, result3,  \
+//     la  x1, base; \
+//     li  x2, stride; \
+//     li x7, MASK_EEW(result1, eew); \
+//     li x8, MASK_EEW(result2, eew); \
+//     li x9, MASK_EEW(result3, eew); \
+//     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+//     vmv.v.x v1, x7; \
+//     vmv.v.x v2, x8; \
+//     vmv.v.x v3, x9; \
+//     VSET_VSEW \
+//     store_inst v1, (x1), x2; \
+//     load_inst v8, (x1), x2; \
+//   )
 
 #define TEST_VSSSEG1_OP( testnum, load_inst, store_inst, eew, result, stride, base ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li  x2, stride; \
     li x7, MASK_EEW(result, eew); \
     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
-    vmv.v.x v1, x7; \
+    vmv.v.x v8, x7; \
     VSET_VSEW \
-    store_inst v1, (x1), x2; \
-    load_inst v14, (x1), x2; \
+    store_inst v8, (x1), x2; \
+    load_inst v16, (x1), x2; \
   )
 
-#define TEST_VSXSEG3_OP( testnum, load_inst, store_inst, index_eew, result1, result2, result3, base_data, base_index ) \
-  TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \
-    la  x1, base_data; \
-    la  x6, base_index; \
-    MK_VLE_INST(index_eew) v5, (x6); \
-    li x7, MASK_VSEW(result1); \
-    li x8, MASK_VSEW(result2); \
-    li x9, MASK_VSEW(result3); \
-    vmv.v.x v1, x7; \
-    vmv.v.x v2, x8; \
-    vmv.v.x v3, x9; \
-    store_inst v1, (x1), v5; \
-    load_inst v8, (x1), v5; \
-  )
+// #define TEST_VSXSEG3_OP( testnum, load_inst, store_inst, index_eew, result1, result2, result3, base_data, base_index ) \
+//   TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \
+//     la  x1, base_data; \
+//     la  x6, base_index; \
+//     MK_VLE_INST(index_eew) v5, (x6); \
+//     li x7, MASK_VSEW(result1); \
+//     li x8, MASK_VSEW(result2); \
+//     li x9, MASK_VSEW(result3); \
+//     vmv.v.x v1, x7; \
+//     vmv.v.x v2, x8; \
+//     vmv.v.x v3, x9; \
+//     store_inst v1, (x1), v5; \
+//     load_inst v8, (x1), v5; \
+//   )
 
 #define TEST_VSXSEG1_OP( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \
-  TEST_CASE( testnum, v14, result,  \
+  TEST_CASE( testnum, v16, result,  \
     la  x1, base_data; \
     la  x6, base_index; \
-    MK_VLE_INST(index_eew) v5, (x6); \
+    MK_VLE_INST(index_eew) v24, (x6); \
     li x7, MASK_VSEW(result); \
-    vmv.v.x v1, x7; \
-    store_inst v1, (x1), v5; \
-    load_inst v14, (x1), v5; \
+    vmv.v.x v8, x7; \
+    store_inst v8, (x1), v24; \
+    load_inst v16, (x1), v24; \
   )
 
 #define TEST_VSSE_OP( testnum, load_inst, store_inst, eew, result, stride, base ) \
@@ -1165,14 +1165,14 @@ test_ ## testnum: \
   )
 
 #define TEST_VSXEI_OP( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v16, result, \
     la  x1, base_data; \
     la  x6, base_index; \
-    MK_VLE_INST(index_eew) v2, (x6); \
+    MK_VLE_INST(index_eew) v24, (x6); \
     li  x3, result; \
-    vmv.v.x v1, x3; \
-    store_inst v1, (x1), v2; \
-    load_inst v14, (x1), v2; \
+    vmv.v.x v8, x3; \
+    store_inst v8, (x1), v24; \
+    load_inst v16, (x1), v24; \
   )
 
 #define TEST_VSRE2_OP( testnum, load_inst, store_inst, eew, result1, result2, base ) \

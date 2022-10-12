@@ -190,8 +190,8 @@ def run_loadstore(cwd, args, cgf, output_dir):
                                                       output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
     # 7. Run spike test generated ref_final.elf
-    run_spike(args.i, cwd, cgf,
-          output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+    # run_spike(args.i, cwd, cgf,
+    #       output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
 def main():
