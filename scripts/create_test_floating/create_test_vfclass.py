@@ -20,27 +20,29 @@ def generate_fdat_seg(f):
         print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
 
 
-def generate_macros(f):
+def generate_macros(f, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
+
     for n in range(1, 32):
-        if n == 14:
+        if n % lmul != 0 or n == 24:
             continue
         print("#define TEST_FP_HEX_1OPERAND_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
             TEST_CASE( testnum, v14, result, \\\n\
                 li x7, MASK_VSEW(val); \\\n\
                 vmv.v.x v%d, x7; "%n + " \\\n\
-                inst v14, v%d; "%n + " \\\n\
+                inst v24, v%d; "%n + " \\\n\
                 frflags a1; \\\n\
                 li a2, flags; \\\n\
             )", file = f)
 
     for n in range(1, 32):
-        if n == 1:
+        if n % lmul != 0 or n == 8:
             continue
         print("#define TEST_FP_HEX_1OPERAND_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
             TEST_CASE( testnum, v%d, result, "%n + " \\\n\
                 li x7, MASK_VSEW(val); \\\n\
-                vmv.v.x v1, x7;  \\\n\
-                inst v%d, v1; "%n + " \\\n\
+                vmv.v.x v8, x7;  \\\n\
+                inst v%d, v8; "%n + " \\\n\
                 frflags a1; \\\n\
                 li a2, flags; \\\n\
             )", file = f)
@@ -50,7 +52,8 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f, rs1_val, rs2_val):    
+def generate_tests(f, rs1_val, lmul):
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfclass.v Tests",file=f)
@@ -64,19 +67,18 @@ def generate_tests(f, rs1_val, rs2_val):
     print("  # vfclass.v Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    n = n+1
-    for i in range(len(rs1_val)):     
-        k = i%31+1  
-        if k == 1:
-            continue
 
+    n = n + 1
+    for i in range(len(rs1_val)):
+        k = i % 31 + 1  
+        if k % lmul != 4 or k == 8:
+            continue
         print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
         n += 1
 
-        k = i%31+1  
-        if k == 14:
+        k = i % 31 + 1
+        if k % lmul != 0 or k == 24:
             continue
-
         print("  TEST_FP_HEX_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
         n += 1
 
@@ -171,10 +173,10 @@ def create_first_test_vfclass(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, lmul)
 
     # Common const information
     print_ending(f)

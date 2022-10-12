@@ -184,7 +184,7 @@ def generate_macros_widen_rs2_neg(f, lmul):
         )"%(n, n, rs1, rs2, n, n, rs1, rs2),file=f)
 
 
-def generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True):
+def generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True, test_rv = False):
     lmul = 1 if lmul < 1 else int(lmul)
 
     global rs1_val, rs2_val, rs1_val_64, rs2_val_64
@@ -223,4 +223,13 @@ def generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True):
         print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
         for i in range(len(rs1_val)):
             print("TEST_FP_VF_OP( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );"%(n, instr, rs1_val[i], rs2_val[i]), file=f)
+            n += 1
+
+    if test_rv:
+        print("  #-------------------------------------------------------------",file=f)
+        print("  # VF Tests",file=f)
+        print("  #-------------------------------------------------------------",file=f)
+        print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
+        for i in range(len(rs1_val)):
+            print("TEST_FP_VF_OP_RV( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );"%(n, instr, rs1_val[i], rs2_val[i]), file=f)
             n += 1
