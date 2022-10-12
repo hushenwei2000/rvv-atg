@@ -3,8 +3,8 @@ import os
 
 
 def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, vsew, lmul, use_fail_macro):
-    gcc = "riscv64-unknown-elf-gcc"
-    objdump = "riscv64-unknown-elf-objdump"
+    gcc = "riscv64-rivai-elf-gcc"
+    objdump = "riscv64-rivai-elf-objdump"
     logging.info("Running riscof coverage: {}.{}".format(instr, suffix))
     test_path = os.path.basename(test_path)
     # cgf_path = os.path.basename(cgf_path)
