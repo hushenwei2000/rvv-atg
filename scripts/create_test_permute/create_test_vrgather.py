@@ -10,7 +10,7 @@ rs2_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -13421
 
 def generate_macros(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
-    for n in range(2,32):
+    for n in range(1,32):
         if n == 24 or n == 16 or n == 8 or n % lmul != 0:
             continue
         print("#define TEST_VV_OP_1%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
@@ -31,7 +31,7 @@ def generate_macros(f, lmul):
             inst v8, v16, v24; \\\n\
         )",file=f)
 
-    for n in range(3,32):
+    for n in range(1,32):
         if n == 24 or n == 16 or n == 8 or n % lmul != 0:
             continue
         print("#define TEST_VV_OP_rd%d( testnum, inst, result, val1, val2 )"%n + " \\\n\

@@ -58,7 +58,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
 
     for i in range(100):     
         k = i%30+1
-        if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32:
+        if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32 and not is_overlap(k, lmul*2, 8, emul):
             n+=1
             print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+"8"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx8dat"+");",file=f)
         

@@ -9,7 +9,7 @@ instr1 = 'vluxei32'
 
 
 def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
-    emul = 16 / vsew * lmul
+    emul = 32 / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
@@ -22,7 +22,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
         
     for i in range(100):     
         k = i%30+1
-        if k % emul == 0 and k not in [31, 8, 16, 24] and not is_overlap(k, lmul, 8, emul):
+        if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16, 24] and not is_overlap(k, lmul, 8, emul):
             n+=1
             print("  TEST_VSXEI_OP_rd%d( "%k+str(n)+",  %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0x00ff00ff"+",  "+"0 + tdat"+", "+"idx32dat"+" );",file=f)
     

@@ -107,7 +107,7 @@ def generate_macros_vwmacc(f, lmul):
 
 def generate_macros_muladd(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
-    for n in range(2, 32):
+    for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
             continue
         print("#define TEST_VV_OP_WITH_INIT_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
@@ -120,7 +120,7 @@ def generate_macros_muladd(f, lmul):
             vmv.v.x v16, x7; \\\n\
             inst v24, v%d, v16; "%n + " \\\n\
         )", file=f)
-    for n in range(3, 32):
+    for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
             continue
         print("#define TEST_VV_OP_WITH_INIT_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\

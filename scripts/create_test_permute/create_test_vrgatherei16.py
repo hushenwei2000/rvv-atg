@@ -14,7 +14,7 @@ def generate_macros(f, lmul, vsew):
     else:
         lmul = int(lmul)
     rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
-    for n in range(2,32):
+    for n in range(1,32):
         # no overlap: (rs1 + rs1lmul - 1 < rd) or (rs1 > rd + lmul - 1)
         if n == 24 or n == 16 or n == 8 or n % rs1lmul != 0 or (not (n + rs1lmul - 1 < 14 or n > 14 + lmul - 1)): # last condition is:(not( rs1 no overlap rd))
             continue
@@ -36,7 +36,7 @@ def generate_macros(f, lmul, vsew):
             inst v16, v8, v24; \\\n\
         )",file=f)
 
-    for n in range(2,32):
+    for n in range(1,32):
         if n == 24 or n == 16 or n == 8 or n % lmul != 0:
             continue
         if 2 + rs1lmul - 1 < n or 2 > n + lmul - 1:

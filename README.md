@@ -10,7 +10,7 @@
 4. Spike
    1. Install Latest `https://github.com/riscv-software-src/riscv-isa-sim`. Before `make` , execute `../configure --enable-commitlog` . Because we need commit log.
 ## Usage
-
+### Generate One Instruction
 ```
 python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 ```
@@ -20,6 +20,15 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
 - vsew VSEW       Selected Element Width: 8, 16, 32(default), 64
 
+### Generate All Tests
+```
+python generate_all.py
+```
+- This will use default parameter configuration to generate all integer instructions tests. 
+- **Modify `runcommand_<type>` function to run different parameter.**  
+- **Modyfy `main` function to run different type of instructions.**
+- Test file will generate in `generate_all` folder.
+- Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
 ## Support Configuration
 
 | Parameter | Numbers                 | Current Support|   Note                           |
@@ -109,7 +118,7 @@ note:
 - vsew32 requires rs1val_walking_vector_unsgn
 - vsew64 requires rs1val_walking_vector
 
-1. mre NOT support lmul4 because vl set to VLMAX but vmre only move 1/2/4/8 registers
+1. vmre NOT support lmul4 because vl set to VLMAX but vmre only move 1/2/4/8 registers
 
 ### Integer
 
@@ -324,6 +333,8 @@ note:
 | vlen1024 vsew16 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
 | vlen1024 vsew32 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
 | vlen1024 vsew64 lmul1         |  P P           |  P P     | P P         |  P P            |   P P       |     P P        |
+| ------------------------------|  ----          |  -----   | -----       |  -------        | -------     |  ------------  |
+| vlen128 vsew32 lmul4          |  P P           |          | P P         |  P P            |   P P       |     P P        |
 
 
 ## Code Explain

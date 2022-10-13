@@ -1104,14 +1104,14 @@ test_ ## testnum: \
   )
 
 #define TEST_VSE_OP( testnum, load_inst, store_inst, eew, result, base ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE( testnum, v16, result, \
     la  x1, base; \
     li  x3, result; \
     vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
-    vmv.v.x v1, x3; \
+    vmv.v.x v8, x3; \
     VSET_VSEW \
-    store_inst v1, (x1); \
-    load_inst v14, (x1); \
+    store_inst v8, (x1); \
+    load_inst v16, (x1); \
   )
 
 #define TEST_VSXEI_OP( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \
@@ -1487,44 +1487,44 @@ test_ ## testnum: \
     inst v16, v8; \
   )
 
-#define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vl8re32.v v8, (x1); \
-    la x7, result_base1; \
-    inst v16, v8; \
-  ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
-    VSET_VSEW_4AVL \
-    la x7, result_base2; \
-  )
+// #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
+//   TEST_CASE_LOOP( testnum, v16, x7, \
+//     VSET_VSEW_4AVL \
+//     la  x1, base; \
+//     vl8re32.v v8, (x1); \
+//     la x7, result_base1; \
+//     inst v16, v8; \
+//   ) \
+//   TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
+//     VSET_VSEW_4AVL \
+//     la x7, result_base2; \
+//   )
 
-#define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vl8re32.v v8, (x1); \
-    la x7, result_base1; \
-    inst v16, v8; \
-  ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
-    VSET_VSEW_4AVL \
-    la x7, result_base2; \
-  )
+// #define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \
+//   TEST_CASE_LOOP( testnum, v16, x7, \
+//     VSET_VSEW_4AVL \
+//     la  x1, base; \
+//     vl8re32.v v8, (x1); \
+//     la x7, result_base1; \
+//     inst v16, v8; \
+//   ) \
+//   TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
+//     VSET_VSEW_4AVL \
+//     la x7, result_base2; \
+//   )
 
-#define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vl8re32.v v8, (x1); \
-    la x7, result_base1; \
-    inst v16, v8; \
-  ) \
-  TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \
-    VSET_VSEW_4AVL \
-    la x7, result_base2; \
-  )
+// #define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
+//   TEST_CASE_LOOP( testnum, v16, x7, \
+//     VSET_VSEW_4AVL \
+//     la  x1, base; \
+//     vl8re32.v v8, (x1); \
+//     la x7, result_base1; \
+//     inst v16, v8; \
+//   ) \
+//   TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \
+//     VSET_VSEW_4AVL \
+//     la x7, result_base2; \
+//   )
 
 #define TEST_VSLIDE_VX_OP( testnum, inst, result_base, rd_base, offset, base ) \
   TEST_CASE_LOOP( testnum, v16, x7, \

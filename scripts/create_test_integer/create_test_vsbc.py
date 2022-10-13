@@ -23,7 +23,7 @@ def generate_macros(f, lmul):
             vmv.v.x v%d, x7;"%n + " \\\n\
             inst v24, v8, v%d, v0; "%n + " \\\n\
         )", file=f)
-    for n in range(3, 32):
+    for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
             continue
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL

@@ -59,7 +59,7 @@ def generate_macros_viota(f, vsew, lmul):
         )"%vsew, file=f)
 
     for n in range(1, 32):
-        if n == 5 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
+        if n == 8 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
             continue
         print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\

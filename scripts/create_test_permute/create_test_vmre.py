@@ -16,7 +16,61 @@ walking_val_grouped = []
 f_val_grouped = []
 
 
-def generate_macros_vmre(f, vlen, vsew):
+def generate_macros_vmre(f, vlen, vsew, lmul):
+    num_of_elements = vlen / vsew
+    if lmul >= 1:
+        lmul = str(int(lmul))
+    elif lmul == 0.5:
+        lmul = 'mf2'
+    elif lmul == 0.25:
+        lmul = 'mf4'
+    elif lmul == 0.125:
+        lmul = 'mf8'
+    print("#define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            li x1, %d;"%(num_of_elements*2) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            la  x1, base; \\\n\
+            vl8re32.v v8, (x1); \\\n\
+            la x7, result_base1; \\\n\
+            inst v16, v8; \\\n\
+        ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \\\n\
+            li x1, %d;"%(num_of_elements*2) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu; "%lmul + "\\\n\
+            la x7, result_base2; \\\n\
+        )", file=f)
+    print('', file=f)
+    print("#define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            li x1, %d;"%(num_of_elements*4) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            la  x1, base; \\\n\
+            vl8re32.v v8, (x1); \\\n\
+            la x7, result_base1; \\\n\
+            inst v16, v8; \\\n\
+        ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \\\n\
+            li x1, %d;"%(num_of_elements*4) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            la x7, result_base2; \\\n\
+        )", file=f)
+    print('', file=f)
+    print("#define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            li x1, %d;"%(num_of_elements*8) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            la  x1, base; \\\n\
+            vl8re32.v v8, (x1); \\\n\
+            la x7, result_base1; \\\n\
+            inst v16, v8; \\\n\
+        ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \\\n\
+            li x1, %d;"%(num_of_elements*8) + " \\\n\
+            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            la x7, result_base2; \\\n\
+        )", file=f)
+
     return 0
 
 
@@ -123,7 +177,7 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
-    generate_macros_vmre(f, vlen, vsew)
+    generate_macros_vmre(f, vlen, vsew, lmul)
 
     # Common header files
     print_common_header(instr, f)

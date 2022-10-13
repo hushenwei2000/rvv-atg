@@ -167,7 +167,7 @@ def create_empty_test_vmsbf(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     generate_tests_vmsbf(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_common(vlen, vsew, f)
+    print_ending_common(vlen, vsew, lmul, f)
 
     f.close()
 

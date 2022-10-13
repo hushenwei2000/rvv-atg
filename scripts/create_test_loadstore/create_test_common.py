@@ -250,7 +250,7 @@ def generate_macros_vsse(f, lmul, vsew, eew):
 
     for n in range(1,31):
         print("#define TEST_VSSE_OP_rd%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
-        TEST_CASE( testnum, v16, result, "%n + "\\\n\
+        TEST_CASE( testnum, v16, result, " + "\\\n\
             la  x1, base;  \\\n\
             li  x2, stride; \\\n\
             li  x3, result; \\\n\
@@ -382,11 +382,14 @@ def generate_macro_vssseg(f, lmul, vsew, eew):
             li x8, MASK_EEW(result2, eew); \\\n\
             li x9, MASK_EEW(result3, eew); \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
-            vmv.v.x v16, x7; \\\n\
-            vmv.v.x v%d, x8; "%(16+emul) + " \\\n\
-            vmv.v.x v%d, x9; "%(16+emul*2) + " \\\n\
+            vmv.v.x v8, x7; \\\n\
+            vmv.v.x v%d, x8; "%(8+emul) + " \\\n\
+            vmv.v.x v%d, x9; "%(8+emul*2) + " \\\n\
             VSET_VSEW \\\n\
-            store_inst v16, (x1), x2; \\\n\
+            store_inst v8, (x1), x2; \\\n\
+            vmv.v.i v8, 0x4 ; \\\n\
+            vmv.v.i v%d, 0x3 ;"%(8+emul)+"  \\\n\
+            vmv.v.i v%d, 0x5 ;"%(8+emul*2)+" \\\n\
             load_inst v8, (x1), x2; \\\n\
         )", file=f)
     for n in range(1,29):
@@ -498,8 +501,8 @@ def generate_macros_vsuxeiseg(f, lmul, vsew, eew):
                 li TESTNUM, testnum; \\\n\
                 vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
                 VMVXS_AND_MASK_EEW( x14, testreg, eew ) \\\n\
-                VMVXS_AND_MASK_EEW( x15, v9, eew )" + " \\\n\
-                VMVXS_AND_MASK_EEW( x16, v10, eew )" + "\\\n\
+                VMVXS_AND_MASK_EEW( x15, v%d, eew )"%(8+lmul) + " \\\n\
+                VMVXS_AND_MASK_EEW( x16, v%d, eew )"%(8+lmul*2) + "\\\n\
                 VSET_VSEW \\\n\
                 bne x14, x7, fail; \\\n\
                 bne x15, x8, fail; \\\n\
@@ -514,10 +517,13 @@ def generate_macros_vsuxeiseg(f, lmul, vsew, eew):
             li x7, MASK_VSEW(result1); \\\n\
             li x8, MASK_VSEW(result2); \\\n\
             li x9, MASK_VSEW(result3); \\\n\
-            vmv.v.x v16, x7; \\\n\
-            vmv.v.x v17, x8; "+" \\\n\
-            vmv.v.x v18, x9; "+" \\\n\
-            store_inst v16, (x1), v24; \\\n\
+            vmv.v.x v8, x7; \\\n\
+            vmv.v.x v%d, x8; "%(8+lmul)+" \\\n\
+            vmv.v.x v%d, x9; "%(8+lmul*2)+" \\\n\
+            store_inst v8, (x1), v24; \\\n\
+            vmv.v.i v8, 0x5 ; \\\n\
+            vmv.v.i v%d, 0x4 ;"%(8+lmul)+"  \\\n\
+            vmv.v.i v%d, 0x7 ;"%(8+lmul*2)+" \\\n\
             load_inst v8, (x1), v24; \\\n\
         )", file=f)
     
