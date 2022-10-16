@@ -78,8 +78,8 @@ def run_vf(cwd, args, cgf, output_dir):
     des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
 
     # 6. Run spike test generated ref_final.elf
-    run_spike(args.i, cwd, cgf,
-              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+    # run_spike(args.i, cwd, cgf,
+    #           output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
 
     # 6. Run final riscof coverage
@@ -151,8 +151,8 @@ def run_mask(cwd, args, cgf, output_dir):
     des_path = replace_results(search_ins, empty_test, spike_first_log, 'spike')
 
     # 5. Run spike test generated ref_final.elf
-    run_spike(args.i, cwd, cgf,
-              output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+    # run_spike(args.i, cwd, cgf,
+    #           output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
     
     # 4. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,

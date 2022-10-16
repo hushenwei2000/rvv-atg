@@ -245,14 +245,14 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v1, (correctval_addr_reg); \
+    vle32.v v8, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
-    VMVXS_AND_MASK_VSEW( x7, v1 ) \
+    VMVXS_AND_MASK_VSEW( x7, v8 ) \
     bne x14, x7, fail; \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
-    vslidedown.vi v1, v1, 1; \
+    vslidedown.vi v8, v8, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
 

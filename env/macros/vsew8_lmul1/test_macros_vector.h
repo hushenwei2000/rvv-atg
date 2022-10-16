@@ -1441,13 +1441,13 @@ test_ ## testnum: \
   )
 
 #define TEST_VID_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v1, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle8.v v5, (x1); \
-    vmseq.vi v0, v5, 1; \
-    inst v1, v0.t; \
+    vle8.v v8, (x1); \
+    vmseq.vi v0, v8, 1; \
+    inst v16, v0.t; \
   )
 
 #define TEST_VID_OP_64( testnum, inst, result_addr, src1_addr ) \

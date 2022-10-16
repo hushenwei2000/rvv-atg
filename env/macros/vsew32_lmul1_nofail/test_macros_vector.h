@@ -1390,13 +1390,13 @@ test_ ## testnum: \
   )
 
 #define TEST_VID_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v1, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle32.v v5, (x1); \
-    vmseq.vi v0, v5, 1; \
-    inst v1, v0.t; \
+    vle32.v v8, (x1); \
+    vmseq.vi v0, v8, 1; \
+    inst v16, v0.t; \
   )
 
 #define TEST_VID_OP_64( testnum, inst, result_addr, src1_addr ) \
@@ -1562,16 +1562,16 @@ test_ ## testnum: \
   )
 
  #define TEST_VSLIDE_VF_OP(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \
-  TEST_CASE_LOOP( testnum, v14, x7, \
+  TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v5, (x1); \
+    vle32.v v8, (x1); \
     la  x1, rd_base; \
-    vle32.v v14, (x1); \
+    vle32.v v16, (x1); \
     la x7, result_base; \
     la x1, f_rs1_base; \
     flw f1, 0(x1); \
-    inst v14, v5, f1; \
+    inst v16, v8, f1; \
   )
 
 //-----------------------------------------------------------------------

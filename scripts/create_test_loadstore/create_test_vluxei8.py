@@ -78,7 +78,7 @@ def create_first_test_vluxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros_vlxei(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)

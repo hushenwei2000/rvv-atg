@@ -8,7 +8,7 @@
 3. RISCOF
    1. Just install official RISCOF
 4. Spike
-   1. Install Latest `https://github.com/riscv-software-src/riscv-isa-sim`. Before `make` , execute `../configure --enable-commitlog` . Because we need commit log.
+   1. Install Latest `https://github.com/riscv-software-src/riscv-isa-sim`. Before `make` , execute `../configure --prefix=$RISCV --enable-commitlog` . Because we need commit log.
 ## Usage
 ### Generate One Instruction
 ```
@@ -28,7 +28,7 @@ python generate_all.py
 - **Modify `runcommand_<type>` function to run different parameter.**  
 - **Modyfy `main` function to run different type of instructions.**
 - Test file will generate in `generate_all` folder.
-- Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
+- :warning: Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
 ## Support Configuration
 
 | Parameter | Numbers                 | Current Support|   Note                           |
@@ -109,7 +109,7 @@ Notes:
 | vlen1024 vsew32 lmul1         | P         | P    | P P | P P  | P P      | P P          | P      | P       | P       |
 | vlen1024 vsew64 lmul1         | P  P      | P    | P P | P P  | P P      | P P          | P P    | P       | P       |
 | ----------------------------- | --------- | ---- | --- | ---- | -------- | ------------ | ------ | ------- | ------- |
-| vlen128 vsew32 lmul4          | P P       | X    | P P | P P  | P P      | P            | P      | P       | P       |
+| vlen128 vsew32 lmul4          | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
 
 note:
 
@@ -118,7 +118,6 @@ note:
 - vsew32 requires rs1val_walking_vector_unsgn
 - vsew64 requires rs1val_walking_vector
 
-1. vmre NOT support lmul4 because vl set to VLMAX but vmre only move 1/2/4/8 registers
 
 ### Integer
 

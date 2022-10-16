@@ -18,6 +18,7 @@ f_val_grouped = []
 
 def generate_macros_vmre(f, vlen, vsew, lmul):
     num_of_elements = vlen / vsew
+    lmul_num = lmul
     if lmul >= 1:
         lmul = str(int(lmul))
     elif lmul == 0.5:
@@ -34,12 +35,13 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
             vl8re32.v v8, (x1); \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
-        ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \\\n\
+        ) \\", file=f)
+    print("        TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \\\n\
             li x1, %d;"%(num_of_elements*2) + " \\\n\
             vsetvli x31, x1, e32, m%s, tu, mu; "%lmul + "\\\n\
             la x7, result_base2; \\\n\
-        )", file=f)
+        )" if lmul_num <= 1 else "", file=f)
+
     print('', file=f)
     print("#define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
@@ -49,12 +51,13 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
             vl8re32.v v8, (x1); \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
-        ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \\\n\
+        ) \\", file=f)
+    print("        TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \\\n\
             li x1, %d;"%(num_of_elements*4) + " \\\n\
             vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
             la x7, result_base2; \\\n\
-        )", file=f)
+        )" if lmul_num <= 1 else "", file=f)
+
     print('', file=f)
     print("#define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
@@ -64,13 +67,14 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
             vl8re32.v v8, (x1); \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
-        ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \\\n\
+        ) \\", file=f)
+    print("        TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \\\n\
             li x1, %d;"%(num_of_elements*8) + " \\\n\
             vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
             la x7, result_base2; \\\n\
-        )", file=f)
+        )" if lmul_num <= 1 else "", file=f)
 
+    print('', file=f)
     return 0
 
 
