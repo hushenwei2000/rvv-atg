@@ -9,11 +9,11 @@ instr = 'vlse16'
 def generate_macros(f):
     for n in range(2, 30):
         print("#define TEST_VLSE_OP_1%d( testnum, inst, eew, result1, result2, stride, base )"%n + " \\\n\
-            TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \\\n\
+            TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
                 la  x%d, base; "%n + "\\\n\
                 li  x30, stride; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
-                inst v14, (x%d), x30; "%n + "\\\n\
+                inst v16, (x%d), x30; "%n + "\\\n\
                 VSET_VSEW \\\n\
         )", file=f)
     for n in range(1, 32):
@@ -27,11 +27,11 @@ def generate_macros(f):
                 VSET_VSEW \\\n\
         ) ", file=f)
     print("#define TEST_VLSE_OP_130( testnum, inst, eew, result1, result2, stride, base ) \\\n\
-            TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \\\n\
+            TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
                 la  x30, base; \\\n\
                 li  x2, stride; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
-                inst v14, (x30), x2; \\\n\
+                inst v16, (x30), x2; \\\n\
                 VSET_VSEW \\\n\
         )", file=f)
 
@@ -53,7 +53,9 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
+    emul = 16 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -79,7 +81,8 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_VLSE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0xf00f"+", "+"0x0ff0"+" , "+" -4 "+" , "+"2 + tdat4"+");",file=f)
+        if( k % lmul == 0 and k % emul == 0):
+            print("  TEST_VLSE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0xf00f"+", "+"0x0ff0"+" , "+" -4 "+" , "+"2 + tdat4"+");",file=f)
         
         k = i%30+2
         if(k == 31):
@@ -130,7 +133,7 @@ def create_first_test_vlse16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, lmul, vsew)
 
     # Common const information
     # print_common_ending(f)

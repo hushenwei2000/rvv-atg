@@ -25,40 +25,39 @@ instr6 = 'vluxseg8ei32'
 tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # consequence: "87654321"
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
-    emul = 32 / vsew * lmul
-    emul = 1 if emul < 1 else int(emul)
+    
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
-        if 2 * emul <= 8 and 2 + 3 * emul <= 32:
+        if 2 * lmul <= 8 and 2 + 3 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+" , "+"idx32dat"+");", file=f)
-        if 3 * emul <= 8 and 8 + 3 * emul <= 32:
+        if 3 * lmul <= 8 and 8 + 3 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
-        if 4 * emul <= 8 and 8 + 4 * emul <= 32:
+        if 4 * lmul <= 8 and 8 + 4 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+("0x"+tdats[int(-vsew/4)-32:-32])+", "+("0x"+tdats[2*int(-vsew/4)-32:int(-vsew/4)-32])+", "+("0x"+tdats[3*int(-vsew/4)-32:2*int(-vsew/4)-32])+", "+"16 + tdat"+", "+"idx32dat"+" );", file=f)
-        if 5 * emul <= 8 and 8 + 5 * emul <= 32:
+        if 5 * lmul <= 8 and 8 + 5 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+","+"-12 + tdat4"+", "+"idx32dat"+" );", file=f)
-        if 6 * emul <= 8 and 8 + 6 * emul <= 32:
+        if 6 * lmul <= 8 and 8 + 6 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr4+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
-        if 7 * emul <= 8 and 8 + 7 * emul <= 32:
+        if 7 * lmul <= 8 and 8 + 7 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr5+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
-        if 8 * emul <= 8 and 8 + 8 * emul <= 32:
+        if 8 * lmul <= 8 and 8 + 8 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
         
 
     for i in range(100):     
         k = i%30+1
-        if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32 and not is_overlap(k, lmul*2, 8, emul):
+        if k != 8 and k != 16 and k % lmul == 0 and k + 2 * lmul <= 32:
             n+=1
             print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx32dat"+");",file=f)
         

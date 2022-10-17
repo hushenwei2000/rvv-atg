@@ -17,7 +17,6 @@ instr6 = 'vlsseg8e32'
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 32 / vsew * lmul
-    emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)

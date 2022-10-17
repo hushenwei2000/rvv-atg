@@ -86,7 +86,9 @@ def generate_array(f, vl, vsew):
 
 
 
-def generate_tests(f, rs1_val, rs2_val, fill, fir_fill):
+def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
+    emul = 16 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -108,7 +110,8 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill):
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
+        if( k % lmul == 0 and k % emul == 0):
+            print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
         
         k = i%30+2
         if(k == 31):
@@ -159,7 +162,7 @@ def create_first_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, fill, fir_fill)
+    generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)

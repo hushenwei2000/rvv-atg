@@ -66,6 +66,26 @@ def generate_macros(f):
         )",file=f)
 
 
+    
+
+
+
+def extract_operands(f, rpt_path):
+    rs1_val = []
+    rs2_val = []
+    f = open(rpt_path)
+    line = f.read()
+    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
+    rs1_val_10 = matchObj.findall(line)
+    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
+               for x in rs1_val_10]
+    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
+    rs2_val_10 = matchObj.findall(line)
+    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
+               for x in rs2_val_10]
+    f.close()
+    return rs1_val, rs2_val
+
 
 def generate_tests(f, rs1_val, rs2_val):
     n = 1
@@ -86,7 +106,7 @@ def generate_tests(f, rs1_val, rs2_val):
         
 
     for i in range(100):     
-        k = i%30+1
+        k = i%31+1
         n+=1
         if(k%2 == 0):
             print("  TEST_VSRE2_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00f00ff"+", "+"0xf00f00ff"+", "+"0 + tdat"+" );",file=f)

@@ -9,19 +9,19 @@ instr = 'vle8'
 def generate_macros(f):
     for n in range(2, 31):
         print("#define TEST_VLE_OP_1%d( testnum, inst, eew, result1, result2, base )"%n + " \\\n\
-            TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \\\n\
+            TEST_CASE_LOAD( testnum, v8, eew, result1, result2, \\\n\
                 la  x%d, base; "%n + "\\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
-                inst v14, (x%d); "%n + "\\\n\
+                inst v8, (x%d); "%n + "\\\n\
                 VSET_VSEW \\\n\
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VLE_OP_rd%d( testnum, inst, eew, result1, result2, base )"%n + " \\\n\
             TEST_CASE_LOAD( testnum, v%d, eew, result1, result2, "%n + "\\\n\
-                la  x1, base; \\\n\
+                la  x8, base; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
-                inst v%d, (x1); "%n + "\\\n\
+                inst v%d, (x8); "%n + "\\\n\
                 VSET_VSEW \\\n\
         ) ", file=f)
     
@@ -44,7 +44,9 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
+    emul = 8 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -73,7 +75,8 @@ def generate_tests(f, rs1_val, rs2_val):
     for i in range(100):     
         k = i%31+1
         n+=1
-        print("  TEST_VLE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0x00"+", "+"0xff"+" , "+"4 + tdat"+");",file=f)
+        if( k % lmul == 0 and k % emul == 0):
+            print("  TEST_VLE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0x00"+", "+"0xff"+" , "+"4 + tdat"+");",file=f)
         
         k = i%30+2
         if(k == 31):
@@ -124,7 +127,7 @@ def create_first_test_vle8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, lmul, vsew)
 
     # Common const information
     # print_common_ending(f)
