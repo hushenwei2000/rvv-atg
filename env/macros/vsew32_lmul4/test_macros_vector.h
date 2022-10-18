@@ -971,11 +971,11 @@ test_ ## testnum: \
   )
 
 #define TEST_VLSE_OP( testnum, inst, eew, result1, result2, stride, base ) \
-  TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
+  TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
     li  x2, stride; \
     vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
-    inst v14, (x1), x2; \
+    inst v16, (x1), x2; \
     VSET_VSEW \
   )
 
@@ -991,18 +991,18 @@ test_ ## testnum: \
   )
 
 #define TEST_VLE_OP( testnum, inst, eew, result1, result2, base ) \
-  TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
+  TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
     vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
-    inst v14, (x1); \
+    inst v16, (x1); \
     VSET_VSEW \
   )
 
 #define TEST_VLEFF_OP( testnum, inst, eew, result1, result2, base ) \
-  TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
+  TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
     vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
-    inst v14, (x1); \
+    inst v16, (x1); \
     csrr x30, vl; \
     bne x30, x31, fail; \
   )
