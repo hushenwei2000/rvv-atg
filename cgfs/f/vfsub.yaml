@@ -1,13 +1,14 @@
-vfredosum_b1:
-    config: 
+vfsub:
+    config:
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)
-    opcode: 
-      vfredosum.vs: 0
+    opcode:
+      vfsub.vv: 0
+      vfsub.vf: 0
     rs1: 
       <<: *v_regs
     rd: 
       <<: *v_regs
     val_comb:
       abstract_comb:
-        'ibm_b1(vsew, vsew, "vfredosum.vs", 2, rvv_sew = vsew)': 0
+        'ibm_b1(vsew, vsew, "vfsub.vv", 2, rvv_sew = vsew)': 0

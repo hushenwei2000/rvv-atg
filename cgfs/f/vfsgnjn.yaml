@@ -1,14 +1,14 @@
-vfsgnj_b1:
+vfsgnjn:
     config: 
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)
     opcode: 
-      vfsgnj.vv: 0
-      vfsgnj.vf: 0
+      vfsgnjn.vv: 0
+      vfsgnjn.vf: 0
     rs1: 
       <<: *v_regs
     rd: 
       <<: *v_regs
     val_comb:
       abstract_comb:
-        'ibm_b1(vsew, vsew, "vfsgnj.vv", 2, rvv_sew = vsew)': 0
+        'ibm_b1(vsew, vsew, "vfsgnjn.vv", 2, rvv_sew = vsew)': 0

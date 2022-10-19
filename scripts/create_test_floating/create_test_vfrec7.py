@@ -2,36 +2,20 @@ import logging
 import os
 from scripts.test_common_info import *
 from scripts.create_test_floating.create_test_common import *
+import re
 
-instr = 'vfdiv'
+instr = 'vfrec7'
 
 # For the divison instruction, the operands cannot be zero
+# `frec` acts as an estimate of 1/x accurate to 7 bits
 # So we need to delete it
 while (rs1_val.count("0x00000000")):
     rs1_val.remove("0x00000000")
-while (rs2_val.count("0x00000000")):
-    rs2_val.remove("0x00000000")
 
 # `0x80000000` is represented as `-0` in floating point
-# So we need to delete it
+# So we need to delete it too
 while (rs1_val.count("0x80000000")):
     rs1_val.remove("0x80000000")
-while (rs2_val.count("0x80000000")):
-    rs2_val.remove("0x80000000")
-
-# For the divison instruction, the operands cannot be zero
-# So we need to delete it
-while (rs1_val_64.count("0x0000000000000000")):
-    rs1_val_64.remove("0x0000000000000000")
-while (rs2_val_64.count("0x0000000000000000")):
-    rs2_val_64.remove("0x0000000000000000")
-
-# `0x8000000000000000` is represented as `-0` in floating point
-# So we need to delete it
-while (rs1_val_64.count("0x8000000000000000")):
-    rs1_val_64.remove("0x8000000000000000")
-while (rs2_val_64.count("0x8000000000000000")):
-    rs2_val_64.remove("0x8000000000000000")
 
 def generate_fdat_seg(f):
     print("fdat_rs1:", file=f)
@@ -42,11 +26,62 @@ def generate_fdat_seg(f):
     for i in range(len(rs2_val)):
         print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
 
+
+def generate_macros(f):
+    for n in range(1, 32):
+        if n == 24 or n == 8:
+            continue
+        print("#define TEST_FP_HEX_1OPERAND_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
+            TEST_CASE( testnum, v24, result, \\\n\
+                li x7, MASK_VSEW(val); \\\n\
+                vmv.v.x v%d, x7; "%n + " \\\n\
+                inst v24, v%d; "%n + " \\\n\
+                frflags a1; \\\n\
+                li a2, flags; \\\n\
+            )", file = f)
+
+    for n in range(1, 32):
+        if n == 24 or n == 8:
+            continue
+        print("#define TEST_FP_HEX_1OPERAND_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
+            TEST_CASE( testnum, v%d, result, "%n + " \\\n\
+                li x7, MASK_VSEW(val); \\\n\
+                vmv.v.x v8, x7;  \\\n\
+                inst v%d, v8; "%n + " \\\n\
+                frflags a1; \\\n\
+                li a2, flags; \\\n\
+            )", file = f)
+
 def extract_operands(f, rpt_path):
     # Floating pooints tests don't need to extract operands, rs1 and rs2 are fixed
     return 0
 
 
+def generate_tests(f, rs1_val, rs2_val, lmul):    
+    n = 1
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # vfrec7.v Tests",file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    for i in range(len(rs1_val)):        
+        print("TEST_FP_HEX_1OPERAND_OP( %d,  %s.v, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
+        n += 1
+    
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # vfrec7.v Tests (different register)",file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    n = n+1
+    for i in range(len(rs1_val)):     
+        k = i%31+1  
+        if k != 24 and k != 8 and k % lmul == 0:
+            print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
+            n += 1
+
+        k = i%31+1  
+        if k != 24 and k != 8 and k % lmul == 0:
+            print("  TEST_FP_HEX_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
+            n += 1
 
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
@@ -103,7 +138,7 @@ def print_ending(f):
     ", file=f)
 
 
-def create_empty_test_vfdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vfrec7(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating empty test for {}".format(instr))
 
     path = "%s/%s_empty.S" % (output_dir, instr)
@@ -126,7 +161,7 @@ def create_empty_test_vfdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     return path
 
 
-def create_first_test_vfdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
+def create_first_test_vfrec7(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
     logging.info("Creating first test for {}".format(instr))
 
     path = "%s/%s_first.S" % (output_dir, instr)
@@ -139,10 +174,10 @@ def create_first_test_vfdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
+    generate_macros(f)
 
     # Generate tests
-    generate_tests(instr, f, vsew, lmul)
+    generate_tests(f, rs1_val, rs2_val, lmul)
 
     # Common const information
     print_ending(f)

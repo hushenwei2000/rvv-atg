@@ -11,7 +11,8 @@ integer = ['vadc', 'vadd', 'vand', 'vdiv', 'vdivu', 'vmax', 'vmaxu', 'vmin', 'vm
 
 mask = ['vfirst', 'vid', 'viota', 'vmand', 'vmandnot', 'vmnand', 'vmor', 'vmornot', 'vmsbf', 'vmxnor', 'vmxor', 'vpopc']
 
-floatingpoint = ['vfmv', 'vfnmsac', 'vfnmsub', 'vfrdiv', 'vfredmax', 'vfredmin', 'vfwadd', 'vfwcvt', 'vfwmacc', 'vfwmul', 'vfwsub', 'vfmacc', 'vfrec', 'vfredosum', 'vfrsqrt7', 'vfsgnj', 'vfsgnjx', 'vfsub', 'vfmadd', 'vfmerge', 'vfmsac', 'vfmul', 'vfnmadd', 'vfwnmacc', 'vfadd', 'vfdiv', 'vfncvt', 'vfwredsum', 'vfclass', 'vfredusum', 'vfrsub', 'vfsgnjn', 'vfsqrt', 'vfcvt', 'vfmax', 'vfmin', 'vfmsub', 'vfnmacc', 'vfwmsac', 'vfwnmsac']
+# Exclude 'vfncvt', 'vfwcvt', 'vfcvt', 
+floatingpoint = ['vfadd', 'vfclass', 'vfdiv', 'vfmacc', 'vfmadd', 'vfmax', 'vfmerge', 'vfmin', 'vfmsac', 'vfmsub', 'vfmul', 'vfmv', 'vfnmacc', 'vfnmadd', 'vfnmsac', 'vfnmsub', 'vfrdiv', 'vfrec7', 'vfredmax', 'vfredmin', 'vfredosum', 'vfredusum', 'vfrsqrt7', 'vfrsub', 'vfsgnj', 'vfsgnjn', 'vfsgnjx', 'vfsqrt', 'vfsub', 'vfwadd', 'vfwmacc', 'vfwmsac', 'vfwmul', 'vfwnmacc', 'vfwnmsac', 'vfwredsum', 'vfwsub']
 
 permute = ['vmre', 'vslide1', 'vmv', 'vrgather', 'vrgatherei16', 'vfslide', 'vcompress', 'vslide']
 
@@ -32,7 +33,7 @@ def runcommand_permute(ins):
     os.system('python run.py -t p -i %s' % ins)
 
 def runcommand_floatingpoint(ins):
-    os.system('python run.py -t f -i %s' % ins)
+    os.system('python run.py -t f -i %s --vsew 64' % ins)
 
 def runcommand_loadstore(ins):
     os.system('python run.py -t l -i %s' % ins)
@@ -129,12 +130,12 @@ def main():
     subprocess.run(["mkdir", "-p", 'generate_all'])
     setup_logging(True)
     # Modify here to choose which categories you want to generate
-    run_integer()
+    # run_integer()
     # run_mask()
-    # run_floatingpoint()
+    run_floatingpoint()
     # run_fixpoint()
     # run_permute()
-    run_loadstore()
+    # run_loadstore()
 
 
 if __name__ == "__main__":

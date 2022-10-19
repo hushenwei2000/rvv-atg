@@ -142,10 +142,10 @@ def print_ending(f):
     ", file=f)
 
 
-def create_empty_test_vfsqrt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vfsqrt(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating empty test for {}".format(instr))
 
-    path = "%s/%s_b1_empty.S" % (output_dir, instr)
+    path = "%s/%s_empty.S" % (output_dir, instr)
     f = open(path, "w+")
 
     # Common header files
@@ -165,10 +165,10 @@ def create_empty_test_vfsqrt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     return path
 
 
-def create_first_test_vfsqrt_b1(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
+def create_first_test_vfsqrt(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
     logging.info("Creating first test for {}".format(instr))
 
-    path = "%s/%s_b1_first.S" % (output_dir, instr)
+    path = "%s/%s_first.S" % (output_dir, instr)
     f = open(path, "w+")
 
     # Common header files

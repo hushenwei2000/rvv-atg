@@ -112,7 +112,7 @@ def create_first_test_vfmacc(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
+    generate_macros(f, vsew, lmul, test_vv = True, test_vf = False, test_rv = True)
 
     # Generate tests
     generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = False, test_rv = True)

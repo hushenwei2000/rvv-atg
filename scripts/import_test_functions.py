@@ -113,7 +113,7 @@ from scripts.create_test_floating.create_test_vfnmacc import *
 from scripts.create_test_floating.create_test_vfnmadd import *
 from scripts.create_test_floating.create_test_vfnmsac import *
 from scripts.create_test_floating.create_test_vfnmsub import *
-from scripts.create_test_floating.create_test_vfrec import *
+from scripts.create_test_floating.create_test_vfrec7 import *
 from scripts.create_test_floating.create_test_vfredmax import *
 from scripts.create_test_floating.create_test_vfredmin import *
 from scripts.create_test_floating.create_test_vfredosum import *

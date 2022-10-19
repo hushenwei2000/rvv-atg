@@ -1,4 +1,4 @@
-vfredusum_b1:
+vfredusum:
     config: 
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)

@@ -1174,25 +1174,25 @@ test_ ## testnum: \
   )
 
 #define TEST_FP_VF_OP_AFTER_VMSEQ( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     li x7, MASK_VSEW(vmseqop1); \
-    vmv.v.x v1, x7; \
-    vmseq.vi v0, v1, vmseqop2; \
+    vmv.v.x v8, x7; \
+    vmseq.vi v0, v8, vmseqop2; \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
-    vfmerge.vfm v14, v1, f1, v0; \
+    vfmerge.vfm v24, v8, f1, v0; \
   )
 
 // For VF instruction that order of oprands is 'vd, rs1, vs2'(rs-vs), val1-rs1, val2-vs2
 #define TEST_FP_VF_OP_RV( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     flw f0, 0(a0); \
     flw f1, 4(a0); \
-    vfmv.s.f v1, f0; \
+    vfmv.s.f v8, f0; \
     flw f2, 8(a0); \
-    inst v14, f1, v1; \
+    inst v24, f1, v8; \
   )
 
 // Correctval is computed by fadd.d((widen)f0, (widen)f1) -> f2

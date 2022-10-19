@@ -1,4 +1,4 @@
-vfwadd_b1:
+vfwadd:
     config:
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)

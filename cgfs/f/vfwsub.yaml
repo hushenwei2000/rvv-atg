@@ -1,4 +1,4 @@
-vfwsub_b1:
+vfwsub:
     config: 
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)

@@ -1,4 +1,4 @@
-vfwcvt_b1:
+vfwcvt:
     config:
       - check ISA:=regex(.*V.*)
       - check ISA:=regex(.*F.*)
