@@ -10,6 +10,7 @@
 // VSEW temporarily hard-coded to 32 bits
 #define RVTEST_VSET vsetivli x31, 1, e32, m8, tu, mu;
 #define __riscv_vsew 32
+#define __e_riscv_vsew e32
 #define __riscv_vsew_bytes 4
 #define __riscv_double_vsew 64
 #define VSEW_MASK_BITS 0x00000000ffffffff
@@ -998,8 +999,8 @@ test_ ## testnum: \
   TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \
     la  x1, base_data; \
     la  x6, base_index; \
-    MK_VLE_INST(index_eew) v2, (x6); \
-    inst v8, (x1), v2; \
+    MK_VLE_INST(index_eew) v16, (x6); \
+    inst v8, (x1), v16; \
   )
 
 #define TEST_VLXSEG1_OP( testnum, inst, index_eew, result, base_data, base_index ) \

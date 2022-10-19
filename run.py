@@ -86,6 +86,7 @@ def run_vf(cwd, args, cgf, output_dir):
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
                                                       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
+    check_spikelog(output_dir, args.i)
 
 def run_integer(cwd, args, cgf, output_dir):
     # 1. Create empty test file
@@ -125,6 +126,7 @@ def run_integer(cwd, args, cgf, output_dir):
     # run_spike(args.i, cwd, cgf,
     #       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
+    check_spikelog(output_dir, args.i)
 
 def run_mask(cwd, args, cgf, output_dir):
     # 1. Create empty test file
@@ -157,6 +159,8 @@ def run_mask(cwd, args, cgf, output_dir):
     # 4. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
                                                       output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
+
+    check_spikelog(output_dir, args.i)
 
 def run_loadstore(cwd, args, cgf, output_dir):
     # 1. Create empty test file
@@ -193,6 +197,7 @@ def run_loadstore(cwd, args, cgf, output_dir):
     # run_spike(args.i, cwd, cgf,
     #       output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.vsew, args.lmul, use_fail_macro=True)
 
+    check_spikelog(output_dir, args.i)
 
 def main():
     # Full path of current dir

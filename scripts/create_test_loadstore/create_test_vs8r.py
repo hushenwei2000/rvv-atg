@@ -10,14 +10,16 @@ instr2 = 'vl8re16'
 instr3 = 'vl8re32'
 
 
-def generate_macros(f):
-    for n in range(1,29):
+def generate_macros(f, vsew, lmul):
+    emul = 8 / vsew * lmul
+    lmul = 1 if lmul < 1 else int(lmul)
+    for n in range(1,32):
         print("#define TEST_VSRE2_OP_1%d(  testnum, load_inst, store_inst, eew, result1, result2, base )"%n + " \\\n\
         TEST_CASE_VLRE( testnum, eew, result1, result2, \\\n\
             la  x%d, base; "%n + " \\\n\
             li x29, MASK_EEW(result1, eew); \\\n\
             li x30, MASK_EEW(result2, eew); \\\n\
-            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+            vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \\\n\
             vmv.v.x v8, x29; \\\n\
             vmv.v.x v9, x30; \\\n\
             VSET_VSEW \\\n\
@@ -25,14 +27,14 @@ def generate_macros(f):
             load_inst v16, (x%d); "%n + " \\\n\
         )",file=f)
 
-    for n in range(2,31):
+    for n in range(1,32):
         if n%8 ==0 :
             print("#define TEST_VSRE2_OP_rd%d(  testnum, load_inst, store_inst, eew, result1, result2, base )"%n + " \\\n\
             TEST_CASE_VLRE( testnum, eew, result1, result2, \\\n\
                 la  x1, base;  \\\n\
                 li x7, MASK_EEW(result1, eew); \\\n\
                 li x8, MASK_EEW(result2, eew); \\\n\
-                vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
+                vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \\\n\
                 vmv.v.x v%d, x7; "%n + "\\\n\
                 vmv.v.x v%d, x8; "%(n+1) + "\\\n\
                 VSET_VSEW \\\n\
@@ -40,55 +42,11 @@ def generate_macros(f):
                 load_inst v16, (x1);  \\\n\
             )",file=f)
 
-    print("#define TEST_VSRE2_OP_129(  testnum, load_inst, store_inst, eew, result1, result2, base ) \\\n\
-        TEST_CASE_VLRE( testnum, eew, result1, result2, \\\n\
-            la  x29, base;  \\\n\
-            li x2, MASK_EEW(result1, eew); \\\n\
-            li x3, MASK_EEW(result2, eew); \\\n\
-            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
-            vmv.v.x v8, x2; \\\n\
-            vmv.v.x v9, x3; \\\n\
-            VSET_VSEW \\\n\
-            store_inst v8, (x29); \\\n\
-            load_inst v16, (x29);  \\\n\
-        )",file=f)
-
-    print("#define TEST_VSRE2_OP_130(  testnum, load_inst, store_inst, eew, result1, result2, base ) \\\n\
-        TEST_CASE_VLRE( testnum, eew, result1, result2, \\\n\
-            la  x30, base;  \\\n\
-            li x2, MASK_EEW(result1, eew); \\\n\
-            li x3, MASK_EEW(result2, eew); \\\n\
-            vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
-            vmv.v.x v8, x2; \\\n\
-            vmv.v.x v9, x3; \\\n\
-            VSET_VSEW \\\n\
-            store_inst v8, (x30); \\\n\
-            load_inst v16, (x30);  \\\n\
-        )",file=f)
 
 
-    
-
-
-
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
-
-
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
+    emul = 8 / vsew * lmul
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -107,13 +65,13 @@ def generate_tests(f, rs1_val, rs2_val):
         
 
     for i in range(100):     
-        k = i%31+1
-        n+=1
-        if(k%8 == 0):
+        k = i%30+1
+        if k != 8 and k != 16 and k % lmul == 0 and k % 8 == 0:
+            n+=1
             print("  TEST_VSRE2_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00f00ff"+", "+"0xf00f00ff"+", "+"0 + tdat"+" );",file=f)
     
         k = i%30+2
-        if(k == 31):
+        if k == 31 or k == 30:
             continue;
         n +=1
         print("  TEST_VSRE2_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00fff00"+", "+"0xf00f00ff"+", "+"-8 + tdat4"+" );",file=f)
@@ -129,6 +87,8 @@ def create_empty_test_vs8r(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
     # Common header files
     print_common_header(name, f)
+
+    generate_macros(f, vsew, lmul)
 
     print(" TEST_VSRE2_OP( 6, vl8re8.v,  vs8r.v, 8,  0xff, 0x00,  0  + tdat );", file=f)
 
@@ -159,10 +119,10 @@ def create_first_test_vs8r(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)

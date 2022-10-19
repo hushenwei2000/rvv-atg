@@ -1,5 +1,6 @@
 import logging
 import os
+from scripts.create_test_loadstore.create_test_common import generate_macros_vsuxseg
 from scripts.test_common_info import *
 import re
 
@@ -20,101 +21,44 @@ instr6l = 'vluxseg7ei32'
 instr7 = 'vsuxseg8ei32' 
 instr7l = 'vluxseg8ei32' 
 
-
-def generate_macros(f):
-    for n in range(1,30):
-        print("#define TEST_VSXSEG1_OP_1%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
-            la  x%d, base_data; "%n + " \\\n\
-            la  x30, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x30);    \\\n\
-            li  x31, MASK_VSEW(result); \\\n\
-            vmv.v.x v1, x31; \\\n\
-            store_inst v1, (x%d), v2;"%n + " \\\n\
-            load_inst v14, (x%d), v2;"%n + " \\\n\
-        )",file=f)
-
-    for n in range(1,31):
-        print("#define TEST_VSXSEG1_OP_rd%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
-        TEST_CASE( testnum, v%d, result, "%n + "\\\n\
-            la  x1, base_data;   \\\n\
-            la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v31, (x6);    \\\n\
-            li  x3, MASK_VSEW(result); \\\n\
-            vmv.v.x v%d, x3; "%n + "\\\n\
-            store_inst v%d, (x1), v31;"%n + " \\\n\
-            load_inst v14, (x1), v31; \\\n\
-        )",file=f)
-
-    print("#define TEST_VSXSEG1_OP_130( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
-            la  x30, base_data;  \\\n\
-            la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x6);    \\\n\
-            li  x31, MASK_VSEW(result); \\\n\
-            vmv.v.x v1, x31; \\\n\
-            store_inst v1, (x30), v2; \\\n\
-            load_inst v14, (x30), v2; \\\n\
-        )",file=f)
-    print("#define TEST_VSXSEG1_OP_131( testnum, load_inst, store_inst, index_eew, result, base_data, base_index ) \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
-            la  x31, base_data;  \\\n\
-            la  x6, base_index; \\\n\
-            MK_VLE_INST(index_eew) v2, (x6);    \\\n\
-            li  x3, MASK_VSEW(result); \\\n\
-            vmv.v.x v1, x3; \\\n\
-            store_inst v1, (x31), v2; \\\n\
-            load_inst v14, (x31), v2; \\\n\
-        )",file=f)
-        
-
-
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
-
-
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
+    emul = 32 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
-        n += 1
-        print("   TEST_VSXSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr2l,instr2)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr3l,instr3)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr4l,instr4)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr5l,instr5)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr6l,instr6)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
-        n += 1
-        print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 2 * lmul <= 8 and 2 + 2 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 3 * lmul <= 8 and 8 + 3 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr2l,instr2)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 4 * lmul <= 8 and 8 + 4 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr3l,instr3)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 5 * lmul <= 8 and 8 + 5 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr4l,instr4)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 6 * lmul <= 8 and 8 + 6 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr5l,instr5)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 7 * lmul <= 8 and 8 + 7 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr6l,instr6)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
+        if 8 * lmul <= 8 and 8 + 8 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
+            n += 1
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"16"+", "+"0x00ff00ff"+",  "+"0x00ff00ff"+",  "+"0x00ff00ff"+", "+"0 + tdat"+", "+"idx32dat"+");", file=f)
         
         
     for i in range(100):     
         k = i%31+1
-        if(k == 31):
-            continue;
-        n+=1
-        print("   TEST_VSXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x00ff00ff"+",  "+"0 + tdat"+", "+"idx32dat"+");",file=f)
+        if k != 8 and k != 16 and k != 24 and k % lmul == 0 and k % emul == 0 and k + 2 * lmul <= 32 and not is_overlap(k, lmul*2, 8, emul):
+            n+=1
+            print("   TEST_VSXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x00ff00ff"+",  "+"0 + tdat"+", "+"idx32dat"+");",file=f)
     
         k = i%30+2
         if(k == 31):
@@ -162,10 +106,10 @@ def create_first_test_vsuxsegei32(xlen, vlen, vsew, lmul, vta, vma, output_dir, 
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros_vsuxseg(f, lmul, vsew, 8)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)

@@ -344,7 +344,7 @@ Unable to pass the lmul==8 parameter test： vlsege32 vlssege32 vluxsegei8 vluxs
 | vlen1024 vsew32 lmul1          | P P           | P P        | P P         | P P              | P P           | P P              |
 | vlen1024 vsew64 lmul1          | P P           | P P        | P P         | P P              | P P           | P P              |
 | ------------------------------ | ----          | -----      | -----       | -------          | -------       | ------------     |
-| vlen128 vsew32 lmul4           | P P           |            | P P         | P P              | P P           | P P              |
+| vlen128 vsew32 lmul4           | P P           | P P        | P P         | P P              | P P           | P P              |
 
 ## Code Explain
 

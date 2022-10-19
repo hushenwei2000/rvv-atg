@@ -108,3 +108,8 @@ def create_first_test(instr, xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
 
 def check_type(ins, type):
   return True
+
+def check_spikelog(dir, instr):
+  log = "%s/%s"%(dir, 'spike_%s_final.log'%instr)
+  if os.system("grep FAIL %s"%log) == 0:
+    print("Generated file is WRONG! : %s"%instr)

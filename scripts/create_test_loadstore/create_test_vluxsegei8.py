@@ -25,7 +25,9 @@ instr6 = 'vluxseg8ei8'
 tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # consequence: "87654321"
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
-
+    emul = 16 / vsew * lmul
+    emul = 1 if emul < 1 else int(emul)
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -57,7 +59,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
 
     for i in range(100):     
         k = i%30+1
-        if k != 8 and k != 16 and k != 20 and k % lmul == 0 and k + 2 * lmul <= 32:
+        if k != 8 and k != 16 and k % lmul == 0 and k % emul == 0 and k + 2 * lmul <= 32 and not is_overlap(k, lmul*2, 8, emul):
             n+=1
             print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+"8"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx8dat"+");",file=f)
         

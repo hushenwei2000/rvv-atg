@@ -23,7 +23,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
-        if 2 * emul <= 8 and 2 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+"0 + tdat"+" );", file=f)
             n += 1

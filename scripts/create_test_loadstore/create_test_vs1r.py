@@ -14,72 +14,54 @@ instr4 = 'vl1re64'
 def generate_macros(f):
     for n in range(1,30):
         print("#define TEST_VSRE1_OP_1%d(  testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\
             li  x30, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
-            vmv.v.x v1, x30; \\\n\
+            vmv.v.x v8, x30; \\\n\
             VSET_VSEW \\\n\
-            store_inst v1, (x%d); "%n + "\\\n\
-            load_inst v14, (x%d); "%n + " \\\n\
+            store_inst v8, (x%d); "%n + "\\\n\
+            load_inst v16, (x%d); "%n + " \\\n\
         )",file=f)
 
     for n in range(1,31):
         print("#define TEST_VSRE1_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE( testnum, v%d, result, "%n + "\\\n\
+        TEST_CASE( testnum, v16, result, " + "\\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
             vmv.v.x v%d, x3;  "%n + "\\\n\
             VSET_VSEW \\\n\
             store_inst v%d, (x1); "%n + " \\\n\
-            load_inst v31, (x1); \\\n\
+            load_inst v16, (x1); \\\n\
         )",file=f)
 
     print("#define TEST_VSRE1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE( testnum, v14, result, \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             la  x30, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
-            vmv.v.x v1, x3; \\\n\
+            vmv.v.x v8, x3; \\\n\
             VSET_VSEW \\\n\
-            store_inst v1, (x30); \\\n\
-            load_inst v14, (x30) ;  \\\n\
+            store_inst v8, (x30); \\\n\
+            load_inst v16, (x30) ;  \\\n\
         )",file=f)
 
     print("#define TEST_VSRE1_OP_rd31( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE( testnum, v31, result, \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
             vmv.v.x v31, x3; \\\n\
             VSET_VSEW \\\n\
             store_inst v31, (x1); \\\n\
-            load_inst v1, (x1);  \\\n\
+            load_inst v16, (x1);  \\\n\
         )",file=f)
 
     
-
-
-
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
-
-
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
+    emul = 8 / vsew * lmul
+    lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -98,9 +80,10 @@ def generate_tests(f, rs1_val, rs2_val):
         
 
     for i in range(100):     
-        k = i%31+1
-        n+=1
-        print("  TEST_VSRE1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00f00ff"+", "+"0 + tdat"+" );",file=f)
+        k = i%30+1
+        if k != 8 and k != 16 and k % lmul == 0:
+            n+=1
+            print("  TEST_VSRE1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00f00ff"+", "+"0 + tdat"+" );",file=f)
     
         k = i%30+2
         if(k == 31):
@@ -152,7 +135,7 @@ def create_first_test_vs1r(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
     # print_common_ending(f)
