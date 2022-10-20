@@ -7,17 +7,18 @@
 // Helper macros
 //-----------------------------------------------------------------------
 
-// VSEW temporarily hard-coded to 32 bits
-#define RVTEST_VSET vsetivli x31, 1, e32, m8, tu, mu;
-#define __riscv_vsew 32
-#define __e_riscv_vsew e32
-#define __riscv_vsew_bytes 4
-#define __riscv_double_vsew 64
-#define VSEW_MASK_BITS 0x00000000ffffffff
-#define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
-#define VSET_VSEW vsetivli x31, 1, e32, m8, tu, mu;
-#define VSET_VSEW_4AVL vsetvli x31, x0, e32, m8, tu, mu;
-#define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, m8, tu, mu;
+// VSEW temporarily hard-coded to 8 bits
+#define RVTEST_VSET vsetivli x31, 1, e8, m4, tu, mu;
+#define __riscv_vsew 8
+#define __e_riscv_vsew e8
+#define __riscv_vsew_bytes 1
+#define __riscv_double_vsew 16
+#define VSEW_MASK_BITS 0x00000000000000ff
+#define DOUBLE_VSEW_MASK_BITS 0x000000000000ffff
+#define VSET_VSEW vsetivli x31, 1, e8, m4, tu, mu;
+#define VSET_VSEW_4AVL vsetvli x31, x0, e8, m4, tu, mu;
+#define VSET_DOUBLE_VSEW vsetivli x31, 1, e32, m4, tu, mu;
+#define VSET_CONST_VSEW(eew_num) vsetivli x31, ##eew_num, m4, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -162,15 +163,15 @@ test_ ## testnum: \
     code; \
     li x7, MASK_EEW(correctval1, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VSET_VSEW \
-    vsetivli x31, 4, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     vslidedown.vi v16, testreg, 1; \
     VSET_VSEW \
     li x7, MASK_EEW(correctval2, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VSET_VSEW
 
@@ -182,7 +183,7 @@ test_ ## testnum: \
     li x8, MASK_EEW(correctval2, eew); \
     li x9, MASK_EEW(correctval3, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VMVXS_AND_MASK_EEW( x15, v9, eew ) \
     VMVXS_AND_MASK_EEW( x16, v10, eew ) \
@@ -195,7 +196,7 @@ test_ ## testnum: \
     li x7, MASK_EEW(correctval1, eew); \
     li x8, MASK_EEW(correctval2, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VMVXS_AND_MASK_EEW( x15, v17, eew ) \
     VSET_VSEW
@@ -206,7 +207,7 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v8, (correctval_addr_reg); \
+    vle8.v v8, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
@@ -220,7 +221,7 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v8, (correctval_addr_reg); \
+    vle8.v v8, (correctval_addr_reg); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
@@ -239,7 +240,7 @@ test_ ## testnum: \
     li x29, offset; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v15, (correctval_addr_reg); \
+    vle8.v v15, (correctval_addr_reg); \
     li TESTNUM, testnum; \
     bge x31, x29, test_loop_vslide2_ ## testnum; \
 test_loop_vslide1_ ## testnum: \
@@ -407,7 +408,7 @@ test_ ## testnum: \
   code; \
   li x7, MASK_EEW(correctval, correctval_eew); \
   li TESTNUM, testnum; \
-  vsetivli x31, 1, MK_EEW(correctval_eew), m8, tu, mu; \
+  vsetivli x31, 1, MK_EEW(correctval_eew), m4, tu, mu; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
   frflags a1; \
@@ -428,7 +429,7 @@ test_ ## testnum: \
   code; \
   li x7, MASK_EEW(correctval, correctval_eew); \
   li TESTNUM, testnum; \
-  vsetivli x31, 1, MK_EEW(correctval_eew), m8, tu, mu; \
+  vsetivli x31, 1, MK_EEW(correctval_eew), m4, tu, mu; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
   frflags a1; \
@@ -925,7 +926,7 @@ test_ ## testnum: \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
     li  x2, stride; \
-    vsetivli x31, 4, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     inst v16, (x1), x2; \
     VSET_VSEW \
   )
@@ -944,7 +945,7 @@ test_ ## testnum: \
 #define TEST_VLE_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     inst v16, (x1); \
     VSET_VSEW \
   )
@@ -952,7 +953,7 @@ test_ ## testnum: \
 #define TEST_VLEFF_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     inst v16, (x1); \
     csrr x30, vl; \
   )
@@ -964,9 +965,9 @@ test_ ## testnum: \
   )
 
 #define TEST_VLSEG1_OP( testnum, inst, eew, result, base ) \
-  TEST_CASE( testnum, v16, result,  \
+  TEST_CASE( testnum, v8, result,  \
     la  x1, base; \
-    inst v16, (x1); \
+    inst v8, (x1); \
   )
 
 #define TEST_VLRE2_OP( testnum, inst, eew, result1, result2, base ) \
@@ -1017,7 +1018,7 @@ test_ ## testnum: \
 //     li x7, MASK_EEW(result1, eew); \
 //     li x8, MASK_EEW(result2, eew); \
 //     li x9, MASK_EEW(result3, eew); \
-//     vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+//     vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
 //     vmv.v.x v1, x7; \
 //     vmv.v.x v2, x8; \
 //     vmv.v.x v3, x9; \
@@ -1031,7 +1032,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1045,7 +1046,7 @@ test_ ## testnum: \
 //     li x7, MASK_EEW(result1, eew); \
 //     li x8, MASK_EEW(result2, eew); \
 //     li x9, MASK_EEW(result3, eew); \
-//     vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+//     vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \
 //     vmv.v.x v8, x7; \
 //     vmv.v.x v9, x8; \
 //     vmv.v.x v10, x9; \
@@ -1064,7 +1065,7 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1102,7 +1103,7 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1113,7 +1114,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result, \
     la  x1, base; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1135,7 +1136,7 @@ test_ ## testnum: \
     la  x1, base; \
     li x7, MASK_EEW(result1, eew); \
     li x8, MASK_EEW(result2, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \
     vmv.v.x v8, x7; \
     vmv.v.x v9, x8; \
     VSET_VSEW \
@@ -1147,7 +1148,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1369,7 +1370,7 @@ test_ ## testnum: \
   TEST_CASE_MASK_4VL( testnum, v16, result, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     vmseq.vi v1, v8, 1; \
     inst v16, v1; \
     VSET_VSEW \
@@ -1390,7 +1391,7 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     vmseq.vi v0, v8, 1; \
     inst v16, v0; \
   )
@@ -1400,7 +1401,7 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     vmseq.vi v0, v8, 1; \
     inst v16, v0.t; \
   )
@@ -1422,10 +1423,10 @@ test_ ## testnum: \
     la  x1, src_addr; \
     la  x2, rd_addr; \
     la  x3, vm_addr; \
-    vle32.v v8, (x3); \
+    vle8.v v8, (x3); \
     vmseq.vi v0, v8, 1; \
-    vle32.v v8, (x1); \
-    vle32.v v16, (x2); \
+    vle8.v v8, (x1); \
+    vle8.v v16, (x2); \
     inst v16, v8, v0; \
   )
 
@@ -1446,7 +1447,7 @@ test_ ## testnum: \
   TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \
     VSET_VSEW_4AVL \
     la  x2, vm_addr; \
-    vle32.v v16, (x2); \
+    vle8.v v16, (x2); \
     inst x14, v16; \
   )
 
@@ -1488,7 +1489,7 @@ test_ ## testnum: \
 //   TEST_CASE_LOOP( testnum, v16, x7, \
 //     VSET_VSEW_4AVL \
 //     la  x1, base; \
-//     vl8re32.v v8, (x1); \
+//     vl8re16.v v8, (x1); \
 //     la x7, result_base; \
 //     inst v16, v8; \
 //   )
@@ -1497,7 +1498,7 @@ test_ ## testnum: \
 //   TEST_CASE_LOOP( testnum, v16, x7, \
 //     VSET_VSEW_4AVL \
 //     la  x1, base; \
-//     vl8re32.v v8, (x1); \
+//     vl8re16.v v8, (x1); \
 //     la x7, result_base1; \
 //     inst v16, v8; \
 //   ) \
@@ -1510,7 +1511,7 @@ test_ ## testnum: \
 //   TEST_CASE_LOOP( testnum, v16, x7, \
 //     VSET_VSEW_4AVL \
 //     la  x1, base; \
-//     vl8re32.v v8, (x1); \
+//     vl8re16.v v8, (x1); \
 //     la x7, result_base1; \
 //     inst v16, v8; \
 //   ) \
@@ -1523,7 +1524,7 @@ test_ ## testnum: \
 //   TEST_CASE_LOOP( testnum, v16, x7, \
 //     VSET_VSEW_4AVL \
 //     la  x1, base; \
-//     vl8re32.v v8, (x1); \
+//     vl8re16.v v8, (x1); \
 //     la x7, result_base1; \
 //     inst v16, v8; \
 //   ) \
@@ -1536,9 +1537,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     la  x1, rd_base; \
-    vle32.v v16, (x1); \
+    vle8.v v16, (x1); \
     la  x7, result_base; \
     li x1, offset; \
     inst v16, v8, x1; \
@@ -1548,9 +1549,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     la  x1, rd_base; \
-    vle32.v v16, (x1); \
+    vle8.v v16, (x1); \
     la  x7, result_base; \
     li x1, rs1; \
     inst v16, v8, x1; \
@@ -1560,9 +1561,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     la  x1, rd_base; \
-    vle32.v v16, (x1); \
+    vle8.v v16, (x1); \
     la  x7, result_base; \
     inst v16, v8, offset_imm; \
   )
@@ -1571,9 +1572,9 @@ test_ ## testnum: \
   TEST_CASE_LOOP( testnum, v16, x7, \
     VSET_VSEW_4AVL \
     la  x1, base; \
-    vle32.v v8, (x1); \
+    vle8.v v8, (x1); \
     la  x1, rd_base; \
-    vle32.v v16, (x1); \
+    vle8.v v16, (x1); \
     la x7, result_base; \
     la x1, f_rs1_base; \
     flw f1, 0(x1); \

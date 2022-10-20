@@ -24,6 +24,8 @@ instr7l = 'vlseg8e8'
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 8 / vsew * lmul
+    if emul < 0.125 or emul > 8:
+        return
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     n = 1
@@ -61,17 +63,18 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
         
         
-    for i in range(100):     
-        k = i%30+1
-        if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul) and k + 2 * emul <= 32: # (insn.rd() + nf * emul) <= NVPR
-            n+=1
-            print("  TEST_VSSEG1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"0 + tdat"+" );",file=f)
-    
-        k = i%30+2
-        if(k == 31):
-            continue;
-        n +=1
-        print("   TEST_VSSEG1_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+", "+"-8 + tdat8"+" );",file=f)
+    if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        for i in range(100):     
+            k = i%30+1
+            if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul) and k + 2 * emul <= 32: # (insn.rd() + nf * emul) <= NVPR
+                n+=1
+                print("  TEST_VSSEG1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"0 + tdat"+" );",file=f)
+        
+            k = i%30+2
+            if(k == 31):
+                continue;
+            n +=1
+            print("   TEST_VSSEG1_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+", "+"-8 + tdat8"+" );",file=f)
 
 
 

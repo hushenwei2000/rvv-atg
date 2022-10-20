@@ -17,6 +17,8 @@ instr6 = 'vlseg8e32'
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 32 / vsew * lmul
+    if emul < 0.125 or emul > 8:
+        return
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -47,18 +49,18 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             n += 1
             print("  TEST_VLSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0x0ff00ff0"+", "+"0 + tdat"+" );", file=f)
         
-
-    for i in range(100):     
-        k = i%30+1
-        if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32: # (insn.rd() + nf * emul) <= NVPR
-            n+=1
-            print("  TEST_VLSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" );",file=f)
-        
-        k = i%30+2
-        if(k == 31):
-            continue;
-        n +=1
-        print("  TEST_VLSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xff00ff00"+", "+"4 + tdat"+" );",file=f)
+    if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        for i in range(100):     
+            k = i%30+1
+            if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32: # (insn.rd() + nf * emul) <= NVPR
+                n+=1
+                print("  TEST_VLSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+"0 + tdat"+" );",file=f)
+            
+            k = i%30+2
+            if(k == 31):
+                continue;
+            n +=1
+            print("  TEST_VLSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xff00ff00"+", "+"4 + tdat"+" );",file=f)
     
 
 

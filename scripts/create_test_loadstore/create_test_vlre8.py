@@ -90,6 +90,8 @@ def generate_array(f, vl,vsew):
 
 def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
     emul = 8 / vsew * lmul
+    if emul < 0.125 or emul > 8:
+        return
     emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)

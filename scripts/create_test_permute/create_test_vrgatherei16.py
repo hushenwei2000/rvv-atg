@@ -79,7 +79,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
         lmul = 1
     else:
         lmul = int(lmul)
-    rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
+    rs1lmul = (16 / vsew) * lmul
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests"%instr,file=f)

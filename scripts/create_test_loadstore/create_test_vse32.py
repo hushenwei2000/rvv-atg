@@ -9,6 +9,8 @@ instr1 = 'vle32'
 
 def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     emul = 32 / vsew * lmul
+    if emul < 0.125 or emul > 8:
+        return
     emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
