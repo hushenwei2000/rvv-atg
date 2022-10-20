@@ -9,31 +9,31 @@ instr = 'vnsra'
 def generate_macros(f):
     for n in range(2, 32):
         print("#define TEST_N_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
-            TEST_CASE( testnum, v14, MASK_VSEW(result), \\\n\
+            TEST_CASE( testnum, v24, MASK_VSEW(result), \\\n\
             li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-            vmv.v.x v8, x7; \\\n\
+            vmv.v.x v16, x7; \\\n\
             li x7, MASK_VSEW(val1); \\\n\
             vmv.v.x v%d, x7;"% n + " \\\n\
-            inst v14, v8, v%d; "%n + " \\\n\
+            inst v24, v16, v%d; "%n + " \\\n\
         )", file=f)
     for n in range(3, 32):
         if n %2 == 0:
             print("#define TEST_N_VV_OP_rd%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v%d, MASK_VSEW(result),"%n + " \\\n\
                 li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-                vmv.v.x v8, x7; \\\n\
+                vmv.v.x v16, x7; \\\n\
                 li x7, MASK_VSEW(val1); \\\n\
-                vmv.v.x v2, x7; \\\n\
-                inst v%d, v8, v2;"%n+" \\\n\
+                vmv.v.x v8, x7; \\\n\
+                inst v%d, v16, v8;"%n+" \\\n\
         ) ", file=f)
     
     print("#define TEST_N_VV_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v2, MASK_VSEW(result), \\\n\
+        TEST_CASE( testnum, v24, MASK_VSEW(result), \\\n\
             li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-            vmv.v.x v4, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
             vmv.v.x v8, x7; \\\n\
-            inst v2, v8, v4; \\\n\
+            li x7, MASK_VSEW(val1); \\\n\
+            vmv.v.x v16, x7; \\\n\
+            inst v24, v16, v8; \\\n\
         )", file=f)
 
 
@@ -54,7 +54,7 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val):
+def generate_tests(f, rs1_val, rs2_val, lmul):
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -66,15 +66,14 @@ def generate_tests(f, rs1_val, rs2_val):
               instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
-        n+=1
-        if k%2 == 0 or k == 2:
+        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2):
+            n+=1
             print("  TEST_N_VV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
-        # if(k==14):
-        #     continue;
-        n +=1
-        print("  TEST_N_VV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2):
+            n +=1
+            print("  TEST_N_VV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -133,7 +132,7 @@ def create_first_test_vnsra(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    generate_tests(f, rs1_val, rs2_val, lmul)
 
     # Common const information
     print_common_ending(f)

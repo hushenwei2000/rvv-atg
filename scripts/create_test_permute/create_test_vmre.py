@@ -27,18 +27,28 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
         lmul = 'mf4'
     elif lmul == 0.125:
         lmul = 'mf8'
+    print("#define TEST_VMRE1_OP( testnum, inst, result_base, base ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            li x1, %d;"%(num_of_elements) + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
+            la  x1, base; \\\n\
+            vl8re%d.v v8, (x1); "%vsew + " \\\n\
+            la x7, result_base; \\\n\
+            inst v16, v8; \\\n\
+        ) ", file=f)
+    
     print("#define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
             li x1, %d;"%(num_of_elements*2) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
-            vl8re32.v v8, (x1); \\\n\
+            vl8re%d.v v8, (x1); "%vsew + " \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \\\n\
             li x1, %d;"%(num_of_elements*2) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu; "%lmul + "\\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu; "%(vsew, lmul) + "\\\n\
             la x7, result_base2; \\\n\
         )" if lmul_num <= 1 else "", file=f)
 
@@ -46,15 +56,15 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
     print("#define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
             li x1, %d;"%(num_of_elements*4) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
-            vl8re32.v v8, (x1); \\\n\
+            vl8re%d.v v8, (x1); "%vsew + " \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \\\n\
             li x1, %d;"%(num_of_elements*4) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la x7, result_base2; \\\n\
         )" if lmul_num <= 1 else "", file=f)
 
@@ -62,15 +72,15 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
     print("#define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
             li x1, %d;"%(num_of_elements*8) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
-            vl8re32.v v8, (x1); \\\n\
+            vl8re%d.v v8, (x1); "%vsew + " \\\n\
             la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \\\n\
             li x1, %d;"%(num_of_elements*8) + " \\\n\
-            vsetvli x31, x1, e32, m%s, tu, mu;"%lmul + " \\\n\
+            vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la x7, result_base2; \\\n\
         )" if lmul_num <= 1 else "", file=f)
 
@@ -86,6 +96,8 @@ def generate_tests_vmre(f):
     for i in range(num_group_walking - 9):
         # vmv1r test rd, vmv2r test rd+1, vmv4r test rd+3, vmv8r test rd+7 (all test the last register be influenced)
         # print("TEST_VMRE1_OP( %d,  vmv1r.v, walking_data%d, walking_data%d );" % (no, i, i),file=f)
+        no = no + 1
+        print("TEST_VMRE1_OP( %d,  vmv1r.v, walking_data%d, walking_data%d);" % (no, i, i),file=f)
         no = no + 1
         print("TEST_VMRE2_OP( %d,  vmv2r.v, walking_data%d, walking_data%d, walking_data%d );" % (no, i, i+1, i),file=f)
         no = no + 1

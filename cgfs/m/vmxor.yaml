@@ -1,8 +1,8 @@
-vmnxnor:
+vmxor:
     config:
       - check ISA:=regex(.*V.*)
     opcode: 
-      vmxnor.mm: 0
+      vmxor.mm: 0
     rs1: 
       <<: *v_regs
     rd: 

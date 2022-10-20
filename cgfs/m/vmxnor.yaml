@@ -1,4 +1,4 @@
-vmnxnor:
+vmxnor:
     config:
       - check ISA:=regex(.*V.*)
     opcode: 

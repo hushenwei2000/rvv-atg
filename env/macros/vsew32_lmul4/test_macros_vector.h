@@ -709,27 +709,27 @@ test_ ## testnum: \
   )
 
 #define TEST_N_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, MASK_VSEW(result), \
+  TEST_CASE( testnum, v24, MASK_VSEW(result), \
     li x7, SEXT_DOUBLE_VSEW(val2); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v16, x7; \
     li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v2, v1; \
+    vmv.v.x v8, x7; \
+    inst v24, v16, v8; \
   )
 
 #define TEST_N_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, MASK_VSEW(result), \
+  TEST_CASE( testnum, v24, MASK_VSEW(result), \
     li x7, SEXT_DOUBLE_VSEW(val2); \
-    vmv.v.x v2, x7; \
+    vmv.v.x v16, x7; \
     li x1, MASK_VSEW(val1); \
-    inst v14, v2, x1; \
+    inst v24, v16, x1; \
   )
 
 #define TEST_N_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, MASK_VSEW(result), \
+  TEST_CASE( testnum, v24, MASK_VSEW(result), \
     li x7, SEXT_DOUBLE_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v2, SEXT_IMM(val1); \
+    vmv.v.x v16, x7; \
+    inst v24, v16, SEXT_IMM(val1); \
   )
 
 #define TEST_WVU_OP( testnum, inst, result, val1, val2 ) \
@@ -1539,14 +1539,14 @@ test_ ## testnum: \
     fcvt.w.s x7, f7; \
     bne x8, x7, fail;
 
-#define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vl8re32.v v8, (x1); \
-    la x7, result_base; \
-    inst v16, v8; \
-  )
+// #define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
+//   TEST_CASE_LOOP( testnum, v16, x7, \
+//     VSET_VSEW_4AVL \
+//     la  x1, base; \
+//     vl8re32.v v8, (x1); \
+//     la x7, result_base; \
+//     inst v16, v8; \
+//   )
 
 // #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
 //   TEST_CASE_LOOP( testnum, v16, x7, \

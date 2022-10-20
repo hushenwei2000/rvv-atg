@@ -1,5 +1,6 @@
 import logging
 import os
+from random import randint
 from scripts.test_common_info import *
 import re
 
@@ -80,13 +81,13 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
         lmul = int(lmul)
     rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
     n = 1
-    # print("  #-------------------------------------------------------------",file=f)
-    # print("  # %s Tests"%instr,file=f)
-    # print("  #-------------------------------------------------------------",file=f)
-    # print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    # for i in range(len(rs1_val)):
-    #     n += 1
-    #     print("  TEST_VV_OP( "+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # %s Tests"%instr,file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    for i in range(len(rs1_val)):
+        n += 1
+        print("  TEST_VV_OP( "+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
@@ -115,6 +116,12 @@ def create_empty_test_vrgatherei16(xlen, vlen, vsew, lmul, vta, vma, output_dir)
 
     # Extract operands
     rs1_val, rs2_val = extract_operands(f)
+
+    num_elem = int(vlen * lmul / vsew)
+    # Add walking_val_grouped values, need at least num_elem
+    for i in range(num_elem - len(rs2_val)):
+        rs1_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
+        rs2_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
 
     # Generate macros to test diffrent register
     generate_macros(f, lmul, vsew)

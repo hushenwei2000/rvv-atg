@@ -18,7 +18,7 @@
 ```
 python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 ```
-
+****
 - The type shall be consistent with the instruction: i (integer), f (floating point), m (mask), p (permute), x (fix point), l (load store)
 - Supported instruction and type can be seen in `cgfs/<type>/<instruction>.yaml`
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
@@ -35,6 +35,15 @@ python generate_all.py
 - **Modyfy `main` function to run different type of instructions.**
 - Test file will generate in `generate_all` folder.
 - ⚠️ Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
+
+### Check All Generated Tests
+
+```
+python check_all.py
+```
+
+- Check all generated folders. Find out if test file FAIL and the statistics of COVERAGE.
+- Output will in 'check_all.out'.
 
 ## Support Configuration
 
@@ -76,11 +85,11 @@ Notes:
 
 #### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
 
-| Config                        | Status | Config                | Status |
-| ----------------------------- | ------ | --------------------- | ------ |
+| Config                        | Status | Config                | Status | Config                | Status |
+| ----------------------------- | ------ | --------------------- | ------ | --------------------- | ------ |
 | vlen128 vsew8 lmul1           | P      | vlen128 vsew8 lmul4   |        |
 | vlen128 vsew16 lmul1          | P      | vlen128 vsew16 lmul4  |        |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4  | P      |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4  | P      | vlen128 vsew32 lmul8  | P      |
 | vlen128 vsew64 lmul1          | P      | vlen128 vsew64 lmul4  |        |
 | vlen256 vsew8 lmul1           | P      | vlen256 vsew8 lmul4   |        |
 | vlen256 vsew16 lmul1          | P      | vlen256 vsew16 lmul4  |        |
@@ -119,7 +128,8 @@ Notes:
 | vlen1024 vsew64 lmul1         | P  P      | P    | P P | P P  | P P      | P P          | P P    | P       | P       |
 | ----------------------------- | --------- | ---- | --- | ---- | -------- | ------------ | ------ | ------- | ------- |
 | vlen128 vsew32 lmul4          | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
-
+| ----------------------------- | --------- | ---- | --- | ---- | -------- | ------------ | ------ | ------- | ------- |
+| vlen128 vsew32 lmul8          | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
 note:
 
 1. vmv
@@ -131,11 +141,11 @@ note:
 
 #### Simple Arithmetic: vadc, vsbc; vadd, vand, vdiv, vdivu,  vmul, vmulh, vmulhsu, vmulhu, vsll, vsra, vsrl, vsub, vxor, vrem, vremu, vrsub, vsadd, vsaddu, vssub, vssubu, vmax, vmaxu, vmin, vminu,
 
-| Config                        | Status | Config                        | Status |
-| ----------------------------- | ------ | ----------------------------- | ------ |
+| Config                        | Status | Config                        | Status | Config                        | Status |
+| ----------------------------- | ------ | ----------------------------- | ------ | ----------------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4           |        |
 | vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4          |        |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4(default) | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4(default) | P P    | vlen128 vsew32 lmul8          | P P    |
 | vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4          |        |
 | vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4           |        |
 | vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4          |        |
@@ -152,11 +162,11 @@ note:
 
 #### Multiply-Add & Add-with-Carry Subtract-with-Borrow & Comparison: vmacc, vmadd, vnmsac, vnmsub & vmadc, vmsbc & vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne
 
-| Config                        | Status | Config               | Status |
-| ----------------------------- | ------ | -------------------- | ------ |
+| Config                        | Status | Config               | Status | Config               | Status |
+| ----------------------------- | ------ | -------------------- | ------ | -------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    |                      |        |
 | vlen128 vsew16 lmul1          | P P    |                      |        |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32 lmul8 | P P    |
 | vlen128 vsew64 lmul1          | P P    |                      |        |
 | vlen256 vsew8 lmul1           | P P    |                      |        |
 | vlen256 vsew16 lmul1          | P P    |                      |        |
@@ -173,11 +183,11 @@ note:
 
 #### Reduction Arithmetic:  vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor;
 
-| Config                        | Status | Config               | Status |
-| ----------------------------- | ------ | -------------------- | ------ |
+| Config                        | Status | Config               | Status | Config               | Status |
+| ----------------------------- | ------ | -------------------- | ------ | -------------------- | ------ |
 | vlen128 vsew8 lmul1           | P P    |                      |        |
 | vlen128 vsew16 lmul1          | P P    |                      |        |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32 lmul8 | P P    |
 | vlen128 vsew64 lmul1          | P P    |                      |        |
 | vlen256 vsew8 lmul1           | P P    |                      |        |
 | vlen256 vsew16 lmul1          | P P    |                      |        |
@@ -195,12 +205,13 @@ note:
 #### Widen Arithmetic: vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vnsra, vnsrl;
 
 * widen and narrow instruction not support VSEW=64 (vsew should be <= 64)
+* widen instruction(except VWRED*) not support LMUL=8 (lmul should be <= 4)
 
-| Config                        | Status | Config               | Status |
-| ----------------------------- | ------ | -------------------- | ------ |
+| Config                        | Status | Config               | Status | Config                            | Status |
+| ----------------------------- | ------ | -------------------- | ------ | --------------------              | ------ |
 | vlen128 vsew8 lmul1           | P P    |                      |        |
 | vlen128 vsew16 lmul1          | P P    |                      |        |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32 lmul8(only vwred*) | P P    |
 | vlen256 vsew8 lmul1           | P P    |                      |        |
 | vlen256 vsew16 lmul1          | P P    |                      |        |
 | vlen256 vsew32 lmul1          | P P    |                      |        |
@@ -227,8 +238,10 @@ note:
 | vlen1024 vsew64 lmul1         | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
 | ----------------------------- | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
 | vlen128 vsew32 lmul4          | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| ----------------------------- | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
+| vlen128 vsew32 lmul8          | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
 
-> vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support
+> vfcvt, vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support in Spike.
 
 #### vfredosum, vfredusum, vfrsqrt7, vfrsub, vfsgnj, vfsgnjn, vfsgnjx, vfsqrt, vfsub
 
@@ -242,6 +255,7 @@ note:
 | vlen512 vsew64 lmul1          | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 | vlen1024 vsew32 lmul1         | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 | vlen1024 vsew64 lmul1         | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
+| ----------------------------- | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
 | vlen128 vsew32 lmul4          | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 | vlen128 vsew64 lmul4          |           |           |          |        |        |         |         |        |       |
 | vlen256 vsew32 lmul4          |           |           |          |        |        |         |         |        |       |
@@ -250,6 +264,8 @@ note:
 | vlen512 vsew64 lmul4          |           |           |          |        |        |         |         |        |       |
 | vlen1024 vsew32 lmul4         |           |           |          |        |        |         |         |        |       |
 | vlen1024 vsew64 lmul4         |           |           |          |        |        |         |         |        |       |
+| ----------------------------- | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
+| vlen128 vsew32 lmul8          | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 
 #### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
 
@@ -275,6 +291,7 @@ note:
 note:
 
 - we do not have 16-bit floating point dataset
+- VFWiden instructions require lmul <= 4
 
 ### Fix Points
 
@@ -296,9 +313,12 @@ note:
 | vlen1024 vsew16 lmul1         | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 | vlen1024 vsew32 lmul1         | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 | vlen1024 vsew64 lmul1         | P P   | P P    | P P   | P P    | /      | /       | P P   | P P   | P P   |
+| ----------------------------- | ----- | ------ | ----- | ------ | ------ | ------- | ----- | ----- | ----- |
 | vlen128 vsew32 lmul4          | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
+| ----------------------------- | ----- | ------ | ----- | ------ | ------ | ------- | ----- | ----- | ----- |
+| vlen128 vsew32 lmul8          | P P   | P P    | P P   | P P    | /      | /       | P P   | P P   | P P   |
 
-*vnclip and vnclipu not support vsew=64 because vsew will be 128
+*vnclip and vnclipu not support vsew=64 and lmul=8
 
 ### LOAD
 
