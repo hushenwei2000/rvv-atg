@@ -213,6 +213,7 @@ def print_ending_vcompress(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -280,7 +281,7 @@ def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     else:
         walking_val = coverpoints_64
     # Add walking_val_grouped values, need at least num_elem
-    for i in range(num_elem - len(walking_val)):
+    for i in range(num_elem - - min(len(walking_val), len(rd_val)) + 2):
         walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
         rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
     num_group_walking = int(len(walking_val) / num_elem)

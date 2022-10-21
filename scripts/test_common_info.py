@@ -31,6 +31,7 @@ def print_common_header(instr, f):
 def print_common_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -111,6 +112,7 @@ def print_data_width_prefix(f, vsew):
 def print_load_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -217,6 +219,7 @@ def print_load_ending(f):
 def print_loaddword_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -324,6 +327,7 @@ def print_loaddword_ending(f):
 def print_loadls_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -441,6 +445,7 @@ def print_loadls_ending(f):
 def print_loadlr_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

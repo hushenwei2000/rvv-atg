@@ -23,6 +23,7 @@ def extract_operands(f, rpt_path):
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

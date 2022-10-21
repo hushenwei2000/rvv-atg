@@ -129,6 +129,7 @@ def generate_dat_seg_vslide1(f, vsew):
 def print_ending_vslide(f, vlen, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -188,6 +189,7 @@ def create_empty_test_vslide1(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global num_group_f
     global walking_val_grouped
     global f_val_grouped
+    global rd_val
     global vma
     global walking_val
     if vsew == 8 or vsew == 16:
@@ -198,7 +200,7 @@ def create_empty_test_vslide1(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
         walking_val = coverpoints_64
     num_elem = int(vlen * lmul/ vsew)
     # Add walking_val_grouped values, need at least num_elem
-    for i in range(num_elem - len(walking_val)):
+    for i in range(num_elem - min(len(walking_val), len(rd_val)) + 2):
         walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
         rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
     num_group_walking = int(len(walking_val) / num_elem)

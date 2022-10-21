@@ -14,10 +14,11 @@ def generate_macros(f, lmul, vsew):
         lmul = 1
     else:
         lmul = int(lmul)
-    rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
+    rs1lmul = (16 / vsew) * lmul
+    # rs1lmul = 2 if vsew == 8 else lmul # rs1_emul = (16 / vsew) * lmul
     for n in range(1,32):
         # no overlap: (rs1 + rs1lmul - 1 < rd) or (rs1 > rd + lmul - 1)
-        if n == 24 or n == 16 or n == 8 or n % rs1lmul != 0 or (not (n + rs1lmul - 1 < 24 or n > 24 + lmul - 1)): # last condition is:(not( rs1 no overlap rd))
+        if n == 24 or n == 16 or n == 8 or n % rs1lmul != 0 or n % lmul != 0 or (not (n + rs1lmul - 1 < 24 or n > 24 + lmul - 1)): # last condition is:(not( rs1 no overlap rd))
             continue
         print("#define TEST_VV_OP_1%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
         TEST_CASE( testnum, v24, result, \\\n\
@@ -100,7 +101,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
             print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
         
         k = i % 30 + 2
-        if k != 24 and k != 16 and k != 8 and k % rs1lmul == 0 and (k + rs1lmul - 1 < 24 or k > 24 + lmul - 1):
+        if k != 24 and k != 16 and k != 8 and k % rs1lmul == 0 and k % lmul == 0 and (k + rs1lmul - 1 < 24 or k > 24 + lmul - 1):
             n += 1
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+str(rs2_val[i])+", "+str(rs1_val[i])+" );",file=f)
 

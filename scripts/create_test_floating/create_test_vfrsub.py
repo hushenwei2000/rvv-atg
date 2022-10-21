@@ -107,6 +107,7 @@ def generate_tests(f, vsew, lmul):
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -166,7 +167,7 @@ def create_empty_test_vfrsub(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_FP_VV_OP( 1,  %s.vv, 0, 0, 1, 1);"%instr, file=f)
+    print("  TEST_FP_VV_OP( 1,  %s.vf, 0, 0, 1, 1);"%instr, file=f)
 
     # Common const information
     print_ending(f)

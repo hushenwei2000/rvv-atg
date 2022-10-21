@@ -1108,7 +1108,8 @@ test_ ## testnum: \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
     load_inst v16, (x1), x2; \
-
+  )
+  
 #define TEST_VSE_OP( testnum, load_inst, store_inst, eew, result, base ) \
   TEST_CASE( testnum, v16, result, \
     la  x1, base; \

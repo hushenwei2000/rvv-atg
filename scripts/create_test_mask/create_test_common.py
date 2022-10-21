@@ -1,3 +1,5 @@
+from random import randint
+import random
 from scripts.test_common_info import print_data_width_prefix
 
 
@@ -98,23 +100,29 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
     num_elem_plus = num_elem + 1
     num_elem_plus_square = num_elem_plus ** 2
     num_elem_plus_square_old = num_elem_plus_square
+    # If there are too many tests ( > 1000), only test some of them
+    percentage = 1000 / (4 * num_elem_plus_square)
     for i in range(0, num_elem_plus_square):
-        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_ones_dat%d );" % (
-            i, instr, (vsew if vsew <= 64 else 64), i / num_elem_plus, i % num_elem_plus), file=f)
+        if random.random() < percentage:
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_ones_dat%d );" % (
+                i, instr, (vsew if vsew <= 64 else 64), i / num_elem_plus, i % num_elem_plus), file=f)
 
     for i in range(num_elem_plus_square, num_elem_plus_square * 2):
-        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_zeros_dat%d );" % (
-            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+        if random.random() < percentage:
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_zeros_dat%d );" % (
+                i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
 
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
-        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
-            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+        if random.random() < percentage:
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+                i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
 
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
-        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
-            i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+        if random.random() < percentage:
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
+                i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
 
     # generate cover different registers
     print("  #-------------------------------------------------------------", file=f)
@@ -139,6 +147,7 @@ def print_ending_common(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
