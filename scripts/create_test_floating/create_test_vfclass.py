@@ -68,7 +68,7 @@ def generate_tests(f, rs1_val, lmul):
     n = n + 1
     for i in range(len(rs1_val)):
         k = i % 31 + 1  
-        if k % lmul != 4 or k == 8:
+        if k % lmul != 0 or k == 8:
             continue
         print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
         n += 1
