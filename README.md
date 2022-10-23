@@ -51,7 +51,7 @@ python check_all.py
 | --------- | ------------------------- | --------------- | ------------------------------ |
 | vlen      | 128 ~ 2^16                | 128 ~ 1024      | Spike now support largest 4096 |
 | vsew      | 8, 16, 32, 64             | 8, 16, 32, 64   |                                |
-| lmul      | 1/8, 1/4, 1/2, 1, 2, 4, 8 | 1, 4, 8         | lmul=8 except load/store       |
+| lmul      | 1/8, 1/4, 1/2, 1, 2, 4, 8 | 1/2, 1, 4, 8    | lmul=8 except load/store       |
 | vta       | 0, 1                      | 0               |                                |
 | vma       | 0, 1                      | 0               |                                |
 
@@ -104,24 +104,24 @@ Notes:
 
 #### vmand, vmandnot, vmnand, vmor, vmornot, vmxnor, vmxor; vmsbf; vpopc, vfirst; vid, viota
 
-| Config                        | Status | Config                | Status | Config                | Status |
-| ----------------------------- | ------ | --------------------- | ------ | --------------------- | ------ |
-| vlen128 vsew8 lmul1           | P      | vlen128 vsew8   lmul4 | P      | vlen128 vsew8   lmul8 | P      |
-| vlen128 vsew16 lmul1          | P      | vlen128 vsew16  lmul4 | P      | vlen128 vsew16  lmul8 | P      |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul4 | P      | vlen128 vsew32  lmul8 | P      |
-| vlen128 vsew64 lmul1          | P      | vlen128 vsew64  lmul4 | P      | vlen128 vsew64  lmul8 | P      |
-| vlen256 vsew8 lmul1           | P      | vlen256 vsew8   lmul4 | P      | vlen256 vsew8   lmul8 | P      |
-| vlen256 vsew16 lmul1          | P      | vlen256 vsew16  lmul4 | P      | vlen256 vsew16  lmul8 | P      |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul4 | P      | vlen256 vsew32  lmul8 | P      |
-| vlen256 vsew64 lmul1          | P      | vlen256 vsew64  lmul4 | P      | vlen256 vsew64  lmul8 | P      |
-| vlen512 vsew8 lmul1           | P      | vlen512 vsew8   lmul4 | P      | vlen512 vsew8   lmul8 | P      |
-| vlen512 vsew16 lmul1          | P      | vlen512 vsew16  lmul4 | P      | vlen512 vsew16  lmul8 | P      |
-| vlen512 vsew32 lmul1          | P      | vlen512 vsew32  lmul4 | P      | vlen512 vsew32  lmul8 | P      |
-| vlen512 vsew64 lmul1          | P      | vlen512 vsew64  lmul4 | P      | vlen512 vsew64  lmul8 | P      |
-| vlen1024 vsew8 lmul1          | P      | vlen1024 vsew8  lmul4 | P      | vlen1024 vsew8  lmul8 | P      |
-| vlen1024 vsew16 lmul1         | P      | vlen1024 vsew16 lmul4 | P      | vlen1024 vsew16 lmul8 | P      |
-| vlen1024 vsew32 lmul1         | P      | vlen1024 vsew32 lmul4 | P      | vlen1024 vsew32 lmul8 | P      |
-| vlen1024 vsew64 lmul1         | P      | vlen1024 vsew64 lmul4 | P      | vlen1024 vsew64 lmul8 | P      |
+| Config                        | Status | Config                  | Status | Config                  | Status |
+| ----------------------------- | ------ | ---------------------   | ------ | ---------------------   | ------ |
+| vlen128 vsew8 lmul1           | P      | vlen128 vsew8   lmul4,8 | P      | vlen128 vsew8   lmul0.5 | P      |
+| vlen128 vsew16 lmul1          | P      | vlen128 vsew16  lmul4,8 | P      | vlen128 vsew16  lmul0.5 | P      |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul4,8 | P      | vlen128 vsew32  lmul0.5 | P      |
+| vlen128 vsew64 lmul1          | P      | vlen128 vsew64  lmul4,8 | P      | vlen128 vsew64  lmul0.5 | P      |
+| vlen256 vsew8 lmul1           | P      | vlen256 vsew8   lmul4,8 | P      | vlen256 vsew8   lmul0.5 | P      |
+| vlen256 vsew16 lmul1          | P      | vlen256 vsew16  lmul4,8 | P      | vlen256 vsew16  lmul0.5 | P      |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul4,8 | P      | vlen256 vsew32  lmul0.5 | P      |
+| vlen256 vsew64 lmul1          | P      | vlen256 vsew64  lmul4,8 | P      | vlen256 vsew64  lmul0.5 | P      |
+| vlen512 vsew8 lmul1           | P      | vlen512 vsew8   lmul4,8 | P      | vlen512 vsew8   lmul0.5 | P      |
+| vlen512 vsew16 lmul1          | P      | vlen512 vsew16  lmul4,8 | P      | vlen512 vsew16  lmul0.5 | P      |
+| vlen512 vsew32 lmul1          | P      | vlen512 vsew32  lmul4,8 | P      | vlen512 vsew32  lmul0.5 | P      |
+| vlen512 vsew64 lmul1          | P      | vlen512 vsew64  lmul4,8 | P      | vlen512 vsew64  lmul0.5 | P      |
+| vlen1024 vsew8 lmul1          | P      | vlen1024 vsew8  lmul4,8 | P      | vlen1024 vsew8  lmul0.5 | P      |
+| vlen1024 vsew16 lmul1         | P      | vlen1024 vsew16 lmul4,8 | P      | vlen1024 vsew16 lmul0.5 | P      |
+| vlen1024 vsew32 lmul1         | P      | vlen1024 vsew32 lmul4,8 | P      | vlen1024 vsew32 lmul0.5 | P      |
+| vlen1024 vsew64 lmul1         | P      | vlen1024 vsew64 lmul4,8 | P      | vlen1024 vsew64 lmul0.5 | P      |
 
 ### Permute
 ⚠️ vslide, vcompress will generate too many tests if num_elems (vlen*lmul/vsew) is too big. Test them will take a long time (longer than 20min)
@@ -150,6 +150,11 @@ Notes:
 | vlen128-1024 vsew16 lmul4-8   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
 | vlen128-1024 vsew32 lmul4-8   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
 | vlen128-1024 vsew64 lmul4-8   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
+| ----------------------------- | --------- | ---- | --- | ---- | -------- | ------------ | ------ | ------- | ------- |
+| vlen128-1024 vsew8  lmul0.5   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
+| vlen128-1024 vsew16 lmul0.5   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
+| vlen128-1024 vsew32 lmul0.5   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
+| vlen128-1024 vsew64 lmul0.5   | P P       | P    | P P | P P  | P P      | P            | P      | P       | P       |
 note:
 
 1. vmv
@@ -161,86 +166,86 @@ note:
 
 #### Simple Arithmetic: vadc, vsbc; vadd, vand, vdiv, vdivu,  vmul, vmulh, vmulhsu, vmulhu, vsll, vsra, vsrl, vsub, vxor, vrem, vremu, vrsub, vsadd, vsaddu, vssub, vssubu, vmax, vmaxu, vmin, vminu,
 
-| Config                        | Status | Config                        | Status | Config                | Status |
-| ----------------------------- | ------ | ----------------------------- | ------ | --------------------- | ------ |
-| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4           | P P    | vlen128 vsew8   lmul8 | P      |
-| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4          | P P    | vlen128 vsew16  lmul8 | P      |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4(default) | P P    | vlen128 vsew32  lmul8 | P      |
-| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4          | P P    | vlen128 vsew64  lmul8 | P      |
-| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4           | P P    | vlen256 vsew8   lmul8 | P      |
-| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4          | P P    | vlen256 vsew16  lmul8 | P      |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4          | P P    | vlen256 vsew32  lmul8 | P      |
-| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64 lmul4          | P P    | vlen256 vsew64  lmul8 | P      |
-| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4           | P P    | vlen512 vsew8   lmul8 | P      |
-| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4          | P P    | vlen512 vsew16  lmul8 | P      |
-| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4          | P P    | vlen512 vsew32  lmul8 | P      |
-| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64 lmul4          | P P    | vlen512 vsew64  lmul8 | P      |
-| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4          | P P    | vlen1024 vsew8  lmul8 | P      |
-| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4         | P P    | vlen1024 vsew16 lmul8 | P      |
-| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4         | P P    | vlen1024 vsew32 lmul8 | P      |
-| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4         | P P    | vlen1024 vsew64 lmul8 | P      |
+| Config                        | Status | Config                  | Status | Config                  | Status |
+| ----------------------------- | ------ | ----------------------  | ------ | ---------------------   | ------ |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4 ,8  | P P    | vlen128 vsew8   lmul0.5 | P      |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4,8  | P P    | vlen128 vsew16  lmul0.5 | P      |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4,8) | P P    | vlen128 vsew32  lmul0.5 | P      |
+| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4,8  | P P    | vlen128 vsew64  lmul0.5 | P      |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4 ,8  | P P    | vlen256 vsew8   lmul0.5 | P      |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4,8  | P P    | vlen256 vsew16  lmul0.5 | P      |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4,8  | P P    | vlen256 vsew32  lmul0.5 | P      |
+| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64 lmul4,8  | P P    | vlen256 vsew64  lmul0.5 | P      |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4 ,8  | P P    | vlen512 vsew8   lmul0.5 | P      |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4,8  | P P    | vlen512 vsew16  lmul0.5 | P      |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4,8  | P P    | vlen512 vsew32  lmul0.5 | P      |
+| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64 lmul4,8  | P P    | vlen512 vsew64  lmul0.5 | P      |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4,8  | P P    | vlen1024 vsew8  lmul0.5 | P      |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4,8 | P P    | vlen1024 vsew16 lmul0.5 | P      |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmuL4,8 | P P    | vlen1024 vsew32 lmul0.5 | P      |
+| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4,8 | P P    | vlen1024 vsew64 lmul0.5 | P      |
 
 #### Multiply-Add & Add-with-Carry Subtract-with-Borrow & Comparison: vmacc, vmadd, vnmsac, vnmsub & vmadc, vmsbc & vmseq, vmsgt, vmsgtu, vmsle, vmsleu, vmslt, vmsltu, vmsne
 
-| Config                        | Status | Config               | Status | Config                | Status |
-| ----------------------------- | ------ | -------------------- | ------ | --------------------- | ------ |
-| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4  | P P    | vlen128 vsew8   lmul8 | P      |
-| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4 | P P    | vlen128 vsew16  lmul8 | P      |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32  lmul8 | P      |
-| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4 | P P    | vlen128 vsew64  lmul8 | P      |
-| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4  | P P    | vlen256 vsew8   lmul8 | P      |
-| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4 | P P    | vlen256 vsew16  lmul8 | P      |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4 | P P    | vlen256 vsew32  lmul8 | P      |
-| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64 lmul4 | P P    | vlen256 vsew64  lmul8 | P      |
-| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4  | P P    | vlen512 vsew8   lmul8 | P      |
-| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4 | P P    | vlen512 vsew16  lmul8 | P      |
-| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4 | P P    | vlen512 vsew32  lmul8 | P      |
-| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64 lmul4 | P P    | vlen512 vsew64  lmul8 | P      |
-| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4 | P P    | vlen1024 vsew8  lmul8 | P      |
-| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4| P P    | vlen1024 vsew16 lmul8 | P      |
-| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4| P P    | vlen1024 vsew32 lmul8 | P      |
-| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4| P P    | vlen1024 vsew64 lmul8 | P      |
+| Config                        | Status | Config                 | Status | Config                  | Status |
+| ----------------------------- | ------ | --------------------   | ------ | ---------------------   | ------ |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8   lmul4-8| P P    | vlen128 vsew8   lmul0.5 | P      |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16  lmul4-8| P P    | vlen128 vsew16  lmul0.5 | P      |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul4-8| P P    | vlen128 vsew32  lmul0.5 | P      |
+| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64  lmul4-8| P P    | vlen128 vsew64  lmul0.5 | P      |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8   lmul4-8| P P    | vlen256 vsew8   lmul0.5 | P      |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16  lmul4-8| P P    | vlen256 vsew16  lmul0.5 | P      |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul4-8| P P    | vlen256 vsew32  lmul0.5 | P      |
+| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64  lmul4-8| P P    | vlen256 vsew64  lmul0.5 | P      |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8   lmul4-8| P P    | vlen512 vsew8   lmul0.5 | P      |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16  lmul4-8| P P    | vlen512 vsew16  lmul0.5 | P      |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32  lmul4-8| P P    | vlen512 vsew32  lmul0.5 | P      |
+| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64  lmul4-8| P P    | vlen512 vsew64  lmul0.5 | P      |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8  lmul4-8| P P    | vlen1024 vsew8  lmul0.5 | P      |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4-8| P P    | vlen1024 vsew16 lmul0.5 | P      |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4-8| P P    | vlen1024 vsew32 lmul0.5 | P      |
+| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4-8| P P    | vlen1024 vsew64 lmul0.5 | P      |
 
 #### Reduction Arithmetic:  vor; vredand, vredmax, vredmaxu, vredmin, vredminu, vredor, vredsum, vredxor;
 
-| Config                        | Status | Config               | Status | Config                | Status |
-| ----------------------------- | ------ | -------------------- | ------ | --------------------- | ------ |
-| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4  | P P    | vlen128 vsew8   lmul8 | P      |
-| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4 | P P    | vlen128 vsew16  lmul8 | P      |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32  lmul8 | P      |
-| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64 lmul4 | P P    | vlen128 vsew64  lmul8 | P      |
-| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4  | P P    | vlen256 vsew8   lmul8 | P      |
-| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4 | P P    | vlen256 vsew16  lmul8 | P      |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4 | P P    | vlen256 vsew32  lmul8 | P      |
-| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64 lmul4 | P P    | vlen256 vsew64  lmul8 | P      |
-| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4  | P P    | vlen512 vsew8   lmul8 | P      |
-| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4 | P P    | vlen512 vsew16  lmul8 | P      |
-| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4 | P P    | vlen512 vsew32  lmul8 | P      |
-| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64 lmul4 | P P    | vlen512 vsew64  lmul8 | P      |
-| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4 | P P    | vlen1024 vsew8  lmul8 | P      |
-| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4| P P    | vlen1024 vsew16 lmul8 | P      |
-| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4| P P    | vlen1024 vsew32 lmul8 | P      |
-| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4| P P    | vlen1024 vsew64 lmul8 | P      |
+| Config                        | Status | Config                 | Status | Config                  | Status |
+| ----------------------------- | ------ | --------------------   | ------ | ---------------------   | ------ |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8   lmul4-8| P P    | vlen128 vsew8   lmul0.5 | P      |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16  lmul4-8| P P    | vlen128 vsew16  lmul0.5 | P      |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul4-8| P P    | vlen128 vsew32  lmul0.5 | P      |
+| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64  lmul4-8| P P    | vlen128 vsew64  lmul0.5 | P      |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8   lmul4-8| P P    | vlen256 vsew8   lmul0.5 | P      |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16  lmul4-8| P P    | vlen256 vsew16  lmul0.5 | P      |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul4-8| P P    | vlen256 vsew32  lmul0.5 | P      |
+| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64  lmul4-8| P P    | vlen256 vsew64  lmul0.5 | P      |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8   lmul4-8| P P    | vlen512 vsew8   lmul0.5 | P      |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16  lmul4-8| P P    | vlen512 vsew16  lmul0.5 | P      |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32  lmul4-8| P P    | vlen512 vsew32  lmul0.5 | P      |
+| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64  lmul4-8| P P    | vlen512 vsew64  lmul0.5 | P      |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8  lmul4-8| P P    | vlen1024 vsew8  lmul0.5 | P      |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4-8| P P    | vlen1024 vsew16 lmul0.5 | P      |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4-8| P P    | vlen1024 vsew32 lmul0.5 | P      |
+| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul4-8| P P    | vlen1024 vsew64 lmul0.5 | P      |
 
 #### Widen Arithmetic: vwadd, vwaddu, vwmacc, vwmaccsu, vwmaccu, vwmaccus; vwmul, vwmulsu, vwmulu, vwredsum, vwredsumu, vwsub, vwsubu; vnsra, vnsrl;
 
 * widen and narrow instruction not support VSEW=64 (vsew should be <= 64)
-* widen instruction(except VWRED*) not support LMUL=8 (lmul should be <= 4)
+* widen instruction(except VWRED*) not support LMUL=8 (lmul should be <= 4), lmul8 in table only means VWRED* pass
 
-| Config                        | Status | Config               | Status | Config                            | Status |
-| ----------------------------- | ------ | -------------------- | ------ | --------------------              | ------ |
-| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8 lmul4  | P P    | vlen128 vsew8   lmul8(only vwred*)****| P P    |
-| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16 lmul4 | P P    | vlen128 vsew16  lmul8             | P P    |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32 lmul4 | P P    | vlen128 vsew32  lmul8             | P P    |
-| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8 lmul4  | P P    | vlen256 vsew8   lmul8             | P P    |
-| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16 lmul4 | P P    | vlen256 vsew16  lmul8             | P P    |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32 lmul4 | P P    | vlen256 vsew32  lmul8             | P P    |
-| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8 lmul4  | P P    | vlen512 vsew8   lmul8             | P P    |
-| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16 lmul4 | P P    | vlen512 vsew16  lmul8             | P P    |
-| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32 lmul4 | P P    | vlen512 vsew32  lmul8             | P P    |
-| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8 lmul4 | P P    | vlen1024 vsew8  lmul8             | P P    |
-| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4| P P    | vlen1024 vsew16 lmul8             | P P    |
-| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4| P P    | vlen1024 vsew32 lmul8             | P P    |
+| Config                        | Status | Config                 | Status | Config                  | Status |
+| ----------------------------- | ------ | --------------------   | ------ | --------------------    | ------ |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8   lmul4-8| P P    | vlen128 vsew8   lmul0.5 | P P    |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16  lmul4-8| P P    | vlen128 vsew16  lmul0.5 | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul4-8| P P    | vlen128 vsew32  lmul0.5 | P P    |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8   lmul4-8| P P    | vlen256 vsew8   lmul0.5 | P P    |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16  lmul4-8| P P    | vlen256 vsew16  lmul0.5 | P P    |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul4-8| P P    | vlen256 vsew32  lmul0.5 | P P    |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8   lmul4-8| P P    | vlen512 vsew8   lmul0.5 | P P    |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16  lmul4-8| P P    | vlen512 vsew16  lmul0.5 | P P    |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32  lmul4-8| P P    | vlen512 vsew32  lmul0.5 | P P    |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8  lmul4-8| P P    | vlen1024 vsew8  lmul0.5 | P P    |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul4-8| P P    | vlen1024 vsew16 lmul0.5 | P P    |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul4-8| P P    | vlen1024 vsew32 lmul0.5 | P P    |
 
 ### Floating Points
 
@@ -259,6 +264,9 @@ note:
 | ----------------------------- | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
 | vlen128-1024 vsew32 lmul4-8   | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
 | vlen128-1024 vsew64 lmul4-8   | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
+| ----------------------------- | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
+| vlen128-1024 vsew32 lmul0.5   | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
+| vlen128-1024 vsew64 lmul0.5   | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
 
 > vfcvt, vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support in Spike.
 
@@ -277,6 +285,9 @@ note:
 | ----------------------------- | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
 | vlen128-1024 vsew32 lmul4-8   | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 | vlen128-1024 vsew64 lmul4-8   | P         | P         | P        | P      | P      | P       | P       | P      | P     |
+| ----------------------------- | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
+| vlen128-1024 vsew32 lmul0.5   | P         | P         | P        | P      | P      | P       | P       | P      | P     |
+| vlen128-1024 vsew64 lmul0.5   | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 
 #### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
 
@@ -298,7 +309,14 @@ note:
 | vlen512 vsew32  lmul4         | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
 | vlen1024 vsew16 lmul4         | /      | /      | /       | /       | /      | /        | /        | /         | /      |
 | vlen1024 vsew32 lmul4         | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
-
+| vlen128 vsew16  lmul0.5       | /      | /      | /       | /       | /      | /        | /        | /         | /      |
+| vlen128 vsew32  lmul0.5       | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
+| vlen256 vsew16  lmul0.5       | /      | /      | /       | /       | /      | /        | /        | /         | /      |
+| vlen256 vsew32  lmul0.5       | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
+| vlen512 vsew16  lmul0.5       | /      | /      | /       | /       | /      | /        | /        | /         | /      |
+| vlen512 vsew32  lmul0.5       | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
+| vlen1024 vsew16 lmul0.5       | /      | /      | /       | /       | /      | /        | /        | /         | /      |
+| vlen1024 vsew32 lmul0.5       | P P    | P P    | P P     | P P     | P P    | P P      | P P      | P P       | P P    |
 note:
 
 - we do not have 16-bit floating point dataset
@@ -329,6 +347,11 @@ note:
 | vlen12-1024 vsew16 lmul4-8    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 | vlen12-1024 vsew32 lmul4-8    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 | vlen12-1024 vsew64 lmul4-8    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
+| ----------------------------- | ----- | ------ | ----- | ------ | ------ | ------- | ----- | ----- | ----- |
+| vlen12-1024 vsew8  lmul0.5    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
+| vlen12-1024 vsew16 lmul0.5    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
+| vlen12-1024 vsew32 lmul0.5    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
+| vlen12-1024 vsew64 lmul0.5    | P P   | P P    | P P   | P P    | P P    | P P     | P P   | P P   | P P   |
 
 *vnclip and vnclipu not support vsew=64 and lmul=8
 
@@ -355,6 +378,11 @@ note:
 | vlen1024 vsew16 lmul1         | P P           | P P         | P P         | P P              | P P           | P P              |
 | vlen1024 vsew32 lmul1         | P P           | P P         | P P         | P P              | P P           | P P              |
 | vlen1024 vsew64 lmul1         | P P           | P P         | P P         | P P              | P P           | P P              |
+| ----------------------------- | ------------- | ----------- | ----------- | ---------------- | ------------- | ---------------- |
+| vlen128-1024 vsew8  lmul0.5   | /             | /           | /           | /                | /             | /                |
+| vlen128-1024 vsew16 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
+| vlen128-1024 vsew32 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
+| vlen128-1024 vsew64 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
 | ----------------------------- | ------------- | ----------- | ----------- | ---------------- | ------------- | ---------------- |
 | vlen128-1024 vsew8  lmul4     | /             | /           | /           | /                | /             | /                |
 | vlen128-1024 vsew16 lmul4     | P P           | P P         | P P         | P P              | P P           | P P              |
@@ -383,6 +411,11 @@ note:
 | vlen1024 vsew16 lmul1          | P P           | P P        | P P         | P P              | P P           | P P              |
 | vlen1024 vsew32 lmul1          | P P           | P P        | P P         | P P              | P P           | P P              |
 | vlen1024 vsew64 lmul1          | P P           | P P        | P P         | P P              | P P           | P P              |
+| ----------------------------- | ------------- | ----------- | ----------- | ---------------- | ------------- | ---------------- |
+| vlen128-1024 vsew8  lmul0.5   | /             | /           | /           | /                | /             | /                |
+| vlen128-1024 vsew16 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
+| vlen128-1024 vsew32 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
+| vlen128-1024 vsew64 lmul0.5   | P P           | P P         | P P         | P P              | P P           | P P              |
 | ------------------------------ | ----          | -----      | -----       | -------          | -------       | ------------     |
 | vlen128-1024 vsew8  lmul4      | /             | /          | /           | /                | /             | P P              |
 | vlen128-1024 vsew16 lmul4      | P P           | P P        | P P         | P P              | P P           | P P              |
@@ -404,8 +437,8 @@ note:
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
 ```
-- The `TEST_VV_OP(9999, vadd.vv, 2, 1, 1)` is in order to fill those tests that don't have tests(For example, when emul > 8, load/store will not have tests) with one vadd test.
+- The `TEST_VV_OP(32766, vadd.vv, 2, 1, 1)` is in order to fill those tests that don't have tests(For example, when emul > 8, load/store will not have tests) with one vadd test.

@@ -24,7 +24,7 @@ def valid_aligned_regs(reg):
 
 
 def generate_macros(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=False):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     if vsew == 32:
         if test_vv:
             for n in range(1, 32):
@@ -176,7 +176,7 @@ def generate_macros(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=False):
 
 
 def generate_macros_widen(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     for n in range(1, 32):
         if n % lmul != 0:
             continue
@@ -210,7 +210,7 @@ def generate_macros_widen(f, lmul):
 
 
 def generate_macros_widen_rs2(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     for n in range(1, 32):
         if n % lmul != 0:
             continue
@@ -250,7 +250,7 @@ def generate_macros_widen_rs2(f, lmul):
 
 
 def generate_macros_widen_rs2_neg(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     for n in range(1, 32):
         if n % lmul != 0:
             continue
@@ -292,7 +292,7 @@ def generate_macros_widen_rs2_neg(f, lmul):
 
 
 def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True, test_rv=False):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
 
     global rs1_val, rs2_val, rs1_val_64, rs2_val_64
     if vsew == 64:

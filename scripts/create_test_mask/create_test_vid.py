@@ -53,9 +53,9 @@ def generate_macros_vid(f, vsew, lmul):
 
 
 def generate_tests_vid(instr, f, vlen, vsew, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
     num_test = 1
-    num_elem = int(vlen / vsew)
+    num_elem = int(vlen * lmul / vsew)
+    lmul = 1 if lmul < 1 else int(lmul)
     num_elem_plus = num_elem + 1
     ####################vid######################################################################################################
     print("  #-------------------------------------------------------------", file=f)
@@ -85,7 +85,7 @@ def print_ending_vid(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

@@ -96,7 +96,8 @@ def generate_tests_vslide1(f, lmul):
 def generate_dat_seg_vslide1(f, vsew):
     print("rd_data:", file=f)
     for i in range(num_elem):
-        print(".word\t%d"%rd_val[i], file=f)
+        print_data_width_prefix(f, vsew)
+        print("%d"%rd_val[i], file=f)
     print("",file=f)
     for i in range(num_group_walking):
         # generate data
@@ -129,7 +130,7 @@ def generate_dat_seg_vslide1(f, vsew):
 def print_ending_vslide(f, vlen, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

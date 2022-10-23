@@ -6,7 +6,7 @@ import re
 instr = 'vnsrl'
 
 
-def generate_macros(f):
+def generate_macros(f, lmul):
     for n in range(2, 32):
         print("#define TEST_N_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v24, MASK_VSEW(result), \\\n\
@@ -16,8 +16,8 @@ def generate_macros(f):
             vmv.v.x v%d, x7;"% n + " \\\n\
             inst v24, v16, v%d; "%n + " \\\n\
         )", file=f)
-    for n in range(3, 32):
-        if n %2 == 0:
+    for n in range(1, 32):
+        if n % lmul == 0:
             print("#define TEST_N_VV_OP_rd%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v%d, MASK_VSEW(result),"%n + " \\\n\
                 li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
@@ -26,15 +26,6 @@ def generate_macros(f):
                 vmv.v.x v8, x7; \\\n\
                 inst v%d, v16, v8;"%n+" \\\n\
         ) ", file=f)
-    
-    print("#define TEST_N_VV_OP_rd2( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v24, MASK_VSEW(result), \\\n\
-            li x7, SEXT_DOUBLE_VSEW(val2); \\\n\
-            vmv.v.x v8, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v16, x7; \\\n\
-            inst v24, v16, v8; \\\n\
-        )", file=f)
 
 
 def extract_operands(f, rpt_path):
@@ -129,7 +120,7 @@ def create_first_test_vnsrl(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros(f, lmul)
 
     # Generate tests
     generate_tests(f, rs1_val, rs2_val, lmul)

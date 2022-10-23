@@ -92,11 +92,11 @@ def generate_macros_common(f, lmul):
 
 
 def generate_tests_common(instr, f, vlen, vsew, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    num_elem = int(vlen / vsew)
+    num_elem = int(vlen * lmul / vsew)
     num_elem_plus = num_elem + 1
     num_elem_plus_square = num_elem_plus ** 2
     num_elem_plus_square_old = num_elem_plus_square
@@ -147,7 +147,7 @@ def print_ending_common(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

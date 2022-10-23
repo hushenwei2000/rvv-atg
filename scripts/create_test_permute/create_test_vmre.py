@@ -22,11 +22,11 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
     if lmul >= 1:
         lmul = str(int(lmul))
     elif lmul == 0.5:
-        lmul = 'mf2'
+        lmul = 'f2'
     elif lmul == 0.25:
-        lmul = 'mf4'
+        lmul = 'f4'
     elif lmul == 0.125:
-        lmul = 'mf8'
+        lmul = 'f8'
     print("#define TEST_VMRE1_OP( testnum, inst, result_base, base ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x7, \\\n\
             li x1, %d;"%(num_of_elements) + " \\\n\
@@ -106,8 +106,9 @@ def generate_tests_vmre(f):
         print("TEST_VMRE8_OP( %d,  vmv8r.v, walking_data%d, walking_data%d, walking_data%d );" % (no, i, i+7, i),file=f)
         no = no + 1
 
-def generate_dat_seg_vmre(f, vlen, vsew):
-    num_elem = int(vlen / vsew)
+def generate_dat_seg_vmre(f, vlen, lmul, vsew):
+    lmul = 1 if lmul < 1 else int(lmul)
+    num_elem = int(vlen * lmul / vsew)
     # Generate each group data
     for i in range(num_group_walking):
         # generate data
@@ -117,10 +118,10 @@ def generate_dat_seg_vmre(f, vlen, vsew):
             print("%d"%walking_val_grouped[i][j], file=f)
         print("", file=f)
 
-def print_ending_vmre(f, vlen, vsew):
+def print_ending_vmre(f, vlen, lmul, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -134,7 +135,7 @@ def print_ending_vmre(f, vlen, vsew):
     \n\
     ", file=f)
 
-    generate_dat_seg_vmre(f, vlen, vsew)
+    generate_dat_seg_vmre(f, vlen, lmul, vsew)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -179,6 +180,7 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     global num_group_walking
     global walking_val_grouped
     global vma
+    lmul = 1 if lmul < 1 else int(lmul)
     num_elem = int(vlen * lmul/ vsew)
     walking_val_vmre = []
     for i in range(num_elem * 12):
@@ -202,7 +204,7 @@ def create_empty_test_vmre(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     generate_tests_vmre(f)
 
     # Common const information
-    print_ending_vmre(f, vlen, vsew)
+    print_ending_vmre(f, vlen, lmul, vsew)
 
     f.close()
 

@@ -64,9 +64,9 @@ def generate_macros_vmsbf(f, vsew, lmul):
 
 
 def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     num_test = 1
-    num_elem = int(vlen / vsew)
+    num_elem = int(vlen * lmul / vsew)
     num_elem_plus = num_elem + 1
     ####################vmsbf#######################################################################################################
     print("  #-------------------------------------------------------------", file=f)
