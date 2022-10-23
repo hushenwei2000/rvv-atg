@@ -11,7 +11,7 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
 
 
 def generate_macros(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
+    # lmul = 1 if lmul < 1 else int(lmul)
     for n in range(1,32):
         if n % lmul != 0: continue
         rs2, rd = valid_aligned_regs(n)
@@ -88,7 +88,7 @@ def generate_tests(f, lmul):
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(9999, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
