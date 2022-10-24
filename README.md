@@ -51,13 +51,15 @@ python check_all.py
 | --------- | ------------------------- | --------------- | ------------------------------ |
 | vlen      | 128 ~ 2^16                | 128 ~ 1024      | Spike now support largest 4096 |
 | vsew      | 8, 16, 32, 64             | 8, 16, 32, 64   |                                |
-| lmul      | 1/8, 1/4, 1/2, 1, 2, 4, 8 | 1/2, 1, 4, 8    | lmul=8 except load/store       |
+| lmul      | 1/8, 1/4, 1/2, 1, 2, 4, 8 | 1/8, 1/2, 1, 4, 8    | lmul=8 except load/store， 1/8 except eew>=32 loadstore       |
 | vta       | 0, 1                      | 0               |                                |
 | vma       | 0, 1                      | 0               |                                |
 
 Notes:
 
-- elen = vlen
+- elen = 64 for default
+  - vsew should <= elen * lmul
+  - So, when lmul = 0.125, load/store eew=32+ cannot test
 
 ## Develop
 

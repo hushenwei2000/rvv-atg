@@ -2,7 +2,7 @@ import logging
 import os
 
 
-def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, vsew, lmul, use_fail_macro):
+def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro):
     gcc = "riscv64-rivai-elf-gcc"
     objdump = "riscv64-rivai-elf-objdump"
     logging.info("Running spike: {}.{}".format(instr, suffix))
@@ -30,7 +30,7 @@ def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen
     logging.info("Running spike: {}.{}, stage: Spike Running...".format(instr, suffix))
 
     os.system("spike --isa rv64gcv_zfh -l --log-commits --varch=vlen:%d,elen:%d ref_%s.elf > %s 2>&1;" %
-              (vlen, vlen, suffix, spike_log_name))
+              (vlen, elen, suffix, spike_log_name))
 
     os.chdir(rvv_atg_root)
 
