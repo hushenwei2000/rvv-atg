@@ -163,6 +163,8 @@ def generate_macros_vcompress(f, vsew, lmul):
 
 
 def generate_tests_vcompress(f, vlen, vsew, lmul):
+    if num_group_walking == 0:
+        return
     lmul = 1 if lmul < 1 else int(lmul)
     global mask_val
     vemul = int(vsew / vsew * lmul)
@@ -284,7 +286,8 @@ def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     for i in range(num_elem - - min(len(walking_val), len(rd_val)) + 2):
         walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
         rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
-    num_group_walking = int(len(walking_val) / num_elem)
+    if num_elem != 0:
+        num_group_walking = int(len(walking_val) / num_elem)
     for i in range(num_group_walking):
         temp = []
         for j in range(num_elem):

@@ -165,6 +165,8 @@ test_ ## testnum: \
     vsetivli x31, 1, MK_EEW(eew), mf2, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VSET_VSEW \
+    li x30, 2; \
+    ble x31, x30, test_case_load_ ## testnum; \
     vsetivli x31, 4, MK_EEW(eew), mf2, tu, mu; \
     vslidedown.vi v16, testreg, 1; \
     VSET_VSEW \
@@ -172,6 +174,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     vsetivli x31, 1, MK_EEW(eew), mf2, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
+test_case_load_ ## testnum: \
     VSET_VSEW
 
 // For simplicity, all vlseg/vsseg test use 3 fields

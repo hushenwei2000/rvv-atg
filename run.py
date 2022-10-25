@@ -27,7 +27,7 @@ def parse_args(cwd):
                         32, 64, 128(default), 256, 512, 1024")
     parser.add_argument("--elen", type=int, default="-1",
                         help="The maximum size of a vector element that any operation can produce or consume in bits: \
-                        default = 64")
+                        default = vlen")
     parser.add_argument("--vsew", type=int, default="32",
                         help="Selected Element Width: \
                         8, 16, 32(default), 64")
@@ -51,7 +51,7 @@ def parse_args(cwd):
                         help="Type of Instruction: i, f, m", dest="t")
     args = parser.parse_args()
     if args.elen == -1:
-        args.elen = 64
+        args.elen = args.vlen
     if args.flen == -1:
         if args.vsew == 32 or args.vsew == 64:
             args.flen = args.vsew

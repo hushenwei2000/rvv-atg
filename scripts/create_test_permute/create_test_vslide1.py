@@ -68,6 +68,8 @@ def generate_macros_vslide1(f, vlen, vsew, lmul):
 def generate_tests_vslide1(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     n=1
+    if num_group_walking == 0:
+        return
     print("  #-------------------------------------------------------------",file=f)
     print("  # vslide1up/down.vx/vf Test    ------------------------------------------",file=f)
     print("  #-------------------------------------------------------------",file=f)
@@ -204,7 +206,8 @@ def create_empty_test_vslide1(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     for i in range(num_elem - min(len(walking_val), len(rd_val)) + 2):
         walking_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
         rd_val.append(randint(-(2**(vsew-1)), 2**(vsew-1)-1))
-    num_group_walking = int(len(walking_val) / num_elem)
+    if num_elem != 0:
+        num_group_walking = int(len(walking_val) / num_elem)
     vma = _vma
     for i in range(num_group_walking):
         temp = []
