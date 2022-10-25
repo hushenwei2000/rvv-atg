@@ -25,7 +25,7 @@ instr6 = 'vluxseg8ei8'
 tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # consequence: "87654321"
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
-    emul = 16 / vsew * lmul
+    emul = 8 / vsew * lmul
     if emul < 0.125 or emul > 8:
         return
     emul = 1 if emul < 1 else int(emul)

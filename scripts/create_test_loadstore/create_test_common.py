@@ -157,7 +157,7 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     # testreg is v8
-    generate_vlseg3_macro(f, 1)
+    generate_vlseg3_macro(f, lmul)
     for n in range(1,31):
         print("#define TEST_VLXSEG1_OP_1%d( testnum, inst, index_eew, result, base_data, base_index  )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
@@ -433,7 +433,7 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vlseg3_macro(f, emul)
+    generate_vlseg3_macro(f, lmul)
     print("#define TEST_VSXSEG3_OP( testnum, load_inst, store_inst, index_eew, result1, result2, result3, base_data, base_index ) \\\n\
         TEST_CASE_VLSEG3( testnum, v8, __riscv_vsew, result1, result2, result3,  \\\n\
             la  x1, base_data; \\\n\
@@ -444,14 +444,14 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
             li x9, MASK_VSEW(result3); \\\n\
             vsetivli x31, 1, __e_riscv_vsew, m1, tu, mu; \\\n\
             vmv.v.x v8, x7; \\\n\
-            vmv.v.x v9, x8; \\\n\
-            vmv.v.x v10, x9; \\\n\
+            vmv.v.x v%d, x8; "%(8+lmul) + "\\\n\
+            vmv.v.x v%d, x9; "%(8+lmul*2) + "\\\n\
             VSET_VSEW \\\n\
             store_inst v8, (x1), v24; \\\n\
             vsetivli x31, 1, __e_riscv_vsew, m1, tu, mu; \\\n\
             vmv.v.i v8, 0; \\\n\
-            vmv.v.i v%d, 0; "%(8+emul) + " \\\n\
-            vmv.v.i v%d, 0; "%(8+emul*2) + " \\\n\
+            vmv.v.i v%d, 0; "%(8+lmul) + " \\\n\
+            vmv.v.i v%d, 0; "%(8+lmul*2) + " \\\n\
             VSET_VSEW \\\n\
             load_inst v8, (x1), v24; \\\n\
         )", file=f)
