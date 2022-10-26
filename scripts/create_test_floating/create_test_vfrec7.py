@@ -6,16 +6,6 @@ import re
 
 instr = 'vfrec7'
 
-# For the divison instruction, the operands cannot be zero
-# `frec` acts as an estimate of 1/x accurate to 7 bits
-# So we need to delete it
-while (rs1_val.count("0x00000000")):
-    rs1_val.remove("0x00000000")
-
-# `0x80000000` is represented as `-0` in floating point
-# So we need to delete it too
-while (rs1_val.count("0x80000000")):
-    rs1_val.remove("0x80000000")
 
 def generate_fdat_seg(f):
     print("fdat_rs1:", file=f)

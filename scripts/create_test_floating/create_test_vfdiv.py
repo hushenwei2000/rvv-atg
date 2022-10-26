@@ -5,34 +5,6 @@ from scripts.create_test_floating.create_test_common import *
 
 instr = 'vfdiv'
 
-# For the divison instruction, the operands cannot be zero
-# So we need to delete it
-while (rs1_val.count("0x00000000")):
-    rs1_val.remove("0x00000000")
-while (rs2_val.count("0x00000000")):
-    rs2_val.remove("0x00000000")
-
-# `0x80000000` is represented as `-0` in floating point
-# So we need to delete it
-while (rs1_val.count("0x80000000")):
-    rs1_val.remove("0x80000000")
-while (rs2_val.count("0x80000000")):
-    rs2_val.remove("0x80000000")
-
-# For the divison instruction, the operands cannot be zero
-# So we need to delete it
-while (rs1_val_64.count("0x0000000000000000")):
-    rs1_val_64.remove("0x0000000000000000")
-while (rs2_val_64.count("0x0000000000000000")):
-    rs2_val_64.remove("0x0000000000000000")
-
-# `0x8000000000000000` is represented as `-0` in floating point
-# So we need to delete it
-while (rs1_val_64.count("0x8000000000000000")):
-    rs1_val_64.remove("0x8000000000000000")
-while (rs2_val_64.count("0x8000000000000000")):
-    rs2_val_64.remove("0x8000000000000000")
-
 def generate_fdat_seg(f):
     print("fdat_rs1:", file=f)
     for i in range(len(rs1_val)):

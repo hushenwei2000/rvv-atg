@@ -299,6 +299,35 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         rs1_val = rs1_val_64
         rs2_val = rs2_val_64
 
+    if instr == "vfdiv" or instr == "vfrdiv" or instr == "vfrec7":
+        # For the divison instruction, the operands cannot be zero
+        # So we need to delete it
+        while (rs1_val.count("0x00000000")):
+            rs1_val.remove("0x00000000")
+        while (rs2_val.count("0x00000000")):
+            rs2_val.remove("0x00000000")
+
+        # `0x80000000` is represented as `-0` in floating point
+        # So we need to delete it
+        while (rs1_val.count("0x80000000")):
+            rs1_val.remove("0x80000000")
+        while (rs2_val.count("0x80000000")):
+            rs2_val.remove("0x80000000")
+
+        # For the divison instruction, the operands cannot be zero
+        # So we need to delete it
+        while (rs1_val.count("0x0000000000000000")):
+            rs1_val.remove("0x0000000000000000")
+        while (rs2_val.count("0x0000000000000000")):
+            rs2_val.remove("0x0000000000000000")
+
+        # `0x8000000000000000` is represented as `-0` in floating point
+        # So we need to delete it
+        while (rs1_val.count("0x8000000000000000")):
+            rs1_val.remove("0x8000000000000000")
+        while (rs2_val.count("0x8000000000000000")):
+            rs2_val.remove("0x8000000000000000")
+
     n = 1
     if test_vv:
         print("  #-------------------------------------------------------------", file=f)
