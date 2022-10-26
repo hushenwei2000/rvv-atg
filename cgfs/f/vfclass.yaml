@@ -7,6 +7,6 @@ vfclass:
       <<: *v_regs
     rd: 
       <<: *v_regs
-    val_comb:
-      abstract_comb:
-        'ibm_b1(vsew, vsew, "vfclass", 1, rvv_sew = vsew)': 0
+    # val_comb:
+    #   abstract_comb:
+    #     'ibm_b1(vsew, vsew, "vfclass", 1, rvv_sew = vsew)': 0

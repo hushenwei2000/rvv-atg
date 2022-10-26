@@ -11,6 +11,6 @@ vfmv:
       <<: *v_regs
     rd: 
       <<: *f_regs
-    val_comb:
-      abstract_comb:
-        'ibm_b1(32, 32, "vfmv", 1, rvv_sew = 32)': 0
+    # val_comb:
+    #   abstract_comb:
+    #     'ibm_b1(vsew, vsew, "vfmv", 1, rvv_sew = vsew)': 0
