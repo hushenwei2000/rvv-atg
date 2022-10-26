@@ -5,8 +5,8 @@ vfmsub:
     opcode: 
       vfmsub.vv: 0
       vfmsub.vf: 0
-    rs1:
-      <<: *f_regs
+    rs2:
+      <<: *v_regs
     rd: 
       <<: *v_regs
     val_comb:
