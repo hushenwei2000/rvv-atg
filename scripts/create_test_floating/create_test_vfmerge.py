@@ -89,7 +89,7 @@ def generate_tests(f, vsew):
     global rs1_val, rs2_val
     if vsew == 64:
         rs1_val = rs1_val_64
-        rs2_val = rs2_val
+        rs2_val = rs2_val_64
 
     n = 1
     print("  #-------------------------------------------------------------",file=f)
