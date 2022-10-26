@@ -24,22 +24,63 @@ all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=perm
 
 # Modify here if you want to test different VSEW, VLEN, LMUL ect..
 def runcommand_integer(ins):
-    os.system('python run.py -t i -i %s' % ins)
+    os.system('python run.py -t i -i %s --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t i -i %s --vsew 64 --lmul 2' % ins)
+    # os.system('python run.py -t i -i %s --vsew 32 --lmul 0.5' % ins)
+    # os.system('python run.py -t i -i %s --vsew 32 --lmul 2' % ins)
+    # os.system('python run.py -t i -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t i -i %s --vsew 16 --lmul 2' % ins)
+    # os.system('python run.py -t i -i %s --vsew 8 --lmul 0.5' % ins)
+    # os.system('python run.py -t i -i %s --vsew 8 --lmul 2' % ins)
 
 def runcommand_fixpoint(ins):
-    os.system('python run.py -t x -i %s' % ins)
+    os.system('python run.py -t x -i %s --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t x -i %s --vsew 64 --lmul 2' % ins)
+    # os.system('python run.py -t x -i %s --vsew 32 --lmul 0.5' % ins)
+    # os.system('python run.py -t x -i %s --vsew 32 --lmul 2' % ins)
+    # os.system('python run.py -t x -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t x -i %s --vsew 16 --lmul 2' % ins)
+    # os.system('python run.py -t x -i %s --vsew 8 --lmul 0.5' % ins)
+    # os.system('python run.py -t x -i %s --vsew 8 --lmul 2' % ins)
 
 def runcommand_permute(ins):
-    os.system('python run.py -t p -i %s' % ins)
+    # os.system('python run.py -t p -i %s' % ins)
+    os.system('python run.py -t p -i %s --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t p -i %s --vsew 64 --lmul 2' % ins)
+    # os.system('python run.py -t p -i %s --vsew 32 --lmul 0.5' % ins)
+    # os.system('python run.py -t p -i %s --vsew 32 --lmul 2' % ins)
+    # os.system('python run.py -t p -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t p -i %s --vsew 16 --lmul 2' % ins)
+    # os.system('python run.py -t p -i %s --vsew 8 --lmul 0.5' % ins)
+    # os.system('python run.py -t p -i %s --vsew 8 --lmul 2' % ins)
 
 def runcommand_floatingpoint(ins):
-    os.system('python run.py -t f -i %s --vsew 64' % ins)
+    os.system('python run.py -t f -i %s --vsew 64 --lmul 0.5' % ins)
+    # os.system('python run.py -t f -i %s --vsew 32 --lmul 0.5' % ins)
 
 def runcommand_loadstore(ins):
-    os.system('python run.py -t l -i %s' % ins)
+    # os.system('python run.py -t l -i %s' % ins)
+    os.system('python run.py -t l -i %s --vsew 32 --lmul 0.5' % ins)
+    os.system('python run.py -t l -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t l -i %s --vsew 64 --lmul 2' % ins)
+    # os.system('python run.py -t l -i %s --vsew 32 --lmul 0.5' % ins)
+    # os.system('python run.py -t l -i %s --vsew 32 --lmul 2' % ins)
+    # os.system('python run.py -t l -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t l -i %s --vsew 16 --lmul 2' % ins)
+    # os.system('python run.py -t l -i %s --vsew 8 --lmul 0.5' % ins)
+    # os.system('python run.py -t l -i %s --vsew 8 --lmul 2' % ins)
 
 def runcommand_mask(ins):
-    os.system('python run.py -t m -i %s' % ins)
+    # os.system('python run.py -t m -i %s' % ins)
+    os.system('python run.py -t m -i %s --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t m -i %s --vsew 64 --lmul 2' % ins)
+    # os.system('python run.py -t m -i %s --vsew 32 --lmul 0.5' % ins)
+    # os.system('python run.py -t m -i %s --vsew 32 --lmul 2' % ins)
+    # os.system('python run.py -t m -i %s --vsew 16 --lmul 0.5' % ins)
+    # os.system('python run.py -t m -i %s --vsew 16 --lmul 2' % ins)
+    # os.system('python run.py -t m -i %s --vsew 8 --lmul 0.5' % ins)
+    # os.system('python run.py -t m -i %s --vsew 8 --lmul 2' % ins)
+    
 
 def run_integer():
     pool = multiprocessing.Pool(30)
@@ -132,10 +173,10 @@ def main():
     # Modify here to choose which categories you want to generate
     # run_integer()
     # run_mask()
-    run_floatingpoint()
+    # run_floatingpoint()
     # run_fixpoint()
     # run_permute()
-    # run_loadstore()
+    run_loadstore()
 
 
 if __name__ == "__main__":
