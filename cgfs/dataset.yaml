@@ -86,7 +86,7 @@ datasets:
     v30: 0
 
   f_regs: &f_regs
-    f0: 0
+    # f0: 0
     f1: 0
     f2: 0
     f3: 0
