@@ -55,8 +55,16 @@ def runcommand_permute(ins):
     # os.system('python run.py -t p -i %s --vsew 8 --lmul 2' % ins)
 
 def runcommand_floatingpoint(ins):
-    os.system('python run.py -t f -i %s --vsew 64 --lmul 0.5' % ins)
-    # os.system('python run.py -t f -i %s --vsew 32 --lmul 0.5' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 64 --lmul 0.125' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 32 --lmul 0.125' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 32 --lmul 0.5' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 64 --lmul 1' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 32 --lmul 1' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 64 --lmul 2' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 32 --lmul 2' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 64 --lmul 4' % ins)
+    os.system('python run.py -t f -i %s --vlen 1024 --vsew 32 --lmul 4' % ins)
 
 def runcommand_loadstore(ins):
     # os.system('python run.py -t l -i %s' % ins)
@@ -173,10 +181,10 @@ def main():
     # Modify here to choose which categories you want to generate
     # run_integer()
     # run_mask()
-    # run_floatingpoint()
+    run_floatingpoint()
     # run_fixpoint()
     # run_permute()
-    run_loadstore()
+    # run_loadstore()
 
 
 if __name__ == "__main__":

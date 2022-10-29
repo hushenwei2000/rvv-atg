@@ -175,6 +175,122 @@ def generate_macros(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=False):
                     )", file=f)
 
 
+def generate_macros_fused(f, vsew, lmul):
+    if vsew == 32:
+        # vv
+        for n in range(1, 32):
+            if n % lmul != 0:
+                continue
+            rs2, rd = valid_aligned_regs(n)
+            print("#define TEST_FP_VV_FUSED_OP_1%d( testnum, inst, flags, result, val1, val2 ) \\\n\
+                TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+                    flw f0, 0(a0); \\\n\
+                    flw f1, 4(a0); \\\n\
+                    vfmv.s.f v%d, f0; \\\n\
+                    vfmv.s.f v%d, f0; \\\n\
+                    vfmv.s.f v%d, f1; \\\n\
+                    flw f2, 8(a0); \\\n\
+                    inst v%d, v%d, v%d; \\\n\
+                )" % (n, rd, rs2, rd, n, rd, rs2, n), file=f)
+        for n in range(1, 32):
+            if n % lmul != 0:
+                continue
+            rs1, rs2 = valid_aligned_regs(n)
+            print("#define TEST_FP_VV_FUSED_OP_rd%d( testnum, inst, flags, result, val1, val2 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+                flw f0, 0(a0); \\\n\
+                flw f1, 4(a0); \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f1; \\\n\
+                flw f2, 8(a0); \\\n\
+                inst v%d, v%d, v%d; \\\n\
+            )" % (n, n, rs2, n, rs1, n, rs2, rs1), file=f)
+        # vf
+        for n in range(1,32):
+            if n == 2 or n % lmul != 0:
+                continue
+            print("#define TEST_FP_VF_FUSED_OP_rs1_%d( testnum, inst, flags, result, val1, val2 )"%n + " \\\n\
+                TEST_CASE_FP( testnum, v24, flags, result, val1, val2,   \\\n\
+                    flw v24, 0(a0); \\\n\
+                    flw f0, 0(a0); \\\n\
+                    flw f%d, 4(a0); \\\n\
+                    vfmv.s.f v8, f0; \\\n\
+                    vfmv.s.f v24, f0; \\\n\
+                    flw f2, 8(a0); \\\n\
+                    inst v24, v8, f%d; "%(n,n) + " \\\n\
+                )", file=f)
+        for n in range(1,32):
+            if n == 1 or n % lmul != 0:
+                continue
+            print("#define TEST_FP_VF_FUSED_OP_rd_%d( testnum, inst, flags, result, val1, val2 ) "%n + "\\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, "%n + "    \\\n\
+                flw v%d, 0(a0); "%n +" \\\n\
+                flw f0, 0(a0); \\\n\
+                flw f1, 4(a0); \\\n\
+                vfmv.s.f v8, f0; \\\n\
+                vfmv.s.f v%d, f0;  "%n +" \\\n\
+                flw f2, 8(a0); \\\n\
+                inst v%d, v8, f1; "%n +" \\\n\
+            )", file=f)
+        
+    elif vsew == 64:
+        # vv
+        for n in range(1, 32):
+            if n % lmul != 0:
+                continue
+            rs2, rd = valid_aligned_regs(n)
+            print("#define TEST_FP_VV_FUSED_OP_1%d( testnum, inst, flags, result, val1, val2 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+                fld f0, 0(a0); \\\n\
+                fld f1, 8(a0); \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f1; \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v%d, v%d, v%d; \\\n\
+            )" % (n, rd, rs2, rd, n, rd, rs2, n), file=f)
+        for n in range(1, 32):
+            if n % lmul != 0:
+                continue
+            rs1, rs2 = valid_aligned_regs(n)
+            print("#define TEST_FP_VV_FUSED_OP_rd%d( testnum, inst, flags, result, val1, val2 ) \\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+                fld f0, 0(a0); \\\n\
+                fld f1, 8(a0); \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f0; \\\n\
+                vfmv.s.f v%d, f1; \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v%d, v%d, v%d; \\\n\
+            )" % (n, n, rs2, n, rs1, n, rs2, rs1), file=f)
+        # vf
+        for n in range(1,32):
+            if n == 2 or n % lmul != 0:
+                continue
+            print("#define TEST_FP_VF_FUSED_OP_rs1_%d( testnum, inst, flags, result, val1, val2 )"%n + " \\\n\
+                TEST_CASE_FP( testnum, v24, flags, result, val1, val2,   \\\n\
+                    fld f0, 0(a0); \\\n\
+                    fld f%d, 8(a0); \\\n\
+                    vfmv.s.f v8, f0; \\\n\
+                    vfmv.s.f v%d, f0; \\\n\
+                    fld f2, 16(a0); \\\n\
+                    inst v24, v8, f%d; "%(n, n, n) + " \\\n\
+                )", file=f)
+        for n in range(1,32):
+            if n == 1 or n % lmul != 0:
+                continue
+            print("#define TEST_FP_VF_FUSED_OP_rd_%d( testnum, inst, flags, result, val1, val2 ) "%n + "\\\n\
+            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, "%n + "    \\\n\
+                fld f0, 0(a0); \\\n\
+                fld f1, 8(a0); \\\n\
+                vfmv.s.f v8, f0; \\\n\
+                vfmv.s.f v%d, f0; "%n +" \\\n\
+                fld f2, 16(a0); \\\n\
+                inst v%d, v8, f1; "%n +" \\\n\
+        )", file=f)
+
+
 def generate_macros_widen(f, lmul):
     # lmul = 1 if lmul < 1 else int(lmul)
     for n in range(1, 32):
@@ -410,3 +526,46 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
                 continue
             print("  TEST_FP_VF_OP_RV_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
             n+=1
+
+def generate_tests_fused(instr, f, vsew, lmul):
+    global rs1_val, rs2_val, rs1_val_64, rs2_val_64
+    if vsew == 64:
+        rs1_val = rs1_val_64
+        rs2_val = rs2_val_64
+    
+    n = 1
+    # VV
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VV Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+    for i in range(len(rs1_val)):
+        print("TEST_FP_VV_FUSED_OP( %d,  %s.vv, 0xff100,               5201314,        %s,        %s );" % (
+            n, instr, rs1_val[i], rs2_val[i]), file=f)
+        n += 1
+
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VV Tests (different register)", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
+    for i in range(len(rs1_val)):
+        k = i % 31 + 1
+        if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            continue
+        print("  TEST_FP_VV_FUSED_OP_rd%d( " % k+str(n)+",  %s.vv, 0xff100, " %
+                (instr)+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+        n += 1
+        print("  TEST_FP_VV_FUSED_OP_1%d( " % k+str(n)+",  %s.vv, 0xff100, " %
+                (instr)+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+        n += 1
+    
+    # VF
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VF Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    for i in range(len(rs1_val)):
+        print("TEST_FP_VF_FUSED_OP_RV( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );" % (
+            n, instr, rs1_val[i], rs2_val[i]), file=f)
+        n += 1

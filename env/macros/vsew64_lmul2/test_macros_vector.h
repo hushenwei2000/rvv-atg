@@ -1215,11 +1215,32 @@ test_ ## testnum: \
     inst v24, v8, v16; \
   )
 
+#define TEST_FP_VV_FUSED_OP( testnum, inst, flags, result, val1, val2 ) \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
+    fld f0, 0(a0); \
+    fld f1, 8(a0); \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v24, f0; \
+    vfmv.s.f v16, f1; \
+    fld f2, 16(a0); \
+    inst v24, v8, v16; \
+  )
+
 #define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
     fld f0, 0(a0); \
     fld f1, 8(a0); \
     vfmv.s.f v8, f0; \
+    fld f2, 16(a0); \
+    inst v24, v8, f1; \
+  )
+
+#define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
+    fld f0, 0(a0); \
+    fld f1, 8(a0); \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v24, f0; \
     fld f2, 16(a0); \
     inst v24, v8, f1; \
   )
@@ -1242,6 +1263,16 @@ test_ ## testnum: \
     fld f0, 0(a0); \
     fld f1, 8(a0); \
     vfmv.s.f v8, f0; \
+    fld f2, 16(a0); \
+    inst v24, f1, v8; \
+  )
+
+#define TEST_FP_VF_FUSED_OP_RV( testnum, inst, flags, result, val1, val2 ) \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
+    fld f0, 0(a0); \
+    fld f1, 8(a0); \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v24, f0; \
     fld f2, 16(a0); \
     inst v24, f1, v8; \
   )

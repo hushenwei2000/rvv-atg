@@ -19,8 +19,8 @@ def generate_fdat_seg(f):
 def generate_macros(f, vsew):
     if vsew == 32:
         for n in range(1, 32):
-            if n == 2 or n == 14:
-                continue
+            # if n == 2 or n == 14:
+            #     continue
             print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
                 TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \\\n\
                     li x7, MASK_VSEW(vmseqop1); \\\n\
@@ -34,8 +34,8 @@ def generate_macros(f, vsew):
                 )", file = f)
 
         for n in range(1, 32):
-            if n == 1:
-                continue
+            # if n == 1:
+            #     continue
             print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
                 TEST_CASE_FP( testnum, v%d, flags, result, val1, val2,  "%n + " \\\n\
                     li x7, MASK_VSEW(vmseqop1); \\\n\
