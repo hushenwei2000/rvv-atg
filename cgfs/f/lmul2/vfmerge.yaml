@@ -1,0 +1,12 @@
+vfmerge:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vfmerge.vfm: 0
+    rs1:
+      <<: *f_even_regs
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(vsew, vsew, "vfmerge", 2, rvv_sew = vsew)': 0

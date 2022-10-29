@@ -1,0 +1,14 @@
+vfwmacc:
+    config:
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode:
+      vfwmacc.vv: 0
+      vfwmacc.vf: 0
+    rs2: 
+      <<: *v_even_regs
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(vsew, vsew, "vfwmacc.vv", 2, rvv_sew = vsew)': 0

@@ -85,6 +85,41 @@ datasets:
     v28: 0
     v30: 0
 
+ v_quard_regs: &v_quard_regs
+    v4: 0
+    v8: 0
+    v12: 0
+    v16: 0
+    v20: 0
+    v24: 0
+    v28: 0
+
+  f_even_regs: &f_even_regs
+    f2: 0
+    f4: 0
+    f6: 0
+    f8: 0
+    f10: 0
+    f12: 0
+    f14: 0
+    f16: 0
+    f18: 0
+    f20: 0
+    f22: 0
+    f24: 0
+    f26: 0
+    f28: 0
+    f30: 0
+
+  f_quard_regs: &f_quard_regs
+    f4: 0
+    f8: 0
+    f12: 0
+    f16: 0
+    f20: 0
+    f24: 0
+    f28: 0
+
   f_regs: &f_regs
     # f0: 0
     f1: 0
