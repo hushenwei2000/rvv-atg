@@ -50,8 +50,8 @@ def generate_macros(f, vsew):
 
     if vsew == 64:
         for n in range(1, 32):
-            if n == 2 or n == 14:
-                continue
+            # if n == 2 or n == 14:
+            #     continue
             print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
                 TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \\\n\
                     li x7, MASK_VSEW(vmseqop1); \\\n\
@@ -65,8 +65,8 @@ def generate_macros(f, vsew):
                 )", file = f)
 
         for n in range(1, 32):
-            if n == 1:
-                continue
+            # if n == 1:
+            #     continue
             print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
                 TEST_CASE_FP( testnum, v%d, flags, result, val1, val2,  "%n + " \\\n\
                     li x7, MASK_VSEW(vmseqop1); \\\n\
@@ -100,25 +100,25 @@ def generate_tests(f, vsew):
         print("TEST_FP_VF_OP_AFTER_VMSEQ( %d,        0xff100,        5201314,        %s,        %s, 0xe, 1);"%(n, rs1_val[i], rs2_val[i]), file=f)
         n += 1
     
-    # print("  #-------------------------------------------------------------",file=f)
-    # print("  # vfmerge.vfm Tests (different register)",file=f)
-    # print("  #-------------------------------------------------------------",file=f)
-    # print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    # n = n+1
-    # for i in range(len(rs1_val)):     
-    #     k = i%31+1  
-    #     if k == 1:
-    #         continue
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # vfmerge.vfm Tests (different register)",file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    n = n+1
+    for i in range(len(rs1_val)):
+        k = i%31+1  
+        # if k == 1:
+        #     continue
 
-    #     print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-    #     n += 1
+        print("  TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( "%k+str(n)+", 0xff100, " + "5201314"+ ", " +rs1_val[i]+ ", " +rs2_val[i]+ ", 0xe, 1);",file=f)
+        n += 1
 
-    #     k = i%31+1  
-    #     if k == 14:
-    #         continue
+        k = i%31+1  
+        # if k == 2 or k == 14:
+        #     continue
 
-    #     print("  TEST_FP_HEX_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-    #     n += 1
+        print("  TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( "%k+str(n)+", 0xff100, " + "5201314"+ ", " +rs1_val[i]+ ", " +rs2_val[i]+ ", 0xe, 1);",file=f)
+        n += 1
 
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
