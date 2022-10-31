@@ -156,6 +156,7 @@ def generate_macros_vlxei(f, vsew, lmul):
 def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
+    lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
     generate_vlseg3_macro(f, lmul)
     for n in range(1,31):
