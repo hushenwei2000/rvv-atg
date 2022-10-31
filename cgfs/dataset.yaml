@@ -85,7 +85,7 @@ datasets:
     v28: 0
     v30: 0
 
- v_quard_regs: &v_quard_regs
+  v_quard_regs: &v_quard_regs
     v4: 0
     v8: 0
     v12: 0
