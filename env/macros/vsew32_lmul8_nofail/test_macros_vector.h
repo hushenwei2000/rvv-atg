@@ -1135,7 +1135,7 @@ test_ ## testnum: \
     la  x1, base; \
     li x7, MASK_EEW(result1, eew); \
     li x8, MASK_EEW(result2, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m8, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \
     vmv.v.x v8, x7; \
     vmv.v.x v9, x8; \
     VSET_VSEW \
