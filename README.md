@@ -272,6 +272,9 @@ note:
 | -----------------------------     | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
 | vlen128-1024 vsew32 lmul0.125-0.5 | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
 | vlen128-1024 vsew64 lmul0.125-0.5 | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
+| -----------------------------     | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
+| vlen1024-4096 vsew32 lmul0.125-8  | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen1024-4096 vsew64 lmul0.125-8  | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
 
 > vfcvt, vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support in Spike.
 
@@ -291,8 +294,8 @@ note:
 | vlen128-1024 vsew32 lmul2-8       | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 | vlen128-1024 vsew64 lmul2-8       | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 | -----------------------------     | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
-| vlen128-1024 vsew32 lmul0.125-0.5 | P         | P         | P        | P      | P      | P       | P       | P      | P     |
-| vlen128-1024 vsew64 lmul0.125-0.5 | P         | P         | P        | P      | P      | P       | P       | P      | P     |
+| vlen1024-4096 vsew32 lmul0.125-8  | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
+| vlen1024-4096 vsew64 lmul0.125-8  | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 
 #### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
 
