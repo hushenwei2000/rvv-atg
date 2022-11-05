@@ -125,7 +125,7 @@ def generate_fdat_seg_vfslide(f, vsew):
 def print_ending_vslide(f, vlen, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

@@ -218,6 +218,9 @@ def main():
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, args.lmul, cwd, output_dir)
     logging.info("RVV-ATG: instr: %s, vlen: %d, vsew: %d, lmul: %f"%(args.i, args.vlen, args.vsew, args.lmul))
+    os.environ["RVV_ATG_VLEN"] = str(args.vlen)
+    os.environ["RVV_ATG_VSEW"] = str(args.vsew)
+    os.environ["RVV_ATG_LMUL"] = str(args.lmul)
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

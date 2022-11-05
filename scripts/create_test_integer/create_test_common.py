@@ -1,3 +1,4 @@
+import os
 import re
 
 def generate_macros_vv(f, lmul):
@@ -6,11 +7,12 @@ def generate_macros_vv(f, lmul):
         if n % lmul != 0 or n == 8 or n == 16 or n == 24:
             continue
         print("#define TEST_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
-            TEST_CASE( testnum, v24, result, \\\n\
-            li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v16, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v%d, x7;"% n + " \\\n\
+            TEST_CASE_LOOP( testnum, v24, result, \\\n\
+            VSET_VSEW_4AVL \\\n\
+            la x7, val2; \\\n\
+            vle32.v v16, (x7); \\\n\
+            la x7, val1; \\\n\
+            vle32.v v%d, (x7);"%n  + " \\\n\
             inst v24, v16, v%d; "%n + " \\\n\
         )", file=f)
     for n in range(1, 32):
@@ -18,27 +20,30 @@ def generate_macros_vv(f, lmul):
             continue
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VV_OP_rd%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
-        TEST_CASE( testnum, v%d, result,"%n + " \\\n\
-            li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v16, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v8, x7; \\\n\
+        TEST_CASE_LOOP( testnum, v%d, result,"%n + " \\\n\
+            VSET_VSEW_4AVL \\\n\
+            la x7, val2; \\\n\
+            vle32.v v16, (x7); \\\n\
+            la x7, val1; \\\n\
+            vle32.v v8 , (x7); \\\n\
             inst v%d, v16, v8;"%n+" \\\n\
         ) ", file=f)
     print("#define TEST_VV_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v8, result, \\\n\
-            li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v24, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v16, x7; \\\n\
+        TEST_CASE_LOOP( testnum, v8, result, \\\n\
+            VSET_VSEW_4AVL \\\n\
+            la x7, val2; \\\n\
+            vle32.v v24, (x7); \\\n\
+            la x7, val1; \\\n\
+            vle32.v v16, (x7); \\\n\
             inst v8, v24, v16; \\\n\
         )", file=f)
     print("#define TEST_VV_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
-        TEST_CASE( testnum, v16, result, \\\n\
-            li x7, MASK_VSEW(val2); \\\n\
-            vmv.v.x v8, x7; \\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v24, x7; \\\n\
+        TEST_CASE_LOOP( testnum, v16, result, \\\n\
+            VSET_VSEW_4AVL \\\n\
+            la x7, val2; \\\n\
+            vle32.v v24, (x7); \\\n\
+            la x7, val1; \\\n\
+            vle32.v v8, (x7); \\\n\
             inst v16, v8, v24; \\\n\
         )", file=f)
 
@@ -214,48 +219,55 @@ def extract_operands(f, rpt_path):
 
 def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = True, generate_vx = True, generate_vv = True):
     lmul = 1 if lmul < 1 else int(lmul)
-    n = 1
+    n = 0
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    num_elem = int((vlen * lmul / vsew))
+    step_bytes = int(vlen * lmul / 8)
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     if generate_vv:
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-        for i in range(len(rs1_val)):
+        for i in range(loop_num):
             n += 1
-            print("  TEST_VV_OP( "+str(n)+",  %s.%s, " %
-                (instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
-        for i in range(100):     
+            print("  TEST_VV_OP( "+str(n)+",  %s.%s, "%(instr, instr_suffix) + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
+        for i in range(min(32, loop_num)):     
             k = i%31+1
             if k % lmul != 0 or k == 24:
                 continue
             n+=1
-            print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
+            print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
             
             k = i%30+2
             if k % lmul != 0 or k == 8 or k == 16 or k == 24:
                 continue
             n +=1
-            print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
-    
+            print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
+    vv_test_num = n
+
     if generate_vx:
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
-        for i in range(len(rs1_val)):
+        for i in range(loop_num):
             n += 1
             print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
-                instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+                instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[loop_num]), file=f)
     
     if generate_vi:
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-        for i in range(len(rs1_val)):
+        for i in range(loop_num):
             n += 1
             print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %
-                instr+"5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
+                instr+"rd_data_vi+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[loop_num]), file=f)
+
+    return vv_test_num
 
 def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, generate_wvwx = True):
     n = 1
@@ -513,3 +525,7 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vim=True
             n += 1
             print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
                 instr+"5201314"+", "+rs1_val[i]+", "+" 4 "+" );", file=f)
+
+def print_common_ending_rs1rs2rd(rs1_val, rs2_val, f):
+    print("")
+

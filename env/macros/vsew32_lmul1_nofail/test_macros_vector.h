@@ -206,7 +206,8 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle32.v v1, (correctval_addr_reg); \
+    la x7, correctval_addr_reg; \
+    vle32.v v1, (x7); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v1 ) \
@@ -483,11 +484,12 @@ test_ ## testnum: \
 //-----------------------------------------------------------------------
 
 #define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
+  TEST_CASE_LOOP( testnum, v14, result, \
+    VSET_VSEW_4AVL \
+    la x7, val2; \
+    vle32.v v2, (x7); \
+    la x7, val1; \
+    vle32.v v1, (x7); \
     inst v14, v2, v1; \
   )
 
@@ -500,14 +502,15 @@ test_ ## testnum: \
   )
 
 #define TEST_ADC_VV_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
+  TEST_CASE_LOOP( testnum, v14, result, \
+    VSET_VSEW_4AVL \
     li x7, 0; \
     vmv.v.x v7, x7; \
     vmsne.vi v0, v7, 0; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
+    la x7, val2; \
+    vle32.v v2, (x7); \
+    la x7, val1; \
+    vle32.v v1, (x7); \
     inst v14, v1, v2, v0; \
   )
 
@@ -533,9 +536,10 @@ test_ ## testnum: \
   )
 
 #define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
+  TEST_CASE_LOOP( testnum, v14, result, \
+    VSET_VSEW_4AVL \
+    la x7, val2; \
+    vle32.v v2, (x7); \
     li x1, MASK_XLEN(val1); \
     inst v14, v2, x1; \
   )
@@ -579,9 +583,10 @@ test_ ## testnum: \
   )
 
 #define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
+  TEST_CASE_LOOP( testnum, v14, result, \
+    VSET_VSEW_4AVL \
+    la x7, val2; \
+    vle32.v v2, (x7); \
     inst v14, v2, SEXT_IMM(val1); \
   )
 
@@ -1604,6 +1609,15 @@ test_ ## testnum: \
     la x1, f_rs1_base; \
     flw f1, 0(x1); \
     inst v16, v8, f1; \
+  )
+
+#define TEST_VV_OP_NOUSE( testnum, inst, result, val2, val1 ) \
+  TEST_CASE( testnum, v24, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v16, x7; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v8, x7; \
+    inst v24, v16, v8; \
   )
 
 //-----------------------------------------------------------------------

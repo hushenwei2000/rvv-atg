@@ -457,8 +457,8 @@ note:
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
 ```
-- The `TEST_VV_OP(32766, vadd.vv, 2, 1, 1)` is in order to fill those tests that don't have tests(For example, when emul > 8, load/store will not have tests) with one vadd test.
+- The `TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)` is in order to fill those tests that don't have tests(For example, when emul > 8, load/store will not have tests) with one vadd test.

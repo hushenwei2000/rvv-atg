@@ -1669,6 +1669,15 @@ test_ ## testnum: \
     inst v16, v8, f1; \
   )
 
+#define TEST_VV_OP_NOUSE( testnum, inst, result, val2, val1 ) \
+  TEST_CASE( testnum, v24, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v16, x7; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v8, x7; \
+    inst v24, v16, v8; \
+  )
+
 //-----------------------------------------------------------------------
 // Pass and fail code (assumes test num is in TESTNUM)
 //-----------------------------------------------------------------------
