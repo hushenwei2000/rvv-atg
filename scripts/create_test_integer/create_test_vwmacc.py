@@ -45,10 +45,10 @@ def create_first_test_vwmacc(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros_vwmacc(f, lmul)
 
     # Generate tests
-    generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul)
+    num_tests_tuple = generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_wvwx=False, rd_data_multiplier = 2)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

@@ -46,10 +46,10 @@ def create_first_test_vnmsub(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros_muladd(f, lmul)
 
     # Generate tests
-    generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul)
+    vv_num_tests = generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, vv_num_tests, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

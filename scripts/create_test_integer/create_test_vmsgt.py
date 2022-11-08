@@ -1,5 +1,6 @@
 import logging
 import os
+from scripts.create_test_integer.create_test_common import generate_macros_vvmvxmvim, generate_tests_vvmvxmvim
 from scripts.test_common_info import *
 import re
 
@@ -127,13 +128,13 @@ def create_first_test_vmsgt(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, lmul)
+    generate_macros_vvmvxmvim(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, lmul)
+    num_tests_tuple = generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_vv=False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

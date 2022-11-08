@@ -15,7 +15,7 @@
 #define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
 #define VSET_VSEW vsetivli x31, 1, e64, tu, mu;
 #define VSET_VSEW_4AVL vsetvli x31, x0, e64, tu, mu;
-#define VSET_DOUBLE_VSEW vsetivli x31, 1, e128, tu, mu;
+#define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -228,14 +228,15 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle64.v v1, (correctval_addr_reg); \
+    la x7, correctval_addr_reg; \
+    vle64.v v8, (x7); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
-    VMVXS_AND_MASK_VSEW( x7, v1 ) \
+    VMVXS_AND_MASK_VSEW( x7, v8 ) \
     bne x14, x7, fail; \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
-    vslidedown.vi v1, v1, 1; \
+    vslidedown.vi v8, v8, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
 
@@ -528,14 +529,6 @@ test_ ## testnum: \
 // Tests for instructions with vector-vector operand
 //-----------------------------------------------------------------------
 
-#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v2, v1; \
-  )
 
 #define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, val2, val1 ) \
   TEST_CASE_AVG_VV( testnum, inst, v2, v24, result00, result01, result10, result11, \
@@ -578,13 +571,6 @@ test_ ## testnum: \
     inst v14, v1, v2; \
   )
 
-#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    li x1, MASK_XLEN(val1); \
-    inst v14, v2, x1; \
-  )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VX( testnum, inst, v24, result00, result01, result10, result11, \
@@ -624,12 +610,6 @@ test_ ## testnum: \
     inst v14, v1, x1, v0; \
   )
 
-#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v2, SEXT_IMM(val1); \
-  )
 
 #define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VI( testnum, inst, v14, result00, result01, result10, result11, val2, \

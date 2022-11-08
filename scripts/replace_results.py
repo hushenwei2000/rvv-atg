@@ -2,6 +2,20 @@ import logging
 import os
 import re
 
+integer = ['vadc', 'vadd', 'vand', 'vdiv', 'vdivu', 'vmax', 'vmaxu', 'vmin', 'vminu', 'vmadc', 'vmseq', 'vwredsumu', 'vmul', 'vmulh', 'vmulhsu', 'vmulhu', 'vnsra', 'vnsrl', 'vor', 'vmacc', 'vmadd', 'vredxor', 'vrem', 'vremu', 'vrsub', 'vsadd', 'vsaddu', 'vsbc', 'vsll', 'vsra', 'vsrl', 'vssub', 'vssubu', 'vsub', 'vwadd', 'vwaddu', 'vwmacc', 'vwmaccsu', 'vwmaccu', 'vwmul', 'vwmulsu', 'vwmulu', 'vwsub', 'vwsubu', 'vxor', 'vmsgt', 'vmsgtu', 'vmsle', 'vmsleu', 'vmslt', 'vmsltu', 'vmsne', 'vnmsac', 'vnmsub', 'vredand', 'vredmax', 'vredmaxu', 'vredmin', 'vredminu', 'vredor', 'vredsum', 'vwmaccus', 'vmsbc', 'vwredsum']
+
+mask = ['vfirst', 'vid', 'viota', 'vmand', 'vmandnot', 'vmnand', 'vmor', 'vmornot', 'vmsbf', 'vmxnor', 'vmxor', 'vpopc']
+
+# Exclude 'vfncvt', 'vfwcvt', 'vfcvt', 
+floatingpoint = ['vfadd', 'vfclass', 'vfdiv', 'vfmacc', 'vfmadd', 'vfmax', 'vfmerge', 'vfmin', 'vfmsac', 'vfmsub', 'vfmul', 'vfmv', 'vfnmacc', 'vfnmadd', 'vfnmsac', 'vfnmsub', 'vfrdiv', 'vfrec7', 'vfredmax', 'vfredmin', 'vfredosum', 'vfredusum', 'vfrsqrt7', 'vfrsub', 'vfsgnj', 'vfsgnjn', 'vfsgnjx', 'vfsqrt', 'vfsub', 'vfwadd', 'vfwmacc', 'vfwmsac', 'vfwmul', 'vfwnmacc', 'vfwnmsac', 'vfwredsum', 'vfwsub']
+
+permute = ['vmre', 'vslide1', 'vmv', 'vrgather', 'vrgatherei16', 'vfslide', 'vcompress', 'vslide']
+
+fixpoint = ['vaadd', 'vaaddu', 'vasub', 'vasubu', 'vnclip', 'vnclipu', 'vsmul', 'vssra', 'vssrl']
+
+loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
+
+
 # from sail log
 def replace_results_sail(instr, first_test, isac_log_first):
     logging.info("Running replace_results: {}".format(first_test))
@@ -147,8 +161,11 @@ def replace_results_spike_new(instr, first_test, spike_log):
     instr = instr.replace("_b1", "")
 
     vsew = int(os.environ['RVV_ATG_VSEW'])
+    vlen = int(os.environ['RVV_ATG_VLEN'])
     lmul = float(os.environ['RVV_ATG_LMUL'])
-    lmul = 1 if lmul < 1 else int(lmul)
+    lmul_double = lmul * 2
+    lmul_double_1 = 1 if lmul_double < 1 else int(lmul_double)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
 
     # Extract results
     file = open(spike_log, "r")
@@ -177,20 +194,37 @@ def replace_results_spike_new(instr, first_test, spike_log):
     file.close()
     
     ansList = []
-    # This loop extract actual commit value from commit value line, including [rd, rd+lmul)
-    for i in range(len(lineList)):
-        reg = regList[i]
-        reg_num = int(reg[1:])
-        for j in range(lmul):
-            matchResultPattern = re.compile("v%d"%(reg_num+j) + "\s+(0x[0-9a-f]*)") # such as v14 0xfffffff7fffffffbfffffffdfffffffe
+    if 'pop' in instr:
+        for i in range(len(lineList)):
+            matchResultPattern = re.compile(regList[i] + "\s+(0x[0-9a-f]*)") # such as a4 0x00000001
             a = matchResultPattern.search(lineList[i])
             if a is not None:
                 ans = a.group(1)
-                ans = ans.replace('0x', '')
-                n = int(vsew/4)
-                ans_arr = [(ans[i:i+n]) for i in range(0, len(ans), n)] # when vsew=32, ans_arr = ['ffffffee', 'fffffff6', 'fffffffa', 'fffffffc']
-                ans_arr.reverse()
-                ansList = ansList + (ans_arr)
+                ansList.append(ans)
+    else:
+        # This loop extract actual commit value from commit value line, including [rd, rd+lmul)
+        for i in range(len(lineList)):
+            reg = regList[i]
+            reg_num = int(reg[1:])
+            rd_vreg_nums = lmul_1
+            if instr.startswith("vw") or instr.startswith("vfw"):
+                rd_vreg_nums = lmul_double_1
+            for j in range(rd_vreg_nums):
+                matchResultPattern = re.compile("v%d"%(reg_num+j) + "\s+(0x[0-9a-f]*)") # such as v14 0xfffffff7fffffffbfffffffdfffffffe
+                a = matchResultPattern.search(lineList[i])
+                if a is not None:
+                    ans = a.group(1)
+                    ans = ans.replace('0x', '')
+                    ans_element_bits = int(vsew/4)
+                    valid_bits = int((vlen * min(lmul, 1) / 4))
+                    if instr.startswith("vw") or instr.startswith("vfw"):
+                        ans_element_bits *= 2
+                        valid_bits *= 2
+                    # Only use lmul*vlen
+                    ans = ans[-valid_bits:]
+                    ans_arr = [(ans[i:i+ans_element_bits]) for i in range(0, len(ans), ans_element_bits)] # when vsew=32, ans_arr = ['ffffffee', 'fffffff6', 'fffffffa', 'fffffffc']
+                    ans_arr.reverse()
+                    ansList = ansList + (ans_arr)
 
     print("len linelist=%d"%len(lineList))
     print("len reglist=%d"%len(regList))
@@ -237,8 +271,8 @@ def replace_results_spike_new(instr, first_test, spike_log):
         for i in range(len(fflag_ansList)):
             new = new.replace("0xff100", fflag_ansList[i], 1)
     for i in range(len(ansList)):
-        new = new.replace("5201314", '0x'+ansList[i], 1)
-        
+        new = new.replace("5201314", ansList[i], 1)
+
     f.close()
     f = open(des_path, "w+")
     print(new, file=f)
@@ -251,6 +285,9 @@ def replace_results_spike_new(instr, first_test, spike_log):
 
 def replace_results(instr, test_file, log_path, tool):
     if tool == 'spike':
-        return replace_results_spike_new(instr, test_file, log_path)
+        if instr in mask or instr in permute or instr in loadstore or instr.startswith("vred") or instr.startswith("vwred"):
+            return replace_results_spike(instr, test_file, log_path)
+        else:
+            return replace_results_spike_new(instr, test_file, log_path)
     else:
         return replace_results_sail(instr, test_file, log_path)

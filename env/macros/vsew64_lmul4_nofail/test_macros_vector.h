@@ -17,7 +17,7 @@
 #define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
 #define VSET_VSEW vsetivli x31, 1, e64, m4, tu, mu;
 #define VSET_VSEW_4AVL vsetvli x31, x0, e64, m4, tu, mu;
-#define VSET_DOUBLE_VSEW vsetivli x31, 1, e128, m4, tu, mu;
+#define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, m4, tu, mu;
 #define VSET_CONST_VSEW(eew_num) vsetivli x31, ##eew_num, m4, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
@@ -207,7 +207,8 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle64.v v8, (correctval_addr_reg); \
+    la x7, correctval_addr_reg; \
+    vle64.v v8, (x7); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
@@ -483,14 +484,6 @@ test_ ## testnum: \
 // Tests for instructions with vector-vector operand
 //-----------------------------------------------------------------------
 
-#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v24, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v16, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v8, x7; \
-    inst v24, v16, v8; \
-  )
 
 #define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
   TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
@@ -533,13 +526,6 @@ test_ ## testnum: \
     inst v24, v8, v16; \
   )
 
-#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    li x1, MASK_XLEN(val1); \
-    inst v16, v8, x1; \
-  )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VX( testnum, inst, v24, v8, result00, result01, result10, result11, \
@@ -579,12 +565,6 @@ test_ ## testnum: \
     inst v24, v8, x1, v0; \
   )
 
-#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    inst v16, v8, SEXT_IMM(val1); \
-  )
 
 #define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VI( testnum, inst, v16, result00, result01, result10, result11, val2, \

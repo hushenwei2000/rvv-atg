@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vv, generate_tests_vvvxvi
+from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vvvxvi, generate_tests_vvvxvi
 import re
 
 instr = 'vdiv'
@@ -43,13 +43,13 @@ def create_first_test_vdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vv(f, lmul)
+    generate_macros_vvvxvi(f, lmul)
 
     # Generate tests
-    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, generate_vi = False)
+    vv_num_tests = generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, generate_vi=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, vv_num_tests, vsew, f, generate_vi=False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

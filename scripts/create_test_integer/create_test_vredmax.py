@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vv, generate_tests_vvvxvi
+from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vred, generate_macros_vvvxvi, generate_tests_vred, generate_tests_vvvxvi
 import re
 
 instr = 'vredmax'
@@ -44,10 +44,10 @@ def create_first_test_vredmax(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vv(f, lmul)
+    generate_macros_vred(f, lmul)
 
     # Generate tests
-    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
+    generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
 
     # Common const information
     print_common_ending(f)

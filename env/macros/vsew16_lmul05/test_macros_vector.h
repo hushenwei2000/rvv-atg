@@ -19,6 +19,7 @@
 #define VSET_VSEW_4AVL vsetvli x31, x0, e16, mf2, tu, mu;
 #define VSET_DOUBLE_VSEW vsetivli x31, 1, e32, mf2, tu, mu;
 #define VSET_CONST_VSEW(eew_num) vsetivli x31, ##eew_num, mf2, tu, mu;
+#define VSET_DOUBLE_VSEW_4AVL vsetvli x31, x0, e32, m1, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -234,7 +235,8 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle16.v v8, (correctval_addr_reg); \
+    la x7, correctval_addr_reg; \
+    vle16.v v8, (x7); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
@@ -244,6 +246,24 @@ test_ ## testnum: \
     vslidedown.vi v8, v8, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
+
+#define TEST_CASE_LOOP_W( testnum, testreg, correctval_addr_reg, code...) \
+test_ ## testnum: \
+    code; \
+    la x7, correctval_addr_reg; \
+    vle32.v v8, (x7); \
+    li TESTNUM, testnum; \
+    VSET_DOUBLE_VSEW_4AVL \
+    csrr x31, vstart; \
+    csrr x30, vl; \
+1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    VMVXS_AND_MASK_VSEW( x7, v8 ) \
+    bne x14, x7, fail; \
+    addi x31, x31, 1; \
+    vslidedown.vi testreg, testreg, 1; \
+    vslidedown.vi v8, v8, 1; \
+    bne x31, x30, 1b; \
+    VSET_VSEW_4AVL; 
 
 #define TEST_CASE_LOOP_CONTINUE( testnum, testreg, correctval_addr_reg, code...) \
     code; \
@@ -534,14 +554,6 @@ test_ ## testnum: \
 // Tests for instructions with vector-vector operand
 //-----------------------------------------------------------------------
 
-#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v24, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v16, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v8, x7; \
-    inst v24, v16, v8; \
-  )
 
 #define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
   TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
@@ -584,13 +596,6 @@ test_ ## testnum: \
     inst v24, v8, v16; \
   )
 
-#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    li x1, MASK_XLEN(val1); \
-    inst v16, v8, x1; \
-  )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VX( testnum, inst, v24, v8, result00, result01, result10, result11, \
@@ -628,13 +633,6 @@ test_ ## testnum: \
     vmv.v.x v8, x7; \
     li x1, MASK_VSEW(val2); \
     inst v24, v8, x1, v0; \
-  )
-
-#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    inst v16, v8, SEXT_IMM(val1); \
   )
 
 #define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
