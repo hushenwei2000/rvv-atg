@@ -289,6 +289,24 @@ test_ ## testnum: \
   .dword result; \
   .popsection
 
+#define TEST_CASE_LOOP_FP( testnum, testreg, fflag, correctval_addr_reg, correctval_reg, code...) \
+test_ ## testnum: \
+    code; \
+    csrr x31, vstart; \
+    csrr x30, vl; \
+    la x7, correctval_addr_reg; \
+    vle64.v correctval_reg, (x7); \
+    li TESTNUM, testnum; \
+    frflags x11; \
+    li x12, fflag; \
+1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    VMVXS_AND_MASK_VSEW( x7, correctval_reg ) \
+    addi x31, x31, 1; \
+    vslidedown.vi testreg, testreg, 1; \
+    vslidedown.vi correctval_reg, correctval_reg, 1; \
+    bne x31, x30, 1b; \
+    VSET_VSEW; 
+
 #define TEST_W_CASE_FP( testnum, testreg, flags, result, val1, val2, code... ) \
 test_ ## testnum: \
   li x7, 0; \
@@ -1126,15 +1144,6 @@ test_ ## testnum: \
     load_inst v16, (x1); \
   )
 
-#define TEST_FP_VV_OP( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
-    fld f0, 0(a0); \
-    fld f1, 8(a0); \
-    vfmv.s.f v1, f0; \
-    vfmv.s.f v2, f1; \
-    fld f2, 16(a0); \
-    inst v14, v1, v2; \
-  )
 
 #define TEST_FP_VV_FUSED_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
@@ -1147,14 +1156,6 @@ test_ ## testnum: \
     inst v14, v1, v2; \
   )
 
-#define TEST_FP_VF_OP( testnum, inst, flags, result, val1, val2 ) \
-  TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \
-    fld f0, 0(a0); \
-    fld f1, 8(a0); \
-    vfmv.s.f v1, f0; \
-    fld f2, 16(a0); \
-    inst v14, v1, f1; \
-  )
 
 #define TEST_FP_VF_FUSED_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v14, flags, result, val1, val2,     \

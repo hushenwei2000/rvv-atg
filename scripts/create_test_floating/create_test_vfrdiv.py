@@ -113,10 +113,10 @@ def create_first_test_vfrdiv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul, test_vv = False, test_vf = True)
+    num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
 
-    # Generate tests
-    generate_tests(instr, f, vsew, lmul, test_vv = False, test_vf = True)
+    # Common const information
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f)
 
     # Common const information
     print_ending(f)

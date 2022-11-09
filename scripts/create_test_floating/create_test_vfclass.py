@@ -16,68 +16,9 @@ def generate_fdat_seg(f):
     for i in range(len(rs2_val)):
         print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
 
-
-def generate_macros(f, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
-
-    for n in range(1, 32):
-        if n % lmul != 0 or n == 24:
-            continue
-        print("#define TEST_FP_HEX_1OPERAND_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE( testnum, v24, result, \\\n\
-                li x7, MASK_VSEW(val); \\\n\
-                vmv.v.x v%d, x7; "%n + " \\\n\
-                inst v24, v%d; "%n + " \\\n\
-                frflags a1; \\\n\
-                li a2, flags; \\\n\
-            )", file = f)
-
-    for n in range(1, 32):
-        if n % lmul != 0 or n == 8:
-            continue
-        print("#define TEST_FP_HEX_1OPERAND_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE( testnum, v%d, result, "%n + " \\\n\
-                li x7, MASK_VSEW(val); \\\n\
-                vmv.v.x v8, x7;  \\\n\
-                inst v%d, v8; "%n + " \\\n\
-                frflags a1; \\\n\
-                li a2, flags; \\\n\
-            )", file = f)
-
 def extract_operands(f, rpt_path):
     # Floating pooints tests don't need to extract operands, rs1 and rs2 are fixed
     return 0
-
-
-def generate_tests(f, rs1_val, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
-    n = 1
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfclass.v Tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):        
-        print("TEST_FP_HEX_1OPERAND_OP( %d,  %s.v, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n += 1
-    
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfclass.v Tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-
-    n = n + 1
-    for i in range(len(rs1_val)):
-        k = i % 31 + 1  
-        if k % lmul != 0 or k == 8:
-            continue
-        print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n += 1
-
-        k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
-            continue
-        print("  TEST_FP_HEX_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n += 1
 
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
@@ -171,13 +112,13 @@ def create_first_test_vfclass(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, lmul)
+    generate_macros_v_op(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, lmul)
+    num_tests_tuple = generate_tests_v_op(instr, f, lmul)
 
     # Common const information
-    print_ending(f)
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_vf = False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
