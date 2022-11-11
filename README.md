@@ -1,4 +1,4 @@
-# RISC-V Vector Autometic Tests Generator
+# RISC-V Vector Automatic Tests Generator
 
 ## Prerequisite
 
@@ -23,7 +23,7 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 - Supported instruction and type can be seen in `cgfs/<type>/<instruction>.yaml`
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
 - vsew VSEW       Selected Element Width: 8, 16, 32(default), 64
-
+- Other options seen in `python run.py -h`
 ### Generate All Tests
 
 ```
