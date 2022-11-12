@@ -113,7 +113,7 @@ def create_first_test_vfmax(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
+    num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
 
     # Generate macros to test diffrent register
     num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
