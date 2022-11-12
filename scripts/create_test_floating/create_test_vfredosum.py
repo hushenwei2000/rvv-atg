@@ -144,10 +144,10 @@ def create_first_test_vfredosum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
+    generate_macros_vfred(f, vsew, lmul, test_vv = True, test_vf = False)
 
     # Generate tests
-    generate_tests(f, vsew, lmul)
+    generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
 
     # Common const information
     print_ending(f)

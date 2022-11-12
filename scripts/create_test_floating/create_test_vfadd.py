@@ -117,11 +117,11 @@ def create_first_test_vfadd(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     generate_macros(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
+    num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
 
     # Common const information
-    print_ending(f)
-
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f)
+    
     f.close()
     os.system("cp %s %s" % (path, output_dir))
 

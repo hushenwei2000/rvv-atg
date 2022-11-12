@@ -111,13 +111,13 @@ def create_first_test_vfmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_fused(f, vsew, lmul)
-
-    # Generate tests
-    generate_tests_fused(instr, f, vsew, lmul)
+    generate_macros_vfmacc(f, vsew, lmul)
 
     # Common const information
-    print_ending(f)
+    num_tests_tuple = generate_tests_vfmacc(instr, f, vsew, lmul)
+
+    # Common const information
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

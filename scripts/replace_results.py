@@ -234,7 +234,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
         file = open(spike_log, "r")
         fflag_lineList = []
         fflag_regList = []
-        str = "csrr\s+([a-z][0-9]*),\sfflags" # such as vcpop.m a4
+        str = "csrr\s+([a-z][0-9]*),\sfflags" # such as csrr    a1, fflags
         matchPattern = re.compile(str)
         mark = False
         while 1:
@@ -261,6 +261,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
             if a is not None:
                 ans = a.group(1)
                 fflag_ansList.append(ans)
+        print("len fflag_ansList=%d"%len(fflag_ansList))
 
     des_path = first_test.replace("_first", "_second")
     des_path = des_path.replace("_empty", "_second")
@@ -285,7 +286,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
 
 def replace_results(instr, test_file, log_path, tool):
     if tool == 'spike':
-        if instr in mask or instr in permute or instr in loadstore or instr.startswith("vred") or instr.startswith("vwred"):
+        if (instr in mask) or (instr in permute) or (instr in loadstore) or ("red" in instr) or (instr.startswith("vfmv")):
             return replace_results_spike(instr, test_file, log_path)
         else:
             return replace_results_spike_new(instr, test_file, log_path)

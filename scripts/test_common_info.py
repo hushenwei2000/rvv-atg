@@ -725,5 +725,289 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
     RVTEST_DATA_END\n\
     ", file=f)
 
+def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, generate_rv = False, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    num_elem = int(vlen * lmul / vsew)
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    num_elem_1 = int(vlen * lmul_1 / vsew)
+
+    print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
+    ", file=f)
+    print(".align %d"%(int(vsew * rs1_data_multiplier / 8)), file=f)
+    print("rs1_data:", file=f)
+    for i in range(len(rs1_val)):
+        print_data_width_prefix(f, vsew * rs1_data_multiplier)
+        print("%s"%rs1_val[i], file=f)
+    
+    print("\n.align %d"%(int(vsew * rs2_data_multiplier / 8)), file=f)
+    print("rs2_data:", file=f)
+    for i in range(len(rs2_val)):
+        print_data_width_prefix(f, vsew * rs2_data_multiplier)
+        print("%s"%rs2_val[i], file=f)
+
+    print("\n.align %d"%(int(vsew * rd_data_multiplier / 8)), file=f)
+    if generate_vv:
+        print("rd_data_vv:", file=f)
+        for i in range(test_num_tuple[0] * num_elem):
+            print_data_width_prefix(f, vsew)
+            print("0x5201314", file=f)
+
+    if generate_vf:
+        print("\nrd_data_vf:", file=f)
+        for i in range(test_num_tuple[1] * num_elem):
+            print_data_width_prefix(f, vsew)
+            print("0x5201314", file=f)
+
+    if generate_rv:
+        print("\nrd_data_rv:", file=f)
+        for i in range(test_num_tuple[2] * num_elem):
+            print_data_width_prefix(f, vsew)
+            print("0x5201314", file=f)
+
+    print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_DATA_END\n\
+    ", file=f)
+
+def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1, generate_wvwf = True):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    num_elem = int(vlen * lmul / vsew)
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    num_elem_1 = int(vlen * lmul_1 / vsew)
+
+    print(test_num_tuple)
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
+    ", file=f)
+    print(".align %d"%(int(vsew * rs1_data_multiplier / 8)), file=f)
+    print("rs1_data:", file=f)
+    for i in range(len(rs1_val)):
+        print_data_width_prefix(f, vsew * rs1_data_multiplier)
+        print("%s"%rs1_val[i], file=f)
+    
+    print(".align %d"%(int(vsew * rs1_data_multiplier * 2 / 8)), file=f)
+    print("rs1_data_widen:", file=f)
+    for i in range(len(rs1_val)):
+        print_data_width_prefix(f, vsew * rs1_data_multiplier * 2)
+        print("%s"%rs1_val[i], file=f)
+    
+    print("\n.align %d"%(int(vsew * rs2_data_multiplier / 8)), file=f)
+    print("rs2_data:", file=f)
+    for i in range(len(rs2_val)):
+        print_data_width_prefix(f, vsew * rs2_data_multiplier)
+        print("%s"%rs2_val[i], file=f)
+
+    print(".align %d"%(int(vsew * rs1_data_multiplier * 2 / 8)), file=f)
+    print("rs2_data_widen:", file=f)
+    for i in range(len(rs2_val)):
+        print_data_width_prefix(f, vsew * rs2_data_multiplier * 2)
+        print("%s"%rs1_val[i], file=f)
+
+    print("\n.align %d"%(int(vsew * rd_data_multiplier * 2 / 8)), file=f)
+    if generate_vv:
+        print("rd_data_vv:", file=f)
+        for i in range(test_num_tuple[0] * num_elem):
+            print_data_width_prefix(f, vsew * 2)
+            print("0x5201314", file=f)
+
+    if generate_vf:
+        print("\nrd_data_vf:", file=f)
+        for i in range(test_num_tuple[1] * num_elem):
+            print_data_width_prefix(f, vsew * 2)
+            print("0x5201314", file=f)
+
+    if generate_wvwf:
+        print("\n.align %d"%(int(vsew * rd_data_multiplier * 2 / 8)), file=f)
+        print("\nrd_data_wv:", file=f)
+        for i in range(test_num_tuple[2] * num_elem):
+            print_data_width_prefix(f, vsew * 2)
+            print("0x5201314", file=f)
+        print("\nrd_data_wf:", file=f)
+        for i in range(test_num_tuple[3] * num_elem):
+            print_data_width_prefix(f, vsew * 2)
+            print("0x5201314", file=f)
+
+    print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_DATA_END\n\
+    ", file=f)
+
+def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vsew, f, is_widen = False, is_narrow = False):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    num_elem = int(vlen * lmul / vsew)
+    loop_num = int(len(rs1_val) / num_elem)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    num_elem_1 = int(vlen * lmul_1 / vsew)
+
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
+    ", file=f)
+    rs1_data_multiplier = 2 if is_narrow else 1
+    rd_data_multiplier = 2 if is_widen else 1
+    print(".align %d"%(int(vsew * rs1_data_multiplier / 8)), file=f)
+    print("rs1_data:", file=f)
+    for i in range(len(rs1_val)):
+        print_data_width_prefix(f, vsew * rs1_data_multiplier)
+        print("%s"%rs1_val[i], file=f)
+
+    print(".align %d"%(int(vsew * rs1_data_multiplier / 8)), file=f)
+    print("rs1_data_int:", file=f)
+    for i in range(len(rs1_int_val)):
+        print_data_width_prefix(f, vsew * rs1_data_multiplier)
+        print("%s"%rs1_val[i], file=f)
+    
+    print("\n.align %d"%(int(vsew * rd_data_multiplier / 8)), file=f)
+    print("rd_data:", file=f)
+    for i in range(test_num_tuple[0] * num_elem):
+        print_data_width_prefix(f, vsew * rd_data_multiplier)
+        print("0x5201314", file=f)
+
+    print("\nrd_data_int:", file=f)
+    for i in range(test_num_tuple[1] * num_elem):
+        print_data_width_prefix(f, vsew * rd_data_multiplier)
+        print("0x5201314", file=f)
 
 
+    print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_DATA_END\n\
+    ", file=f)

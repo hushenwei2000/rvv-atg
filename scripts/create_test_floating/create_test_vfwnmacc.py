@@ -138,13 +138,13 @@ def create_first_test_vfwnmacc(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_widen_rs2_neg(f, lmul)
+    generate_macros_vfwmacc(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, lmul)
+    num_tests_tuple = generate_tests_vfwmacc(instr, f, vsew, lmul)
 
     # Common const information
-    print_ending(f)
+    print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_wvwf = False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
