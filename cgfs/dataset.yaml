@@ -94,6 +94,20 @@ datasets:
     v24: 0
     v28: 0
 
+  v_octant_regs: &v_octant_regs
+    v8: 0
+    v16: 0
+    v24: 0
+  
+  v_rdonly_regs: &v_rdonly_regs
+    v24: 0
+
+  v_rs16_regs: &v_rs16_regs
+    v16: 0
+
+  v_rs8_regs: &v_rs8_regs
+    v8: 0
+
   f_even_regs: &f_even_regs
     f2: 0
     f4: 0
@@ -119,6 +133,20 @@ datasets:
     f20: 0
     f24: 0
     f28: 0
+
+  f_octant_regs: &f_octant_regs
+    f8: 0
+    f16: 0
+    f24: 0
+
+  f_rdonly_regs: &f_rdonly_regs
+    f24: 0
+
+  f_rs16_regs: &f_rs16_regs
+    f16: 0
+
+  f_rs8_regs: &f_rs8_regs
+    f8: 0
 
   f_regs: &f_regs
     # f0: 0

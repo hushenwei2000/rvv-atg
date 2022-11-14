@@ -1,4 +1,4 @@
-# RISC-V Vector Autometic Tests Generator
+# RISC-V Vector Automatic Tests Generator
 
 ## Prerequisite
 
@@ -23,7 +23,7 @@ python run.py -i <instruction> -t <type> [--vlen VLEN] [--vsew VSEW]
 - Supported instruction and type can be seen in `cgfs/<type>/<instruction>.yaml`
 - vlen VLEN       Vector Register Length: 32, 64, 128(default), 256, 512, 1024
 - vsew VSEW       Selected Element Width: 8, 16, 32(default), 64
-
+- Other options seen in `python run.py -h`
 ### Generate All Tests
 
 ```
@@ -272,6 +272,9 @@ note:
 | -----------------------------     | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
 | vlen128-1024 vsew32 lmul0.125-0.5 | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
 | vlen128-1024 vsew64 lmul0.125-0.5 | P     | P      | -         | P     | P      | P      | P     | P     | P      | P      | P     | -          | P       | P       | P       | P       | P      | P      | P        | P        |
+| -----------------------------     | ----- | ------ | --------- | ----- | ------ | ------ | ----- | ----- | ------ | ------ | ----- | ---------- | ------- | ------- | ------- | ------- | ------ | ------ | -------- | -------- |
+| vlen1024-4096 vsew32 lmul0.125-8  | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
+| vlen1024-4096 vsew64 lmul0.125-8  | P P   | P P    | -         | P P   | P P    | P P    | P P   | P P   | P P    | P P    | P P   | -          | P P     | P P     | P P     | P P     | P P    | P P    | P P      | P P      |
 
 > vfcvt, vfcvt.x.f.v, vfcvt.rtz.xu.f.v, etc. not support in Spike.
 
@@ -291,8 +294,8 @@ note:
 | vlen128-1024 vsew32 lmul2-8       | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 | vlen128-1024 vsew64 lmul2-8       | P         | P         | P        | P      | P      | P       | P       | P      | P     |
 | -----------------------------     | --------- | --------- | -------- | ------ | ------ | ------- | ------- | ------ | ----- |
-| vlen128-1024 vsew32 lmul0.125-0.5 | P         | P         | P        | P      | P      | P       | P       | P      | P     |
-| vlen128-1024 vsew64 lmul0.125-0.5 | P         | P         | P        | P      | P      | P       | P       | P      | P     |
+| vlen1024-4096 vsew32 lmul0.125-8  | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
+| vlen1024-4096 vsew64 lmul0.125-8  | P P       | P P       | P P      | P P    | P P    | P P     | P P     | P P    | P P   |
 
 #### vfwadd, vfwcvt, vfwmacc, vfwmsac, vfwmul, vfwnmacc, vfwnmsac, vfwredsum, vfwsub
 

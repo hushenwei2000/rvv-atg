@@ -8,6 +8,9 @@ for d in dirs:
     if d.startswith(str(date.today())[5:]):
         print("------------------", file=out)
         instr = d.split('-')[2]
+        vlen = d.split('-')[3]
+        vsew = d.split('-')[4]
+        lmul = d.split('-')[5]
         log = "%s/%s"%(d, 'spike_%s_final.log'%instr) 
         if os.system("grep FAIL %s"%(log)) == 0:
             print("Generated file is WRONG! : %s"%d)
@@ -15,6 +18,7 @@ for d in dirs:
         try:
             f = open(report, 'r')
             lines = f.readlines()
+            # Collect instruction's coverages
             flag = False
             for line in lines:
                 if flag:
@@ -24,6 +28,13 @@ for d in dirs:
                         break
                 if 'mnemonics' in line:
                     flag = True
+            # Collect other coverage
+            for line in lines:
+                if ('rd:' in line) or ('rs1:' in line) or ('rs2:' in line) or ('val_comb:' in line) or ('coverage' in line):
+                    print(line, file = out)
+            # Collect configuration information
+            print("{}, {}, {}".format(vlen, vsew, lmul), file = out)
+
             f.close()
         except FileNotFoundError:
             print ("File is not found: %s."%report, file=out)

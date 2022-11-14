@@ -85,7 +85,7 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f, vsew):
+def generate_tests(f, vsew, lmul):
     global rs1_val, rs2_val
     if vsew == 64:
         rs1_val = rs1_val_64
@@ -106,19 +106,17 @@ def generate_tests(f, vsew):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     n = n+1
     for i in range(len(rs1_val)):
-        k = i%31+1  
-        # if k == 1:
-        #     continue
+        k = i % 31 + 1
+        if k % lmul != 0:
+            continue
+        print("  TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( "%k+str(n)+", 0xff100, " + "5201314"+ ", " +rs1_val[i]+ ", " +rs2_val[i]+ ", 0xe, 1);",file=f)
+        n += 1
 
+        if k % (2*lmul) != 0:
+            continue
         print("  TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( "%k+str(n)+", 0xff100, " + "5201314"+ ", " +rs1_val[i]+ ", " +rs2_val[i]+ ", 0xe, 1);",file=f)
         n += 1
 
-        k = i%31+1  
-        # if k == 2 or k == 14:
-        #     continue
-
-        print("  TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( "%k+str(n)+", 0xff100, " + "5201314"+ ", " +rs1_val[i]+ ", " +rs2_val[i]+ ", 0xe, 1);",file=f)
-        n += 1
 
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
@@ -215,7 +213,7 @@ def create_first_test_vfmerge(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros(f, vsew)
 
     # Generate tests
-    generate_tests(f, vsew)
+    generate_tests(f, vsew, lmul)
 
     # Common const information
     print_ending(f)

@@ -19,8 +19,8 @@ def generate_fdat_seg(f):
 
 def generate_macros(f):
     for n in range(1, 32):
-        if n == 24 or n == 8:
-            continue
+        # if n == 24 or n == 8:
+        #     continue
         print("#define TEST_FP_HEX_1OPERAND_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
             TEST_CASE( testnum, v24, result, \\\n\
                 li x7, MASK_VSEW(val); \\\n\
@@ -31,8 +31,8 @@ def generate_macros(f):
             )", file = f)
 
     for n in range(1, 32):
-        if n == 24 or n == 8:
-            continue
+        # if n == 24 or n == 8:
+        #     continue
         print("#define TEST_FP_HEX_1OPERAND_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
             TEST_CASE( testnum, v%d, result, "%n + " \\\n\
                 li x7, MASK_VSEW(val); \\\n\
@@ -64,12 +64,12 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     n = n+1
     for i in range(len(rs1_val)):     
         k = i%31+1  
-        if k != 24 and k != 8 and k % lmul == 0:
+        if k % lmul == 0:
             print("  TEST_FP_HEX_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
             n += 1
 
         k = i%31+1  
-        if k != 24 and k != 8 and k % lmul == 0:
+        if k % lmul == 0:
             print("  TEST_FP_HEX_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
             n += 1
 

@@ -8,7 +8,7 @@ vfwnmsac:
     rs2: 
       <<: *v_even_regs
     rd: 
-      <<: *v_even_regs
+      <<: *v_quard_regs
     val_comb:
       abstract_comb:
         'ibm_b1(vsew, vsew, "vfwnmsac.vv", 2, rvv_sew = vsew)': 0
