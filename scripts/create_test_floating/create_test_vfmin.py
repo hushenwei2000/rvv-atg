@@ -107,11 +107,11 @@ def create_first_test_vfmin(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     # Common header files
     print_common_header(instr, f)
 
+    # Generate macros to test diffrent register
+    generate_macros(f, vsew, lmul)
+
     # Extract operands
     extract_operands(f, rpt_path)
-
-    # Generate macros to test diffrent register
-    num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
 
     # Generate macros to test diffrent register
     num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
