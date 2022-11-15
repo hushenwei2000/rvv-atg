@@ -62,7 +62,7 @@ def generate_macros(f, lmul):
         )", file = f)
 
 
-def generate_tests(f, rs1_val, rs2_val, lmul):
+def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
@@ -85,6 +85,45 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
             continue
         n +=1
         print("  TEST_ADC_VV_OP_1%d( "%k+str(n)+",  %s.vvm, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+    
+    if vsew == 8:
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 101, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 10, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 12, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3, -86);", file=f)
+    elif vsew == 16:
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 26213, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 180, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 182, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3, -21846);", file=f)
+    elif vsew == 32:
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 1717986917, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 46339, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 46341, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3, -1431655766);", file=f)
+    elif vsew == 64:
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3037000498, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3037000500, 3);", file=f)
+        n += 1
+        print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
+
+
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -143,7 +182,7 @@ def create_first_test_vadc(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, lmul)
+    generate_tests(f, rs1_val, rs2_val, lmul, vsew)
 
     # Common const information
     print_common_ending(f)

@@ -46,7 +46,7 @@ def create_first_test_vwaddu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros_vw(f, lmul)
 
     # Generate tests
-    generate_tests_vw(f, rs1_val, rs2_val, instr, lmul)
+    generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, vsew)
 
     # Common const information
     print_common_ending(f)

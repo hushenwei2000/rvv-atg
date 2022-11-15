@@ -45,7 +45,7 @@ def create_first_test_vmadd(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     generate_macros_muladd(f, lmul)
 
     # Generate tests
-    generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul)
+    generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul, vsew)
 
     # Common const information
     print_common_ending(f)

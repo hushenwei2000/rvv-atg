@@ -57,7 +57,7 @@ def extract_operands(f, rpt_path):
     return rs1_val, rs2_val
 
 
-def generate_tests(f, rs1_val, rs2_val, lmul):
+def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     lmul = 1 if lmul < 1 else int(lmul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
@@ -80,6 +80,77 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
             continue
         n +=1
         print("  TEST_VXM_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+" , "+rs2_val[i]+");",file=f)
+
+    if vsew == 8:
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 101, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 10, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 12, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, -86);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 101);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 10);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 12);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, -86, 3);", file=f)
+    elif vsew == 16:
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 26213, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 180, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 182, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, -21846);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 26213);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 180);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 182);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, -21846, 3);", file=f)
+    elif vsew == 32:
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 1717986917, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 46339, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 46341, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, -1431655766);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 1717986917);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 46339);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 46341);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, -1431655766, 3);", file=f)
+    elif vsew == 64:
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3037000498, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3037000500, 3);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 7378697629483820645);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 3037000498);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, 3, 3037000500);", file=f)
+        n += 1
+        print("  TEST_VXM_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, -6148914691236517206, 3);", file=f)
+
+
     print("  #-------------------------------------------------------------", file=f)
     print("  # VI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -130,7 +201,7 @@ def create_first_test_vmsgtu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, lmul)
+    generate_tests(f, rs1_val, rs2_val, lmul, vsew)
 
     # Common const information
     print_common_ending(f)

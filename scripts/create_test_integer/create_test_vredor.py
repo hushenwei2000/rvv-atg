@@ -46,7 +46,7 @@ def create_first_test_vredor(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros_vv(f, lmul)
 
     # Generate tests
-    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
+    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, vsew, instr_suffix='vs', generate_vx=False, generate_vi=False)
 
     # Common const information
     print_common_ending(f)
