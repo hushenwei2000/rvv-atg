@@ -1,0 +1,18 @@
+vluxsegei8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vluxseg2ei8.v: 0
+      vluxseg3ei8.v: 0
+      vluxseg4ei8.v: 0
+      vluxseg5ei8.v: 0
+      vluxseg6ei8.v: 0
+      vluxseg7ei8.v: 0
+      vluxseg8ei8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'ea_align == 0': 0
+        'walking_ones("imm_val", 8)': 0

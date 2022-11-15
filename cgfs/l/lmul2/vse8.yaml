@@ -1,0 +1,16 @@
+vse8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vse8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'ea_align == 0': 0
+        'ea_align == 1': 0
+        'ea_align == 2': 0
+        'ea_align == 3': 0
+        'imm_val == 0': 0
+      

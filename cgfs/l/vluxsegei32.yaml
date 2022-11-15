@@ -10,7 +10,7 @@ vluxsegei32:
       vluxseg7ei32.v: 0
       vluxseg8ei32.v: 0
     rs1: 
-      <<: *all_regs
+      <<: *all_regs_cropped
     rd: 
       <<: *v_regs
     val_comb:

@@ -7,7 +7,7 @@ vlre32:
       vl4re32.v: 0
       vl8re32.v: 0
     rs1: 
-      <<: *all_regs
+      <<: *all_regs_cropped
     rd: 
       <<: *v_regs
     val_comb:
