@@ -40,7 +40,18 @@ def generate_macros_vid(f, vsew, lmul):
     # generate the macro， 测试v1-v32源寄存器
     for n in range(1, 32):
         if n == 8 or n == 16 or n % lmul != 0:
-            continue
+            if n==8:
+                print("#define TEST_VID_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
+                TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+                    VSET_VSEW_4AVL \\\n\
+                    la  x1, src1_addr; \\\n\
+                    la  x7, result_addr; \\\n\
+                    vle%d.v v16, (x1); \\\n\
+                    vmseq.vi v0, v16, 1; \\\n\
+                    inst v%d, v0.t; \\\n\
+                )" % (n, n, vsew, n), file=f)
+            else:
+                continue
         print("#define TEST_VID_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
             VSET_VSEW_4AVL \\\n\
@@ -74,7 +85,7 @@ def generate_tests_vid(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(1, 32):
-        if i == 8 or i == 16 or i % lmul != 0:
+        if i == 16 or i % lmul != 0:
             continue
         print("TEST_VID_OP_rd_%d( %d,  %s.v, walking_zeros_vid_ans%d, walking_zeros_dat%d );" % (
             i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)

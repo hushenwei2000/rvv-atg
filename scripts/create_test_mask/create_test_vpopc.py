@@ -8,7 +8,7 @@ instr = 'vpopc'
 num_elem = 0
 
 
-def generate_walking_data_seg_vpopc(f, vsew):
+def generate_walking_data_seg_vpopc(f, vsew, vlen):
     # Generate walking ones
     n = 0
     if vsew == 8:
@@ -21,26 +21,28 @@ def generate_walking_data_seg_vpopc(f, vsew):
         data_width_prefix = "dword"
     for i in range(num_elem + 1):
         print("walking_dat_vpopc%d:"%n, file=f)
-        print_data_width_prefix(f, vsew)
+        print_data_width_prefix(f, 64)
         print("0b", end="", file=f)
         print(i * "0", end="", file=f)
         if i != num_elem:
             print("1", end="", file=f)
         print((num_elem - i - 1) * "0", end="", file=f)
         print("", file=f)
-        print(".%s\t0x0\n.%s\t0x0\n.%s\t0x0\n"%(data_width_prefix, data_width_prefix, data_width_prefix), file=f)
+        for i in range( vlen//64 -1):
+            print(".dword\t0x0", file=f)
         n = n + 1
 
     for j in range(num_elem + 1):
         print("walking_dat_vpopc%d:"%n, file=f)
-        print_data_width_prefix(f, vsew)
+        print_data_width_prefix(f, 64)
         print("0b", end="", file=f)
         print(j * "1", end="", file=f)
         if j != num_elem:
             print("0", end="", file=f)
         print((num_elem - j - 1) * "1", end="", file=f)
         print("", file=f)
-        print(".%s\t0x0\n.%s\t0x0\n.%s\t0x0\n"%(data_width_prefix, data_width_prefix, data_width_prefix), file=f)
+        for i in range( vlen//64 -1):
+            print(".dword\t0x0", file=f)
         n = n + 1
 
 
@@ -126,7 +128,7 @@ def print_ending_vpopc(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_vpopc(f, vsew)
+    generate_walking_data_seg_vpopc(f, vsew, vlen)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
