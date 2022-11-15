@@ -5,11 +5,26 @@
 1. RVV Compiler
    1. Set `gcc` and `objdump` variables in two files: `scripts/run_riscof_coverage.py` and `scripts/run_spike.py`
 2. RISCV-ISAC RVV Support
-   1. Install `https://github.com/hushenwei2000/riscv-isac-rvv` **branch `vector`**
-3. RISCOF
-   1. Just install official RISCOF
-4. Spike
-   1. Install Latest `https://github.com/riscv-software-src/riscv-isa-sim`. Before `make` , execute `../configure --prefix=$RISCV --enable-commitlog` . Because we need commit log.
+   1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
+   2. `cd riscv-isac-rvv`
+   3. `git checkout vetcor`
+   4. `pip install . --prefix=~/.local`  # Anywhere you want  
+   5. Add `~/.local` to your PATH   
+   
+   If the terminal can find `riscv_isac` command then it's successful
+3. Spike
+   1. Install Latest [https://github.com/riscv-software-src/riscv-isa-sim](https://github.com/riscv-software-src/riscv-isa-sim).
+   > $ apt-get install device-tree-compiler  
+   > $ mkdir build  
+   > $ cd build  
+   > $ ../configure --prefix=$RISCV  --enable-commitlog   
+   > $ make  
+   > $ [sudo] make install   
+   
+   ⚠️ Need to add `--enable-commitlog`   
+   2. Add `<spike_path>/build` to your PATH
+   
+   If the terminal can find `spike` command then it's successful
 
 ## Usage
 
