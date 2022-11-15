@@ -443,16 +443,16 @@ datasets:
     'alternate("rs2_val", vsew)': 0
 
   rs1val_walking_mask: &rs1val_walking_mask
-    'walking_ones("rs1_val", int(vlen * lmul / vsew), signed=False)': 0
-    'walking_zeros("rs1_val", int(vlen * lmul / vsew), signed=False)': 0
+    'walking_ones("rs1_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
+    'walking_zeros("rs1_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
 
   rs2val_walking_mask: &rs2val_walking_mask
-    'walking_ones("rs2_val", int(vlen * lmul / vsew), signed=False)': 0
-    'walking_zeros("rs2_val", int(vlen * lmul / vsew), signed=False)': 0
+    'walking_ones("rs2_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
+    'walking_zeros("rs2_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
   
   rdval_walking_mask: &rdval_walking_mask
-    'walking_ones("rd_val", int(vlen * lmul / vsew), signed=False)': 0
-    'walking_zeros("rd_val", int(vlen * lmul / vsew), signed=False)': 0
+    'walking_ones("rd_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
+    'walking_zeros("rd_val", int(vlen * lmul / vsew) if lmul<1 else int(vlen / vsew), signed=False)': 0
   
   ifmt_immval_walking: &ifmt_immval_walking
     'walking_ones("imm_val", 12)': 0

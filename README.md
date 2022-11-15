@@ -126,22 +126,27 @@ python check_all.py
 
 | Config                        | Status | Config                  | Status | Config                        | Status |
 | ----------------------------- | ------ | ---------------------   | ------ | ---------------------         | ------ |
-| vlen128 vsew8 lmul1           | P      | vlen128 vsew8   lmul2-8 | P      | vlen128 vsew8   lmul0.125-0.5 | P      |
-| vlen128 vsew16 lmul1          | P      | vlen128 vsew16  lmul2-8 | P      | vlen128 vsew16  lmul0.125-0.5 | P      |
-| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul2-8 | P      | vlen128 vsew32  lmul0.125-0.5 | P      |
-| vlen128 vsew64 lmul1          | P      | vlen128 vsew64  lmul2-8 | P      | vlen128 vsew64  lmul0.125-0.5 | P      |
-| vlen256 vsew8 lmul1           | P      | vlen256 vsew8   lmul2-8 | P      | vlen256 vsew8   lmul0.125-0.5 | P      |
-| vlen256 vsew16 lmul1          | P      | vlen256 vsew16  lmul2-8 | P      | vlen256 vsew16  lmul0.125-0.5 | P      |
-| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul2-8 | P      | vlen256 vsew32  lmul0.125-0.5 | P      |
-| vlen256 vsew64 lmul1          | P      | vlen256 vsew64  lmul2-8 | P      | vlen256 vsew64  lmul0.125-0.5 | P      |
-| vlen512 vsew8 lmul1           | P      | vlen512 vsew8   lmul2-8 | P      | vlen512 vsew8   lmul0.125-0.5 | P      |
-| vlen512 vsew16 lmul1          | P      | vlen512 vsew16  lmul2-8 | P      | vlen512 vsew16  lmul0.125-0.5 | P      |
-| vlen512 vsew32 lmul1          | P      | vlen512 vsew32  lmul2-8 | P      | vlen512 vsew32  lmul0.125-0.5 | P      |
-| vlen512 vsew64 lmul1          | P      | vlen512 vsew64  lmul2-8 | P      | vlen512 vsew64  lmul0.125-0.5 | P      |
-| vlen1024 vsew8 lmul1          | P      | vlen1024 vsew8  lmul2-8 | P      | vlen1024 vsew8  lmul0.125-0.5 | P      |
-| vlen1024 vsew16 lmul1         | P      | vlen1024 vsew16 lmul2-8 | P      | vlen1024 vsew16 lmul0.125-0.5 | P      |
-| vlen1024 vsew32 lmul1         | P      | vlen1024 vsew32 lmul2-8 | P      | vlen1024 vsew32 lmul0.125-0.5 | P      |
-| vlen1024 vsew64 lmul1         | P      | vlen1024 vsew64 lmul2-8 | P      | vlen1024 vsew64 lmul0.125-0.5 | P      |
+| vlen128 vsew8 lmul1           | P P    | vlen128 vsew8   lmul2-8 | P P    | vlen128 vsew8   lmul0.125-0.5 | P P    |
+| vlen128 vsew16 lmul1          | P P    | vlen128 vsew16  lmul2-8 | P P    | vlen128 vsew16  lmul0.125-0.5 | P P    |
+| vlen128 vsew32 lmul1(default) | P P    | vlen128 vsew32  lmul2-8 | P P    | vlen128 vsew32  lmul0.125-0.5 | P P    |
+| vlen128 vsew64 lmul1          | P P    | vlen128 vsew64  lmul2-8 | P P    | vlen128 vsew64  lmul0.125-0.5 | P P    |
+| vlen256 vsew8 lmul1           | P P    | vlen256 vsew8   lmul2-8 | P P    | vlen256 vsew8   lmul0.125-0.5 | P P    |
+| vlen256 vsew16 lmul1          | P P    | vlen256 vsew16  lmul2-8 | P P    | vlen256 vsew16  lmul0.125-0.5 | P P    |
+| vlen256 vsew32 lmul1          | P P    | vlen256 vsew32  lmul2-8 | P P    | vlen256 vsew32  lmul0.125-0.5 | P P    |
+| vlen256 vsew64 lmul1          | P P    | vlen256 vsew64  lmul2-8 | P P    | vlen256 vsew64  lmul0.125-0.5 | P P    |
+| vlen512 vsew8 lmul1           | P P    | vlen512 vsew8   lmul2-8 | P P    | vlen512 vsew8   lmul0.125-0.5 | P P    |
+| vlen512 vsew16 lmul1          | P P    | vlen512 vsew16  lmul2-8 | P P    | vlen512 vsew16  lmul0.125-0.5 | P P    |
+| vlen512 vsew32 lmul1          | P P    | vlen512 vsew32  lmul2-8 | P P    | vlen512 vsew32  lmul0.125-0.5 | P P    |
+| vlen512 vsew64 lmul1          | P P    | vlen512 vsew64  lmul2-8 | P P    | vlen512 vsew64  lmul0.125-0.5 | P P    |
+| vlen1024 vsew8 lmul1          | P P    | vlen1024 vsew8  lmul2-8 | P P    | vlen1024 vsew8  lmul0.125-0.5 | P P    |
+| vlen1024 vsew16 lmul1         | P P    | vlen1024 vsew16 lmul2-8 | P P    | vlen1024 vsew16 lmul0.125-0.5 | P P    |
+| vlen1024 vsew32 lmul1         | P P    | vlen1024 vsew32 lmul2-8 | P P    | vlen1024 vsew32 lmul0.125-0.5 | P P    |
+| vlen1024 vsew64 lmul1         | P P    | vlen1024 vsew64 lmul2-8 | P P    | vlen1024 vsew64 lmul0.125-0.5 | P P    |
+| vlen2048 vsew8 lmul1          | P P    | vlen2048 vsew8  lmul2-8 | P P    | vlen2048 vsew8  lmul0.125-0.5 | P P    |
+| vlen2048 vsew16 lmul1         | P P    | vlen2048 vsew16 lmul2-8 | P P    | vlen2048 vsew16 lmul0.125-0.5 | P P    |
+| vlen2048 vsew32 lmul1         | P P    | vlen2048 vsew32 lmul2-8 | P P    | vlen2048 vsew32 lmul0.125-0.5 | P P    |
+| vlen2048 vsew64 lmul1         | P P    | vlen2048 vsew64 lmul2-8 | P P    | vlen2048 vsew64 lmul0.125-0.5 | P P    |
+⚠️ When lmul is equal to 8, val_comb may not fully cover because isac counts the result of only one register at present. (RISCV-ISAC-RVV bug)
 
 ### Permute
 ⚠️ vslide, vcompress will generate too many tests if num_elems (vlen*lmul/vsew) is too big. Test them will take a long time (longer than 20min)

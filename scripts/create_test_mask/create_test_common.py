@@ -39,19 +39,31 @@ def generate_macros_common(f, lmul):
         )", file=f)
     for n in range(2, 32):
         if n >= 16 and n < 16 + lmul:
-            continue
-        print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-        TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
-            VSET_VSEW_4AVL \\\n\
-            la  x1, src1_addr; \\\n\
-            MK_VLE_INST(sew) v8, (x1); \\\n\
-            la  x1, src2_addr; \\\n\
-            MK_VLE_INST(sew) v16, (x1); \\\n\
-            vmseq.vi v1, v8, 1; \\\n\
-            vmseq.vi v%d, v16, 1; \\\n\
-            inst v14, v1, v%d; \\\n\
-            VSET_VSEW \\\n\
-        )" % (n, n, n), file=f)
+            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
+            TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la  x1, src1_addr; \\\n\
+                MK_VLE_INST(sew) v8, (x1); \\\n\
+                la  x1, src2_addr; \\\n\
+                MK_VLE_INST(sew) v4, (x1); \\\n\
+                vmseq.vi v1, v8, 1; \\\n\
+                vmseq.vi v%d, v4, 1; \\\n\
+                inst v14, v1, v%d; \\\n\
+                VSET_VSEW \\\n\
+            )" % (n, n, n), file=f)
+        else:
+            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
+            TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la  x1, src1_addr; \\\n\
+                MK_VLE_INST(sew) v8, (x1); \\\n\
+                la  x1, src2_addr; \\\n\
+                MK_VLE_INST(sew) v16, (x1); \\\n\
+                vmseq.vi v1, v8, 1; \\\n\
+                vmseq.vi v%d, v16, 1; \\\n\
+                inst v14, v1, v%d; \\\n\
+                VSET_VSEW \\\n\
+            )" % (n, n, n), file=f)
     for n in range(2, 32):
         print("#define TEST_VMRL_OP_rd_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
         TEST_CASE_MASK_4VL( testnum, v%d, result, \\\n\
@@ -123,6 +135,11 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
         if random.random() < percentage:
             print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
+    
+    num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
+    for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), i - num_elem_plus_square, i - num_elem_plus_square), file=f)
 
     # generate cover different registers
     print("  #-------------------------------------------------------------", file=f)
