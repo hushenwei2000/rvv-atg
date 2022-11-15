@@ -10,6 +10,3 @@ vfslide:
       <<: *v_regs
     rd: 
       <<: *v_regs
-    val_comb:
-      abstract_comb:
-        'ibm_b1(32, 32, "vfadd", 1, rvv_sew = 32)': 0

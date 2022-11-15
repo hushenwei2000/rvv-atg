@@ -13,4 +13,4 @@ vslide1:
       <<: *v_regs
     val_comb:
       abstract_comb:
-        <<: [*rs1val_walking_vector, *rs2val_walking_vector]
+        <<: [*rs2val_walking_vector]
