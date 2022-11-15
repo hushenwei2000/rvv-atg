@@ -6,7 +6,7 @@ vlse16:
     rs1: 
       <<: *all_regs_cropped
     rd: 
-      <<: *v_quard_regs
+      <<: *v_octant_regs
     val_comb:
         'imm_val > 0': 0
         'imm_val < 0': 0

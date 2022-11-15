@@ -12,7 +12,7 @@ vsuxsegei32:
     rs1: 
       <<: *all_regs_cropped
     rd: 
-      <<: *v_regs
+      <<: *v_quard_regs
     val_comb:
         'ea_align == 0': 0
         'walking_ones("imm_val", 16)': 0
