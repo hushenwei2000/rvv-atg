@@ -3,7 +3,7 @@
 ## Prerequisite
 
 1. RVV Compiler
-   1. Set `gcc` and `objdump` variables in two files: `scripts/run_riscof_coverage.py` and `scripts/run_spike.py`
+   1. Set `gcc`,`objdump`, and `riscof` directory's path variables in file: `scripts/constants.py`
 2. RISCV-ISAC RVV Support
    1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
    2. `cd riscv-isac-rvv`

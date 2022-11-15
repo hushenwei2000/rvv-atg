@@ -1,4 +1,3 @@
-
 import argparse
 from ast import arg
 import os
@@ -7,6 +6,7 @@ from scripts.lib import *
 from scripts.replace_results import replace_results
 from scripts.run_riscof_coverage import run_riscof_coverage
 from scripts.run_spike import run_spike
+from scripts.constants import *
 
 
 def parse_args(cwd):
@@ -141,7 +141,7 @@ def run_mask(cwd, args, cgf, output_dir):
     empty_test = create_empty_test(
         args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir)
 
-    riscof_dir = '/work/stu/swhu/projects/riscof-sample'
+    riscof_dir = RISCOF_CONST
 
     if args.tool == 'sail':
         # 2-1. Run sail and riscof coverage and extract true result from isac_log
