@@ -1,10 +1,11 @@
 import logging
 import os
 
+from scripts.constants import *
 
 def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro):
-    gcc = "riscv64-rivai-elf-gcc"
-    objdump = "riscv64-rivai-elf-objdump"
+    gcc = GCC_CONST
+    objdump = OBJDUMP_CONST
     logging.info("Running spike: {}.{}".format(instr, suffix))
     test_path = os.path.basename(test_path)
     cgf_path = os.path.basename(cgf_path)
