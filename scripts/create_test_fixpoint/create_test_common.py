@@ -61,7 +61,7 @@ def generate_macros_vnclip(f, lmul):
             TEST_CASE_AVG_VV( testnum, inst, v24, v16, result00, result01, result10, result11, " + " \\\n\
                 li x7, MASK_DOUBLE_VSEW(val2); \\\n\
                 VSET_DOUBLE_VSEW \\\n\
-                vmv.v.x v24, x7;"%n + " \\\n\
+                vmv.v.x v24, x7; \\\n\
                 VSET_VSEW  \\\n\
                 li x7, val1; \\\n\
                 vmv.v.x v8, x7; \\\n\
