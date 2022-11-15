@@ -1,0 +1,22 @@
+vssege8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vsseg2e8.v: 0
+      vsseg3e8.v: 0
+      vsseg4e8.v: 0
+      vsseg5e8.v: 0
+      vsseg6e8.v: 0
+      vsseg7e8.v: 0
+      vsseg8e8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_octant_regs
+    val_comb:
+        'ea_align == 0': 0
+        'ea_align == 1': 0
+        'ea_align == 2': 0
+        'ea_align == 3': 0
+        'imm_val == 0': 0
+        'walking_ones("imm_val", 8)': 0

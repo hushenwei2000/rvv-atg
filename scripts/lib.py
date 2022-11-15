@@ -59,11 +59,11 @@ def create_cgf_path(instr, type, lmul, rvv_atg_root, output_dir):
       CGF path
     """
     p = ""
-    if 2.0 == lmul and "f" == type:
+    if 2.0 == lmul and ("f" == type or "l" == type):
         p = str(rvv_atg_root) + "/cgfs/" + str(type) + "/lmul2/" + str(instr) + ".yaml"
-    elif 4.0 == lmul and "f" == type:
+    elif 4.0 == lmul and ("f" == type or "l" == type):
         p = str(rvv_atg_root) + "/cgfs/" + str(type) + "/lmul4/" + str(instr) + ".yaml"
-    elif 8.0 == lmul and "f" == type:
+    elif 8.0 == lmul and ("f" == type or "l" == type):
         p = str(rvv_atg_root) + "/cgfs/" + str(type) + "/lmul8/" + str(instr) + ".yaml"
     else :
         p = str(rvv_atg_root) + "/cgfs/" + str(type) + "/" + str(instr) + ".yaml"

@@ -1,0 +1,24 @@
+vsssege32:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vssseg2e32.v: 0
+      vssseg3e32.v: 0
+      vssseg4e32.v: 0
+      vssseg5e32.v: 0
+      vssseg6e32.v: 0
+      vssseg7e32.v: 0
+      vssseg8e32.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_quard_regs
+    val_comb:
+        'imm_val > 0': 0
+        'imm_val < 0': 0
+        'imm_val == 0': 0
+        'imm_val == 4100': 0
+        'imm_val == -4100': 0
+        'walking_ones("imm_val", 32)': 0
+        'ea_align == 0': 0
+        'ea_align == 0 and (imm_val % 4) == 0': 0

@@ -1,0 +1,22 @@
+vlsege8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vlseg2e8.v: 0
+      vlseg3e8.v: 0
+      vlseg4e8.v: 0
+      vlseg5e8.v: 0
+      vlseg6e8.v: 0
+      vlseg7e8.v: 0
+      vlseg8e8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'ea_align == 0': 0
+        'ea_align == 1': 0
+        'ea_align == 2': 0
+        'ea_align == 3': 0
+        'imm_val == 0': 0
+        'walking_ones("imm_val", 8)': 0

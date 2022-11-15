@@ -10,7 +10,7 @@ vlssege16:
       vlsseg7e16.v: 0
       vlsseg8e16.v: 0
     rs1: 
-      <<: *all_regs
+      <<: *all_regs_cropped
     rd: 
       <<: *v_regs
     val_comb:

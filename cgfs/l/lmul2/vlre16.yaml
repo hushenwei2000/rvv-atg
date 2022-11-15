@@ -1,0 +1,17 @@
+vlre16:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vl1re16.v: 0
+      vl2re16.v: 0
+      vl4re16.v: 0
+      vl8re16.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'ea_align == 0': 0
+        'ea_align == 2': 0
+        'imm_val == 0': 0
+        'walking_ones("imm_val", 16)': 0

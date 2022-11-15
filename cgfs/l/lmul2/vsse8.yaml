@@ -1,0 +1,37 @@
+vsse8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vsse8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'imm_val > 0': 0
+        'imm_val < 0': 0
+        'imm_val == 0': 0
+        # corss page
+        'imm_val == 4100': 0
+        'imm_val == -4100': 0
+        'walking_ones("imm_val", 8)': 0
+        'ea_align == 0': 0
+        'ea_align == 1': 0
+        'ea_align == 2': 0
+        'ea_align == 3': 0
+        'ea_align == 0 and (imm_val % 4) == 0': 0
+        'ea_align == 0 and (imm_val % 4) == 1': 0
+        'ea_align == 0 and (imm_val % 4) == 2': 0
+        'ea_align == 0 and (imm_val % 4) == 3': 0
+        'ea_align == 2 and (imm_val % 4) == 0': 0
+        'ea_align == 2 and (imm_val % 4) == 1': 0
+        'ea_align == 2 and (imm_val % 4) == 2': 0
+        'ea_align == 2 and (imm_val % 4) == 3': 0
+        'ea_align == 1 and (imm_val % 4) == 0': 0
+        'ea_align == 1 and (imm_val % 4) == 1': 0
+        'ea_align == 1 and (imm_val % 4) == 2': 0
+        'ea_align == 1 and (imm_val % 4) == 3': 0
+        'ea_align == 3 and (imm_val % 4) == 0': 0
+        'ea_align == 3 and (imm_val % 4) == 1': 0
+        'ea_align == 3 and (imm_val % 4) == 2': 0
+        'ea_align == 3 and (imm_val % 4) == 3': 0

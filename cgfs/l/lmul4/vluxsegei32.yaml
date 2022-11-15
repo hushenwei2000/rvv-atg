@@ -1,0 +1,18 @@
+vluxsegei32:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vluxseg2ei32.v: 0
+      vluxseg3ei32.v: 0
+      vluxseg4ei32.v: 0
+      vluxseg5ei32.v: 0
+      vluxseg6ei32.v: 0
+      vluxseg7ei32.v: 0
+      vluxseg8ei32.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_quard_regs
+    val_comb:
+        'ea_align == 0': 0
+        'walking_ones("imm_val", 32)': 0

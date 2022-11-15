@@ -8,3 +8,4 @@ __pycache__/
 .log
 log*
 .nfs*
+.DS_Store

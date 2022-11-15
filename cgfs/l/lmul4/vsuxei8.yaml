@@ -1,0 +1,12 @@
+vsuxei8:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vsuxei8.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_quard_regs
+    val_comb:
+        'ea_align == 0': 0
+        'walking_ones("imm_val", 8)': 0

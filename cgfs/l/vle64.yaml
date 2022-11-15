@@ -5,7 +5,7 @@ vle64:
       vle64.v: 0
       vle64ff.v: 0
     rs1: 
-      <<: *all_regs
+      <<: *all_regs_cropped
     rd: 
       <<: *v_regs
     val_comb:

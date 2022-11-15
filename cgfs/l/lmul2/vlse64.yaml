@@ -1,0 +1,18 @@
+vlse64:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vlse64.v: 0
+    rs1: 
+      <<: *all_regs_cropped
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+        'imm_val > 0': 0
+        'imm_val < 0': 0
+        'imm_val == 0': 0
+        'imm_val == 4104': 0
+        'imm_val == -4104': 0
+        'walking_ones("imm_val", 64)': 0
+        'ea_align == 0 and (imm_val % 8) == 0': 0
+

@@ -4,7 +4,7 @@ vsuxei8:
     opcode: 
       vsuxei8.v: 0
     rs1: 
-      <<: *all_regs
+      <<: *all_regs_cropped
     rd: 
       <<: *v_regs
     val_comb:
