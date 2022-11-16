@@ -136,9 +136,15 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
             print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
     
+    # Fully Cover rs2_val
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus):
         print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+            i, instr, (vsew if vsew <= 64 else 64), i - num_elem_plus_square, i - num_elem_plus_square), file=f)
+
+    num_elem_plus_square = num_elem_plus_square + num_elem_plus
+    for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus):
+        print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
             i, instr, (vsew if vsew <= 64 else 64), i - num_elem_plus_square, i - num_elem_plus_square), file=f)
 
     # generate cover different registers
