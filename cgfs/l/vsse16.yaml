@@ -6,7 +6,7 @@ vsse16:
     rs1: 
       <<: *all_regs_cropped
     rd: 
-      <<: *v_regs
+      <<: *v_even_regs
     val_comb:
         'imm_val > 0': 0
         'imm_val < 0': 0
