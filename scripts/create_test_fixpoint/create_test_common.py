@@ -31,7 +31,7 @@ def generate_macros(f, lmul):
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
-            inst v24, v16, , SEXT_IMM(val1); \\\n\
+            inst v24, v16, SEXT_IMM(val1); \\\n\
         )", file=f)
     for n in range(1, 32):
         if n % lmul == 0 and n != 24 and n != 8 and n != 16:
