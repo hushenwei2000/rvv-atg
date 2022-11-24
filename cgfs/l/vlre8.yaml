@@ -2,10 +2,10 @@ vlre8:
     config: 
       - check ISA:=regex(.*V.*)
     opcode: 
-      vl1re16.v: 0
-      vl2re16.v: 0
-      vl4re16.v: 0
-      vl8re16.v: 0
+      vl1re8.v: 0
+      vl2re8.v: 0
+      vl4re8.v: 0
+      vl8re8.v: 0
     rs1: 
       <<: *all_regs_cropped
     rd: 
