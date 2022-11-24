@@ -1468,7 +1468,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
@@ -1478,7 +1478,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VID_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \

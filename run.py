@@ -40,6 +40,8 @@ def parse_args(cwd):
     parser.add_argument("--vma", type=float, default="1",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
+    parser.add_argument("--masked", type=str, default="False",
+                        help="If enable masked")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         default=False,
                         help="Verbose Logging")
@@ -221,6 +223,7 @@ def main():
     os.environ["RVV_ATG_VLEN"] = str(args.vlen)
     os.environ["RVV_ATG_VSEW"] = str(args.vsew)
     os.environ["RVV_ATG_LMUL"] = str(args.lmul)
+    os.environ["RVV_ATG_MASKED"] = str(args.masked)
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

@@ -40,7 +40,7 @@ def generate_macros_viota(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， 测试v1-v32源寄存器
     print("#define TEST_VIOTA_OP_rs2_8( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -49,7 +49,7 @@ def generate_macros_viota(f, vsew, lmul):
         inst v16, v8; \\\n\
         )"%vsew, file=f)
     print("#define TEST_VIOTA_OP_rs2_16( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -62,7 +62,7 @@ def generate_macros_viota(f, vsew, lmul):
         if n == 8 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
             continue
         print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -75,7 +75,7 @@ def generate_macros_viota(f, vsew, lmul):
         if n % lmul != 0:
             continue
         print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v%d, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
