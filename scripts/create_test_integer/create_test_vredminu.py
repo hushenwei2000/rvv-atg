@@ -18,7 +18,7 @@ def create_empty_test_vredminu(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -48,7 +48,7 @@ def create_first_test_vredminu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
