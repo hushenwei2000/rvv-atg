@@ -10,7 +10,7 @@ rs2_val = ['0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002',
 def generate_macros_vfwcvt(f, lmul):
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
-    lmul = 1 if lmul < 1 else int(lmul)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
     print("#undef TEST_FP_W_V_OP \n\
 #define TEST_FP_W_V_OP( testnum, inst, flags, result, val1 ) \\\n\
     TEST_CASE_LOOP_W_FP( testnum, v24, flags, result, v8,     \\\n\
@@ -114,7 +114,7 @@ def generate_tests_vfwcvt(instr, f, lmul):
                 n += 1
 
         k = i % 31 + 1
-        if k % (2*lmul) != 0 or k == 24:
+        if k % (2*lmul) != 0 or k == 8:
             continue
         for i in range(loop_num):
             print("TEST_FP_W_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfwcvt.x.f.v') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes_double, i*step_bytes), file=f)

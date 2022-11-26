@@ -24,7 +24,7 @@ def generate_fdat_seg(f):
 def generate_macros_vfncvt(f, lmul):
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
-    lmul = 1 if lmul < 1 else int(lmul)
+    lmul_1 = 1 if lmul < 1 else int(lmul)
     print("#undef TEST_FP_N_V_OP \n\
 #define TEST_FP_N_V_OP( testnum, inst, flags, result, val1 ) \\\n\
     TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8,     \\\n\
@@ -134,7 +134,7 @@ def generate_tests_vfncvt(instr, f, lmul):
                 n += 1
 
         k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
+        if k % lmul != 0 or k == 8:
             continue
         for i in range(loop_num):
             print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
