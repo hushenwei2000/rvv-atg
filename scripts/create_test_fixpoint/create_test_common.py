@@ -3,47 +3,60 @@ import re, os
 def generate_macros(f, lmul):
     lmul_1 = 1 if lmul < 1 else int(lmul)
     vsew = int(os.environ['RVV_ATG_VSEW'])
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#undef TEST_AVG_VV_OP \n\
 #define TEST_AVG_VV_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
-            inst v24, v16, v8; \\\n\
+            inst v24, v16, v8%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
     print("#undef TEST_AVG_VX_OP \n\
 #define TEST_AVG_VX_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1); \\\n\
-            inst v24, v16, x1; \\\n\
+            inst v24, v16, x1%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
     print("#undef TEST_AVG_VI_OP \n\
 #define TEST_AVG_VI_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
-            inst v24, v16, SEXT_IMM(val1); \\\n\
+            inst v24, v16, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
     for n in range(1, 32):
         if n % lmul == 0 and n != 24 and n != 8 and n != 16:
             print("#define TEST_AVG_VV_OP_1_%d( testnum, inst, vxrm_val, result, val2, val1 )"%n + " \\\n\
             TEST_CASE_LOOP( testnum, v24, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v24, (x7);"%vsew + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 csrwi vxrm, vxrm_val; \\\n\
                 la x7, val2; \\\n\
                 vle%d.v v16, (x7);"%vsew + " \\\n\
                 la x7, val1; \\\n\
                 vle%d.v v%d, (x7);"%(vsew,n) + " \\\n\
-                inst v24, v16, v%d; "%n + "\\\n\
+                inst v24, v16, v%d%s; "%(n, (", v0.t" if masked else "")) + "\\\n\
             )", file=f)
     for n in range(1, 32):
         if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 16:
@@ -51,48 +64,61 @@ def generate_macros(f, lmul):
             print("#define TEST_AVG_VV_OP_rd%d( testnum, inst, vxrm_val, result, val2, val1 )"%n + " \\\n\
             TEST_CASE_LOOP( testnum, v%d, result,"%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 csrwi vxrm, vxrm_val; \\\n\
                 la x7, val2; \\\n\
                 vle%d.v v16, (x7);"%vsew + " \\\n\
                 la x7, val1; \\\n\
                 vle%d.v v8, (x7);"%vsew + " \\\n\
-                inst v%d, v16, v8; "%n + "\\\n\
+                inst v%d, v16, v8%s; "%(n, (", v0.t" if masked else "")) + "\\\n\
             )", file=f)
 
 def generate_macros_vnclip(f, lmul):
     lmul_1 = 1 if lmul < 1 else int(lmul)
     vsew = int(os.environ['RVV_ATG_VSEW'])
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#undef TEST_AVG_N_VV_OP \n\
 #define TEST_AVG_N_VV_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
-            inst v24, v16, v8; \\\n\
+            inst v24, v16, v8%s;"%(", v0.t" if masked else "") + "  \\\n\
         )", file=f)
 
     print("#undef TEST_AVG_N_VX_OP \n\
 #define TEST_AVG_N_VX_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
             li x1, MASK_VSEW(val1); \\\n\
-            inst v24, v16, x1; \\\n\
+            inst v24, v16, x1%s;"%(", v0.t" if masked else "") + "  \\\n\
         )", file=f)
 
     print("#undef TEST_AVG_N_VI_OP \n\
 #define TEST_AVG_N_VI_OP( testnum, inst, vxrm_val, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v24, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             csrwi vxrm, vxrm_val; \\\n\
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
-            inst v24, v16, SEXT_IMM(val1); \\\n\
+            inst v24, v16, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + "  \\\n\
         )", file=f)
     
     for n in range(1, 32):
@@ -100,12 +126,15 @@ def generate_macros_vnclip(f, lmul):
             print("#define TEST_AVG_N_VV_OP_1%d(  testnum, inst, vxrm_val, result, val2, val1  ) "%n + "\\\n\
             TEST_CASE_LOOP( testnum, v24, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v24, (x7);"%vsew + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 csrwi vxrm, vxrm_val; \\\n\
                 la x7, val2; \\\n\
                 vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
                 la x7, val1; \\\n\
                 vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
-                inst v24, v16, v%d;"%n + " \\\n\
+                inst v24, v16, v%d%s; "%(n, (", v0.t" if masked else "")) + " \\\n\
             )", file=f)
     for n in range(1, 32):
         if n % (lmul * 2) == 0 and n != 24 and n != 8 and n != 16:
@@ -113,12 +142,15 @@ def generate_macros_vnclip(f, lmul):
             print("#define TEST_AVG_N_VV_OP_rd%d(  testnum, inst, vxrm_val, result, val2, val1  ) "%n + " \\\n\
                 TEST_CASE_LOOP( testnum, v%d, result,"%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 csrwi vxrm, vxrm_val; \\\n\
                 la x7, val2; \\\n\
                 vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
                 la x7, val1; \\\n\
                 vle%d.v v8, (x7);"%(vsew) + " \\\n\
-                inst v%d, v16, v8; "%n + "\\\n\
+                inst v%d, v16, v8%s; "%(n, (", v0.t" if masked else "")) + "\\\n\
             )", file=f)
 
 def extract_operands(f, rpt_path):

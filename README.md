@@ -2,8 +2,7 @@
 ## This is `test_all_elements` brach
 integer, fixpoint and floatingpoint three types of instructions only test one element now in `master` branch. This branch is to enhance the test to test all elements of vetor.  
 - Progeress: 
-   - integer and floating point ✔️(All configuration)
-   - fix poiont  ✖️  
+   - integer, floating point, fixed point ✔️(All configuration)
 
 ❗️ **DO NOT** generate loadstore, mask and permute tests in this branch!
 
