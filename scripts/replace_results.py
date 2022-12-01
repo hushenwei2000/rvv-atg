@@ -285,7 +285,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
 
 def replace_results(instr, test_file, log_path, tool):
     if tool == 'spike':
-        if (instr in mask) or (instr in permute) or (instr in loadstore) or ("red" in instr) or (instr.startswith("vfmv")):
+        if (instr in mask) or (instr in permute and "vrgather" not in permute) or (instr in loadstore) or ("red" in instr) or (instr.startswith("vfmv")):
             return replace_results_spike(instr, test_file, log_path)
         else:
             return replace_results_spike_new(instr, test_file, log_path)

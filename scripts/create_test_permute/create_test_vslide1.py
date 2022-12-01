@@ -26,24 +26,22 @@ def generate_macros_vslide1(f, vlen, vsew, lmul):
         if i == 8 or i == 16 or i % lmul != 0:
             continue;
         print("#define TEST_VSLIDE1_VX_OP_rd_%d( testnum, inst, result_base, rd_base, rs1, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x1, rs1; \\\n\
                 inst v%d, v8, x1; \\\n\
             )"%(i, i, vsew, vsew, i, i), file=f)
         print("#define TEST_VSLIDE1_VX_OP_rs2_%d( testnum, inst, result_base, rd_base, rs1, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x1, rs1; \\\n\
                 inst v16, v%d, x1; \\\n\
             )"%(i, vsew, i, vsew, i), file=f)
@@ -53,13 +51,12 @@ def generate_macros_vslide1(f, vlen, vsew, lmul):
         if i == 1 or i == 7:
             continue;
         print("#define TEST_VSLIDE1_VX_OP_rs1_%d( testnum, inst, result_base, rd_base, rs1, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x%d, rs1; \\\n\
                 inst v16, v8, x%d; \\\n\
             )"%(i, vsew, vsew, i, i), file=f)

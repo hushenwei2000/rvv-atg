@@ -1483,9 +1483,8 @@ test_ ## testnum: \
   )
 
 #define TEST_VCOMPRESS_OP( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
-    la  x7, result_addr; \
     la  x1, src_addr; \
     la  x2, rd_addr; \
     la  x3, vm_addr; \
@@ -1494,19 +1493,6 @@ test_ ## testnum: \
     vle64.v v8, (x1); \
     vle64.v v16, (x2); \
     inst v16, v8, v0; \
-  )
-
-#define TEST_VCOMPRESS_OP_64( testnum, inst, result_addr, src1_addr, src2_addr, vm_addr ) \
-  TEST_CASE_LOOP_64( testnum, v6, x7, \
-    VSET_VSEW_4AVL \
-    la  x7, result_addr; \
-    la  x1, src1_addr; \
-    la  x2, src2_addr; \
-    la  x3, vm_addr; \
-    vle64.v v5, (x1); \
-    vle64.v v6, (x2); \
-    vle64.v v0, (x3); \
-    inst v6, v5, v0; \
   )
 
 #define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \
@@ -1555,97 +1541,47 @@ test_ ## testnum: \
     fcvt.w.s x7, f7; \
     bne x8, x7, fail;
 
-// #define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re64.v v8, (x1); \
-//     la x7, result_base; \
-//     inst v16, v8; \
-//   )
 
-// #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re64.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
-
-// #define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re64.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
-
-// #define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re64.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
 
 #define TEST_VSLIDE_VX_OP( testnum, inst, result_base, rd_base, offset, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_base, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vle64.v v8, (x1); \
     la  x1, rd_base; \
     vle64.v v16, (x1); \
-    la  x7, result_base; \
     li x1, offset; \
     inst v16, v8, x1; \
   )
 
 #define TEST_VSLIDE1_VX_OP( testnum, inst, result_base, rd_base, rs1, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_base, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vle64.v v8, (x1); \
     la  x1, rd_base; \
     vle64.v v16, (x1); \
-    la  x7, result_base; \
     li x1, rs1; \
     inst v16, v8, x1; \
   )
 
 #define TEST_VSLIDE_VI_OP( testnum, inst, result_base, rd_base, offset_imm, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_base, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vle64.v v8, (x1); \
     la  x1, rd_base; \
     vle64.v v16, (x1); \
-    la  x7, result_base; \
     inst v16, v8, offset_imm; \
   )
 
  #define TEST_VSLIDE_VF_OP(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_base, \
     VSET_VSEW_4AVL \
     la  x1, base; \
     vle64.v v8, (x1); \
     la  x1, rd_base; \
     vle64.v v16, (x1); \
-    la x7, result_base; \
     la x1, f_rs1_base; \
     fld f1, 0(x1); \
     inst v16, v8, f1; \

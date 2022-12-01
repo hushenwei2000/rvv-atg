@@ -20,38 +20,35 @@ def generate_macros_vfslide(f, vlen, vsew):
         if i == 8 or i == 16 or i == 15 or i == 31:
             continue;
         print(" #define TEST_VSLIDE_VF_OP_rd_%d(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
-                la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
                 fl%s f1, 0(x1); \\\n\
                 inst v%d, v8, f1; \\\n\
             )"%(i, i, vsew, vsew, i, ("w" if vsew == 32 else "d"), i), file=f)
         print(" #define TEST_VSLIDE_VF_OP_rs2_%d(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
                 fl%s f1, 0(x1); \\\n\
                 inst v16, v%d, f1; \\\n\
             )"%(i, vsew, i, vsew, ("w" if vsew == 32 else "d"), i), file=f)
     for i in range(1, 32):
         print(" #define TEST_VSLIDE_VF_OP_rs1_%d(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la x7, result_base; \\\n\
                 la x1, f_rs1_base; \\\n\
                 fl%s f%d, 0(x1); \\\n\
                 inst v16, v8, f%d; \\\n\

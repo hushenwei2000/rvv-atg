@@ -30,13 +30,12 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
         print("#define TEST_VSLIDE_VX_OP_rd_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x1, offset; \\\n\
                 inst v%d, v8, x1; \\\n\
             )" % (i, i, vsew, vsew, i, i), file=f)
@@ -45,13 +44,12 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
         print("#define TEST_VSLIDE_VX_OP_rs2_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x1, offset; \\\n\
                 inst v16, v%d, x1; \\\n\
             )" % (i, vsew, i,vsew, i), file=f)
@@ -60,13 +58,12 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         if i == 1 or i == 7 or i % lmul != 0:
             continue
         print("#define TEST_VSLIDE_VX_OP_rs1_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 li x%d, offset; \\\n\
                 inst v16, v8, x%d; \\\n\
             )" % (i, vsew, vsew, i, i), file=f)
@@ -75,13 +72,12 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
         print("#define TEST_VSLIDE_VI_OP_rd_%d( testnum, inst, result_base, rd_base, offset_imm, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v8, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 inst v%d, v8, offset_imm; \\\n\
             )" % (i, i, vsew, vsew, i, i), file=f)
 
@@ -89,13 +85,12 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
         print("#define TEST_VSLIDE_VI_OP_rs2_%d( testnum, inst, result_base, rd_base, offset_imm, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, base; \\\n\
                 vle%d.v v%d, (x1); \\\n\
                 la  x1, rd_base; \\\n\
                 vle%d.v v16, (x1); \\\n\
-                la  x7, result_base; \\\n\
                 inst v16, v%d, offset_imm; \\\n\
             )" % (i, vsew, i, vsew, i), file=f)
 
