@@ -1,5 +1,6 @@
 import os
 import re
+import random
 
 from scripts.test_common_info import is_overlap
 
@@ -908,7 +909,12 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     if generate_vv:
         print("  #-------------------------------------------------------------", file=f)
@@ -966,7 +972,12 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
     print("  #-------------------------------------------------------------", file=f)
@@ -1033,7 +1044,12 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
     print("  #-------------------------------------------------------------", file=f)
@@ -1077,7 +1093,12 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -1122,7 +1143,12 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -1255,7 +1281,12 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -1311,7 +1342,12 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     if generate_vv:
         print("  #-------------------------------------------------------------", file=f)
@@ -1383,7 +1419,12 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    # Push some values util loop_num >= 1
+    while(len(rs1_val)<num_elem or len(rs1_val)%num_elem!=0):
+        rs1_val.append(random.randint(0,2**(vsew-1)))
+    while(len(rs2_val)<num_elem or len(rs2_val)%num_elem!=0):
+        rs2_val.append(random.randint(0,2**(vsew-1)))
+    loop_num = int(max(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
