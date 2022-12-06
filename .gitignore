@@ -9,3 +9,7 @@ __pycache__/
 log*
 .nfs*
 sanity_test/
+/result
+/log
+command.md
+validate.py
