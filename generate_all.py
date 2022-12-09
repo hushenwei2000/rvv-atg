@@ -18,8 +18,8 @@ floatingpoint = ['vfadd']
 permute = ['vmre', 'vslide1', 'vmv', 'vrgather', 'vrgatherei16', 'vfslide', 'vcompress', 'vslide']
 
 fixpoint = ['vaadd', 'vaaddu', 'vasub', 'vasubu', 'vnclip', 'vnclipu', 'vsmul', 'vssra', 'vssrl']
-
-loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
+#'vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16'
+loadstore = ['vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
 
 all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=permute, fixpoint=fixpoint, loadstore=loadstore)
 
@@ -69,7 +69,7 @@ def runcommand_floatingpoint(ins):
 
 def runcommand_loadstore(ins):
     # os.system('python run.py -t l -i %s' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 4.0' % ins)
+    os.system('python run.py -t l -i %s  --vsew 64 --lmul 0.5' % ins)
     #os.system('python run.py -t l -i %s --vsew 16 --lmul 0.5' % ins)
     # os.system('python run.py -t l -i %s --vsew 64 --lmul 2' % ins)
     # os.system('python run.py -t l -i %s --vsew 32 --lmul 0.5' % ins)
@@ -85,7 +85,7 @@ def runcommand_mask(ins):
     # os.system('python run.py -t m -i %s --vsew 64 --lmul 0.25' % ins)
     # os.system('python run.py -t m -i %s --vsew 64 --lmul 0.125' % ins)
     # os.system('python run.py -t m -i %s --vsew 64 --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
+    os.system('python run.py -t m -i %s' % ins)
     # os.system('python run.py -t m -i %s --vsew 32 --lmul 0.5' % ins)
     # os.system('python run.py -t m -i %s --vsew 32 --lmul 2' % ins)
     # os.system('python run.py -t m -i %s --vsew 16 --lmul 0.5' % ins)

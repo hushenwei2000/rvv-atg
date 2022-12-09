@@ -34,13 +34,13 @@ def parse_args(cwd):
     parser.add_argument("--lmul", type=float, default="1",
                         help="Vector Register Grouping Multiplier: \
                         0.125, 0.25, 0.5, 1(default), 2, 4, 8")
-    parser.add_argument("--vta", type=int, default="1",
+    parser.add_argument("--vta", type=int, default="0",
                         help="Vector Tail Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
-    parser.add_argument("--vma", type=float, default="1",
+    parser.add_argument("--vma", type=float, default="0",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
-    parser.add_argument("--masked", type=str, default="False",
+    parser.add_argument("--masked", type=str, default="True",
                         help="If enable masked")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         default=False,
@@ -224,6 +224,8 @@ def main():
     os.environ["RVV_ATG_VSEW"] = str(args.vsew)
     os.environ["RVV_ATG_LMUL"] = str(args.lmul)
     os.environ["RVV_ATG_MASKED"] = str(args.masked)
+    os.environ["RVV_ATG_VMA"] = str(args.vma)
+    os.environ["RVV_ATG_VTA"] = str(args.vta)
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

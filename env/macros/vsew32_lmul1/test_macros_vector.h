@@ -1536,16 +1536,6 @@ test_ ## testnum: \
     inst x14, v14; \
   )
 
-#define TEST_VPOPC_OP_64( testnum, inst, result, vm_addr ) \
-    VSET_VSEW_4AVL \
-    la  x2, vm_addr; \
-    vle64.v v14, (x2); \
-    li x7, result; \
-    li TESTNUM, testnum; \
-    inst x14, v14; \
-    VSET_VSEW \
-    bne x14, x7, fail;
-
 #define TEST_VMV_OP( testnum, result ) \
     li TESTNUM, testnum; \
     li x7, MASK_VSEW(result); \

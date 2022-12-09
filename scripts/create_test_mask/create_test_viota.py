@@ -8,6 +8,14 @@ instr = 'viota'
 
 
 def generate_walking_answer_seg_viota(element_num, vlen, vsew, f):
+    # mask_value_stripped = mask_data_ending[:int((element_num+1)/32)] # Each mask value is 32bits
+    # mask_value_bitsvector = [] # 0,0,0,1,1,0, etc.
+    # mask = 0b1
+    # for i in range (element_num + 1):
+    #     mask_value_bitsvector.append((int(mask_data_ending[int(i/32)], 16) & mask) >> i)
+    #     mask = mask << 1
+    # vma = int(float(os.environ['RVV_ATG_VMA']))
+    # print(mask_value_bitsvector)
     # Generate prefix-sum of 1 for WalkingOnes
     for i in range(element_num + 1):
         print("walking_ones_ans%d:" % i, file=f)
