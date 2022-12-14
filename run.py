@@ -34,10 +34,10 @@ def parse_args(cwd):
     parser.add_argument("--lmul", type=float, default="1",
                         help="Vector Register Grouping Multiplier: \
                         0.125, 0.25, 0.5, 1(default), 2, 4, 8")
-    parser.add_argument("--vta", type=int, default="1",
+    parser.add_argument("--vta", type=int, default="0",
                         help="Vector Tail Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
-    parser.add_argument("--vma", type=float, default="1",
+    parser.add_argument("--vma", type=float, default="0",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
