@@ -15,7 +15,7 @@ def create_empty_test_vmadd(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_VV_OP_WITH_INIT( 1, vmadd.vv, 2, 1, 1 );", file=f)
+    print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
     print_common_ending(f)
@@ -44,11 +44,11 @@ def create_first_test_vmadd(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     # Generate macros to test diffrent register
     generate_macros_muladd(f, lmul)
 
-    # Generate tests
-    generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul, vsew)
+    # Generate macros to test diffrent register
+    vv_num_tests = generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, vv_num_tests, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

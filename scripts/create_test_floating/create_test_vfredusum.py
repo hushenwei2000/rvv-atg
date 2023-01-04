@@ -57,7 +57,7 @@ def generate_tests(f, vsew, lmul):
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -143,10 +143,10 @@ def create_first_test_vfredusum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
+    generate_macros_vfred(f, vsew, lmul, test_vv = True, test_vf = False)
 
     # Generate tests
-    generate_tests(f, vsew, lmul)
+    generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
 
     # Common const information
     print_ending(f)

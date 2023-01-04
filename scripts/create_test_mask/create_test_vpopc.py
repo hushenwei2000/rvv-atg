@@ -45,10 +45,20 @@ def generate_walking_data_seg_vpopc(f, vsew, vlen):
             print(".dword\t0x0", file=f)
         n = n + 1
 
-
 def generate_macros_vpopc(f, vsew, lmul):
-    lmul = 1 if lmul < 1 else int(lmul)
-    # generate the macro， 测试v1-v32源寄存器
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    # generate the macro
+    print("#define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \\\n\
+    TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
+        VSET_VSEW_4AVL \\\n\
+        la  x2, vm_addr; \\\n\
+        vle32.v v14, (x2); \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+        inst x14, v14%s; "%(", v0.t" if masked else "") + " \\\n\
+    )", file=f)
     for i in range(1, 32):
         if i == 7 or i  == 16 or i == 3 or i % lmul != 0:
             continue
@@ -57,8 +67,9 @@ def generate_macros_vpopc(f, vsew, lmul):
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
                 vle%d.v v%d, (x2); \\\n\
-                inst x14, v%d; \\\n\
-            )"%(i, vsew, i, i), file=f)
+                %s "%(i, vsew, i, "la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                inst x14, v%d%s; "%(i, (", v0.t" if masked else "")) + " \\\n\
+            )", file=f)
     
     for i in range(1, 32):
         if i == 7 or i  == 16 or i == 3 or i % lmul != 0:
@@ -68,10 +79,9 @@ def generate_macros_vpopc(f, vsew, lmul):
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
                 vle%d.v v16, (x2); \\\n\
-                inst x%d, v16; \\\n\
-            )"%(i, i, vsew, i), file=f)
-
-
+                %s "%(i, i, vsew, "la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                inst x%d, v16%s; "%(i, (", v0.t" if masked else "")) + " \\\n\
+            )", file=f)
 
 def generate_tests_vpopc(f, vlen, vsew, lmul):
     num_test = 1
@@ -115,7 +125,7 @@ def print_ending_vpopc(vlen, vsew, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -128,7 +138,8 @@ def print_ending_vpopc(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_vpopc(f, vsew, vlen)
+    generate_walking_data_seg_vpopc(f, vsew)
+    print_mask_origin_data_ending(f)
 
     print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\

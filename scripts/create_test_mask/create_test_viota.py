@@ -8,6 +8,14 @@ instr = 'viota'
 
 
 def generate_walking_answer_seg_viota(element_num, vlen, vsew, f):
+    # mask_value_stripped = mask_data_ending[:int((element_num+1)/32)] # Each mask value is 32bits
+    # mask_value_bitsvector = [] # 0,0,0,1,1,0, etc.
+    # mask = 0b1
+    # for i in range (element_num + 1):
+    #     mask_value_bitsvector.append((int(mask_data_ending[int(i/32)], 16) & mask) >> i)
+    #     mask = mask << 1
+    # vma = int(float(os.environ['RVV_ATG_VMA']))
+    # print(mask_value_bitsvector)
     # Generate prefix-sum of 1 for WalkingOnes
     for i in range(element_num + 1):
         print("walking_ones_ans%d:" % i, file=f)
@@ -40,7 +48,7 @@ def generate_macros_viota(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， 测试v1-v32源寄存器
     print("#define TEST_VIOTA_OP_rs2_8( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -49,7 +57,7 @@ def generate_macros_viota(f, vsew, lmul):
         inst v16, v8; \\\n\
         )"%vsew, file=f)
     print("#define TEST_VIOTA_OP_rs2_16( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -62,7 +70,7 @@ def generate_macros_viota(f, vsew, lmul):
         if n == 8 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
             continue
         print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -75,7 +83,7 @@ def generate_macros_viota(f, vsew, lmul):
         if n % lmul != 0:
             continue
         print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v%d, result_addr, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         la  x7, result_addr; \\\n\
@@ -123,7 +131,7 @@ def print_ending_viota(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

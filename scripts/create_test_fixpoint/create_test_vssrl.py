@@ -46,10 +46,10 @@ def create_first_test_vssrl(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = True)
+    num_tests_tuple = generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi=True)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, num_tests_tuple, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

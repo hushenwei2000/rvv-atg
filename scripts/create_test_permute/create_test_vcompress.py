@@ -114,9 +114,8 @@ def generate_macros_vcompress(f, vsew, lmul):
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0 or (0 >= i and i + lmul - 1 >= 0):  # 15 is used for TEST_CASE_LOOP
             continue
         print("#define TEST_VCOMPRESS_OP_rd_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v%d, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v%d, result_addr, \\\n\
             VSET_VSEW_4AVL \\\n\
-            la  x7, result_addr; \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
@@ -131,9 +130,8 @@ def generate_macros_vcompress(f, vsew, lmul):
         if i == 0 or i == 8 or i == 16 or i == 15 or (8 + lmul - 1 >= i and i + lmul - 1 >= 8) or (i >= 16 and 16 + lmul - 1 >= i):  # 15 is used for TEST_CASE_LOOP; require_noover for vmseq and vcompress
             continue
         print("#define TEST_VCOMPRESS_OP_rs1_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
             VSET_VSEW_4AVL \\\n\
-            la  x7, result_addr; \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
@@ -148,9 +146,8 @@ def generate_macros_vcompress(f, vsew, lmul):
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0:  # 15 is used for TEST_CASE_LOOP
             continue
         print("#define TEST_VCOMPRESS_OP_rs2_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
             VSET_VSEW_4AVL \\\n\
-            la  x7, result_addr; \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
             la  x3, vm_addr; \\\n\
@@ -181,7 +178,7 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
             no = no + 1
 
     #################################################################################################################################
-    # generate registers，覆盖不同寄存器
+    # generate registers
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s Tests (different register)" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
@@ -215,7 +212,7 @@ def print_ending_vcompress(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

@@ -16,10 +16,10 @@ def create_empty_test_vwredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_W_VV_OP_WITH_INIT( 1, vwredsum.vs, 2, 1, 1 );", file=f)
+    print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -43,13 +43,13 @@ def create_first_test_vwredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vwmacc(f, lmul)
+    generate_macros_vwred(f, lmul)
 
     # Generate tests
-    generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, vsew, instr_suffix='vs', generate_vxrv=False)
+    generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vs', generate_vxrv=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

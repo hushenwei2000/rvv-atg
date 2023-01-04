@@ -1,3 +1,4 @@
+
 import argparse
 from ast import arg
 import os
@@ -40,6 +41,8 @@ def parse_args(cwd):
     parser.add_argument("--vma", type=float, default="0",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
+    parser.add_argument("--masked", type=str, default="True",
+                        help="If enable masked")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                         default=False,
                         help="Verbose Logging")
@@ -59,6 +62,14 @@ def parse_args(cwd):
             args.flen = args.vsew
         else:
             args.flen = 32
+    if args.vma == 0:
+        args.vma = False
+    else:
+        args.vma = True
+    if args.vta == 0:
+        args.vta = False
+    else:
+        args.vta = True
     return args
 
 
@@ -212,6 +223,12 @@ def main():
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, args.lmul, cwd, output_dir)
     logging.info("RVV-ATG: instr: %s, vlen: %d, vsew: %d, lmul: %f"%(args.i, args.vlen, args.vsew, args.lmul))
+    os.environ["RVV_ATG_VLEN"] = str(args.vlen)
+    os.environ["RVV_ATG_VSEW"] = str(args.vsew)
+    os.environ["RVV_ATG_LMUL"] = str(args.lmul)
+    os.environ["RVV_ATG_MASKED"] = str(args.masked)
+    os.environ["RVV_ATG_VMA"] = str(args.vma)
+    os.environ["RVV_ATG_VTA"] = str(args.vta)
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

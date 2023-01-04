@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vv, generate_tests_vvvxvi
+from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vred, generate_macros_vvvxvi, generate_tests_vred, generate_tests_vvvxvi
 import re
 
 instr = 'vredsum'
@@ -16,10 +16,10 @@ def create_empty_test_vredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_VV_OP( 1, vredsum.vs, 2, 1, 1 );", file=f)
+    print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -43,13 +43,13 @@ def create_first_test_vredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vv(f, lmul)
+    generate_macros_vred(f, lmul)
 
     # Generate tests
-    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, vsew, instr_suffix='vs', generate_vx=False, generate_vi=False)
+    generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_withmask_ending(f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

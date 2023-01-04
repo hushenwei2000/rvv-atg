@@ -28,22 +28,20 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
     elif lmul == 0.125:
         lmul = 'f8'
     print("#define TEST_VMRE1_OP( testnum, inst, result_base, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
             li x1, %d;"%(num_of_elements) + " \\\n\
             vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
             vl8re%d.v v8, (x1); "%vsew + " \\\n\
-            la x7, result_base; \\\n\
             inst v16, v8; \\\n\
         ) ", file=f)
     
     print("#define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_base1, \\\n\
             li x1, %d;"%(num_of_elements*2) + " \\\n\
             vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
             vl8re%d.v v8, (x1); "%vsew + " \\\n\
-            la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \\\n\
@@ -54,12 +52,11 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
 
     print('', file=f)
     print("#define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_base1, \\\n\
             li x1, %d;"%(num_of_elements*4) + " \\\n\
             vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
             vl8re%d.v v8, (x1); "%vsew + " \\\n\
-            la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \\\n\
@@ -70,12 +67,11 @@ def generate_macros_vmre(f, vlen, vsew, lmul):
 
     print('', file=f)
     print("#define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x7, \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_base1, \\\n\
             li x1, %d;"%(num_of_elements*8) + " \\\n\
             vsetvli x31, x1, e%d, m%s, tu, mu;"%(vsew, lmul) + " \\\n\
             la  x1, base; \\\n\
             vl8re%d.v v8, (x1); "%vsew + " \\\n\
-            la x7, result_base1; \\\n\
             inst v16, v8; \\\n\
         ) \\", file=f)
     print("        TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \\\n\
@@ -121,7 +117,7 @@ def generate_dat_seg_vmre(f, vlen, lmul, vsew):
 def print_ending_vmre(f, vlen, lmul, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\

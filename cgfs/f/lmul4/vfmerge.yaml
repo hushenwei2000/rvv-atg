@@ -6,7 +6,7 @@ vfmerge:
     rs1:
       <<: *f_quard_regs
     rd: 
-      <<: *v_octant_regs
+      <<: *v_quard_regs
     val_comb:
       abstract_comb:
         'ibm_b1(vsew, vsew, "vfmerge", 2, rvv_sew = vsew)': 0

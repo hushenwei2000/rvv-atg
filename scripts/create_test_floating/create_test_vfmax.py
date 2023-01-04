@@ -24,7 +24,7 @@ def extract_operands(f, rpt_path):
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -109,17 +109,17 @@ def create_first_test_vfmax(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     # Common header files
     print_common_header(instr, f)
 
+    # Generate macros to test diffrent register
+    generate_macros(f, vsew, lmul)
+
     # Extract operands
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f, vsew, lmul)
-
-    # Generate tests
-    generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
+    num_tests_tuple = generate_tests(instr, f, vsew, lmul, test_vv = True, test_vf = True)
 
     # Common const information
-    print_ending(f)
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

@@ -16,7 +16,7 @@ def create_empty_test_vwmul(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_W_VV_OP( 1, vwmul.vv, 2, 1, 1 );", file=f)
+    print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
     print_common_ending(f)
@@ -46,10 +46,10 @@ def create_first_test_vwmul(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
     generate_macros_vw(f, lmul)
 
     # Generate tests
-    generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, vsew, generate_wvwx=False)
+    num_tests_tuple = generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, generate_wvwx=False)
 
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_wvwx=False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

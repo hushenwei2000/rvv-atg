@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vv, generate_tests_vvvxvi
+from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vvvxvi, generate_tests_vvvxvi
 import re
 
 instr = 'vor'
@@ -16,7 +16,7 @@ def create_empty_test_vor(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_VV_OP( 1, vor.vv, 2, 1, 1 );", file=f)
+    print("  TEST_VV_OP_NOUSE( 1, vadd.vv, 2, 1, 1 );", file=f)
 
     # Common const information
     print_common_ending(f)
@@ -43,12 +43,13 @@ def create_first_test_vor(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path
     rs1_val, rs2_val = extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros_vv(f, lmul)
+    generate_macros_vvvxvi(f, lmul)
 
     # Generate tests
-    generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, vsew, generate_vx=True, generate_vi=True)
+    num_tests_tuple = generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul)
+
     # Common const information
-    print_common_ending(f)
+    print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, num_tests_tuple, vsew, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

@@ -19,6 +19,7 @@
 #define VSET_VSEW_4AVL vsetvli x31, x0, e16, m8, tu, mu;
 #define VSET_DOUBLE_VSEW vsetivli x31, 1, e32, m8, tu, mu;
 #define VSET_CONST_VSEW(eew_num) vsetivli x31, ##eew_num, m8, tu, mu;
+#define VSET_DOUBLE_VSEW_4AVL vsetvli x31, x0, e32, m8, tu, mu;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -231,7 +232,8 @@ test_ ## testnum: \
     code; \
     csrr x31, vstart; \
     csrr x30, vl; \
-    vle16.v v8, (correctval_addr_reg); \
+    la x7, correctval_addr_reg; \
+    vle16.v v8, (x7); \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
@@ -241,6 +243,24 @@ test_ ## testnum: \
     vslidedown.vi v8, v8, 1; \
     bne x31, x30, 1b; \
     VSET_VSEW; 
+
+#define TEST_CASE_LOOP_W( testnum, testreg, correctval_addr_reg, code...) \
+test_ ## testnum: \
+    code; \
+    la x7, correctval_addr_reg; \
+    vle32.v v8, (x7); \
+    li TESTNUM, testnum; \
+    VSET_DOUBLE_VSEW_4AVL \
+    csrr x31, vstart; \
+    csrr x30, vl; \
+1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    VMVXS_AND_MASK_VSEW( x7, v8 ) \
+    bne x14, x7, fail; \
+    addi x31, x31, 1; \
+    vslidedown.vi testreg, testreg, 1; \
+    vslidedown.vi v8, v8, 1; \
+    bne x31, x30, 1b; \
+    VSET_VSEW_4AVL; 
 
 #define TEST_CASE_LOOP_CONTINUE( testnum, testreg, correctval_addr_reg, code...) \
     code; \
@@ -531,14 +551,6 @@ test_ ## testnum: \
 // Tests for instructions with vector-vector operand
 //-----------------------------------------------------------------------
 
-#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v24, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v16, x7; \
-    li x7, MASK_VSEW(val1); \
-    vmv.v.x v8, x7; \
-    inst v24, v16, v8; \
-  )
 
 #define TEST_AVG_VV_OP( testnum, inst, result00, result01, result10, result11, rs1_val, rs2_val ) \
   TEST_CASE_AVG_VV( testnum, inst, v16, v24, result00, result01, result10, result11, \
@@ -581,13 +593,6 @@ test_ ## testnum: \
     inst v24, v8, v16; \
   )
 
-#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    li x1, MASK_XLEN(val1); \
-    inst v16, v8, x1; \
-  )
 
 #define TEST_AVG_VX_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VX( testnum, inst, v24, v8, result00, result01, result10, result11, \
@@ -627,12 +632,6 @@ test_ ## testnum: \
     inst v24, v8, x1, v0; \
   )
 
-#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \
-  TEST_CASE( testnum, v16, result, \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v8, x7; \
-    inst v16, v8, SEXT_IMM(val1); \
-  )
 
 #define TEST_AVG_VI_OP( testnum, inst, result00, result01, result10, result11, val1, val2 ) \
   TEST_CASE_AVG_VI( testnum, inst, v16, result00, result01, result10, result11, val2, \
@@ -1468,7 +1467,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
@@ -1478,7 +1477,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VID_OP( testnum, inst, result_addr, src1_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
     la  x1, src1_addr; \
     la  x7, result_addr; \
@@ -1498,9 +1497,8 @@ test_ ## testnum: \
   )
 
 #define TEST_VCOMPRESS_OP( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
+  TEST_CASE_LOOP( testnum, v16, src_addr, \
     VSET_VSEW_4AVL \
-    la  x7, result_addr; \
     la  x1, src_addr; \
     la  x2, rd_addr; \
     la  x3, vm_addr; \
@@ -1570,100 +1568,17 @@ test_ ## testnum: \
     fcvt.w.s x7, f7; \
     bne x8, x7, fail;
 
-// #define TEST_VMRE1_OP( testnum, inst, result_base, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re16.v v8, (x1); \
-//     la x7, result_base; \
-//     inst v16, v8; \
-//   )
 
-// #define TEST_VMRE2_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re16.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v17, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
 
-// #define TEST_VMRE4_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re16.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v19, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
 
-// #define TEST_VMRE8_OP( testnum, inst, result_base1, result_base2, base ) \
-//   TEST_CASE_LOOP( testnum, v16, x7, \
-//     VSET_VSEW_4AVL \
-//     la  x1, base; \
-//     vl8re16.v v8, (x1); \
-//     la x7, result_base1; \
-//     inst v16, v8; \
-//   ) \
-//   TEST_CASE_LOOP_CONTINUE( testnum, v23, x7, \
-//     VSET_VSEW_4AVL \
-//     la x7, result_base2; \
-//   )
 
-#define TEST_VSLIDE_VX_OP( testnum, inst, result_base, rd_base, offset, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vle16.v v8, (x1); \
-    la  x1, rd_base; \
-    vle16.v v16, (x1); \
-    la  x7, result_base; \
-    li x1, offset; \
-    inst v16, v8, x1; \
-  )
-
-#define TEST_VSLIDE1_VX_OP( testnum, inst, result_base, rd_base, rs1, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vle16.v v8, (x1); \
-    la  x1, rd_base; \
-    vle16.v v16, (x1); \
-    la  x7, result_base; \
-    li x1, rs1; \
-    inst v16, v8, x1; \
-  )
-
-#define TEST_VSLIDE_VI_OP( testnum, inst, result_base, rd_base, offset_imm, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vle16.v v8, (x1); \
-    la  x1, rd_base; \
-    vle16.v v16, (x1); \
-    la  x7, result_base; \
-    inst v16, v8, offset_imm; \
-  )
-
- #define TEST_VSLIDE_VF_OP(testnum, inst, flags, result_base, rd_base, f_rs1_base, base ) \
-  TEST_CASE_LOOP( testnum, v16, x7, \
-    VSET_VSEW_4AVL \
-    la  x1, base; \
-    vle16.v v8, (x1); \
-    la  x1, rd_base; \
-    vle16.v v16, (x1); \
-    la x7, result_base; \
-    la x1, f_rs1_base; \
-    flw f1, 0(x1); \
-    inst v16, v8, f1; \
+#define TEST_VV_OP_NOUSE( testnum, inst, result, val2, val1 ) \
+  TEST_CASE( testnum, v24, result, \
+    li x7, MASK_VSEW(val2); \
+    vmv.v.x v16, x7; \
+    li x7, MASK_VSEW(val1); \
+    vmv.v.x v8, x7; \
+    inst v24, v16, v8; \
   )
 
 //-----------------------------------------------------------------------

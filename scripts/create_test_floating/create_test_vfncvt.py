@@ -1,6 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
+from scripts.create_test_floating.create_test_common import *
 import re
 
 instr = 'vfncvt'
@@ -20,82 +21,40 @@ def generate_fdat_seg(f):
         print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
 
 
-def generate_macros(f):
-    for n in range(1,32):
-        if n == 14:
+def generate_macros_vfncvt(f, lmul):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    print("#undef TEST_FP_N_V_OP \n\
+#define TEST_FP_N_V_OP( testnum, inst, flags, result, val1 ) \\\n\
+    TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8,     \\\n\
+        VSET_VSEW_4AVL \\\n\
+        la x7, val1; \\\n\
+        vle%d.v v8, (x7);"%vsew*2 + " \\\n\
+        inst v24, v8; \\\n\
+    )", file=f)
+    for n in range(1, 32):
+        if n % lmul != 0 or n == 24:
             continue
-        print("#define TEST_N_FP_INT_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_N_FP_INT( testnum, v14, flags, __riscv_vsew, result, val, \\\n\
-                fld f0, 0(a0); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vfmv.s.f v%d, f0; "%n + "\\\n\
-                VSET_VSEW \\\n\
-                inst v14, v%d; "%n + "\\\n\
+        print("#define TEST_FP_N_V_OP_rs1_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8, \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la x7, val1; \\\n\
+                vle%d.v v%d, (x7);"%(vsew*2, n) + " \\\n\
+                inst v24, v%d; "%n + " \\\n\
             )", file = f)
 
-    for n in range(1,32):
-        if n == 2:
+    for n in range(1, 32):
+        if n % lmul != 0 or n == 8:
             continue
-        print("#define TEST_N_FP_INT_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_N_FP_INT( testnum, v%d, flags, __riscv_vsew, result, val,"%n + "   \\\n\
-                fld f0, 0(a0); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vfmv.s.f v2, f0; \\\n\
-                VSET_VSEW \\\n\
-                inst v%d, v2; "%n + "\\\n\
+        print("#define TEST_FP_N_V_OP_rd_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d, flags, result, v8, "%n + " \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la x7, val1; \\\n\
+                vle%d.v v8, (x7);"%(vsew*2) + " \\\n\
+                inst v%d, v8; "%n + " \\\n\
             )", file = f)
 
-    for n in range(1,32):
-        if n == 14:
-            continue
-        print("#define TEST_N_INT_FP_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_INT_FP( testnum, v14, flags, result, val, \\\n\
-                li x7, MASK_DOUBLE_VSEW(val); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vmv.v.x v%d, x7;   "%n + "\\\n\
-                VSET_VSEW \\\n\
-                flw f2, 0(a0); \\\n\
-                inst v14, v%d; "%n + "\\\n\
-            )", file = f)
-
-    for n in range(1,32):
-        if n == 2:
-            continue
-        print("#define TEST_N_INT_FP_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_INT_FP( testnum, v%d, flags, result, val, "%n + " \\\n\
-                li x7, MASK_DOUBLE_VSEW(val); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vmv.v.x v2, x7;  \\\n\
-                VSET_VSEW \\\n\
-                flw f2, 0(a0); \\\n\
-                inst v%d, v2; "%n + "\\\n\
-            )", file = f)
-
-    for n in range(1,32):
-        if n == 14:
-            continue
-        print("#define TEST_N_FP_1OPERAND_OP_rs1_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_N_FP( testnum, v14, flags, result, val, 0, \\\n\
-                fld f0, 0(a0); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vfmv.s.f v%d, f0; "%n + "\\\n\
-                VSET_VSEW \\\n\
-                flw f2, 8(a0); \\\n\
-                inst v14, v%d; "%n + "\\\n\
-            )", file = f)
-
-    for n in range(1,32):
-        if n == 2:
-            continue
-        print("#define TEST_N_FP_1OPERAND_OP_rd_%d( testnum, inst, flags, result, val )"%n + " \\\n\
-            TEST_CASE_N_FP( testnum, v%d, flags, result, val, 0, "%n + "\\\n\
-                fld f0, 0(a0); \\\n\
-                VSET_DOUBLE_VSEW \\\n\
-                vfmv.s.f v2, f0; \\\n\
-                VSET_VSEW \\\n\
-                flw f2, 8(a0); \\\n\
-                inst v%d, v2; "%n + "\\\n\
-            )", file = f)
 
 
 def extract_operands(f, rpt_path):
@@ -103,188 +62,104 @@ def extract_operands(f, rpt_path):
     return 0
 
 
-def generate_tests(f, rs1_val, rs2_val):    
-    n = 1
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.xu.f.w (double-width float to unsigned integer) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):        
-        print("TEST_N_FP_INT_OP( %d,  %s.xu.f.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
+def generate_tests_vfncvt(instr, f, lmul):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    global rs1_val, rs2_val, rs1_val_64, rs2_val_64
+    if vsew == 32:
+        rs1_val = rs1_val_64
+        rs2_val = rs2_val_64
+    rs1_val = list(set(rs1_val))
+    rs2_val = list(set(rs2_val))
 
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.x.f.w (double-width float to signed integer) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
-        print("TEST_N_FP_INT_OP( %d,  %s.x.f.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.rtz.xu.f.w (double-width float to signed integer truncating) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
-        print("TEST_N_FP_INT_OP( %d,  %s.rtz.xu.f.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.rtz.x.f.w (double-width float to signed integer truncating) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
-        print("TEST_N_FP_INT_OP( %d,  %s.rtz.x.f.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.xu.w (double-width unsigned integer to float) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
-        print("TEST_N_INT_FP_OP( %d,  %s.f.xu.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.x.w (double-width signed integer to float) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):        
-        print("TEST_N_INT_FP_OP( %d,  %s.f.x.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.f.w (single-width float to double-width float) tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):        
-        print("TEST_N_FP_1OPERAND_OP( %d,  %s.f.f.w, 0xff100,               5201314,        %s );"%(n, instr, rs1_val[i]), file=f)
-        n +=1
-
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.xu.f.w (double-width float to unsigned integer) tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_FP_INT_OP_rd_%d( "%k+str(n)+",  %s.xu.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-        
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_FP_INT_OP_rs1_%d( "%k+str(n)+",  %s.xu.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    n = 0
+    
+    num_elem = int((vlen * lmul / vsew))
+    if num_elem == 0:
+        return 0
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    step_bytes = int(vlen * lmul / 8)
+    step_bytes_double = step_bytes * 2
     
     print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.x.f.w (double-width float to signed integer) tests (different register)",file=f)
+    print("  # vfcvt Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_FP_INT_OP_rd_%d( "%k+str(n)+",  %s.x.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-        
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_FP_INT_OP_rs1_%d( "%k+str(n)+",  %s.x.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
-
+    # for i in range(loop_num):
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    
+    # for i in range(loop_num):
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     n += 1
+    
     print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.rtz.xu.f.w (double-width float to unsigned integer truncating) tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_FP_INT_OP_rd_%d( "%k+str(n)+",  %s.rtz.xu.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-        
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_FP_INT_OP_rs1_%d( "%k+str(n)+",  %s.rtz.xu.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.rtz.x.f.w (double-width float to signed integer truncating) tests (different register)",file=f)
+    print("  # vfcvt Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_FP_INT_OP_rd_%d( "%k+str(n)+",  %s.rtz.x.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-        
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_FP_INT_OP_rs1_%d( "%k+str(n)+",  %s.rtz.x.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
 
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.xu.w (double-width unsigned integer to float) tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)   
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue       
-        print("  TEST_N_INT_FP_OP_rd_%d( "%k+str(n)+",  %s.f.xu.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-        
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_INT_FP_OP_rs1_%d( "%k+str(n)+",  %s.f.xu.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1  
+        if k % (2*lmul) == 0 and k != 8:
+            for i in range(loop_num):
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+            for i in range(loop_num):
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                n += 1
 
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.x.w (double-width signed integer to float) tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)   
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_INT_FP_OP_rd_%d( "%k+str(n)+",  %s.f.x.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_INT_FP_OP_rs1_%d( "%k+str(n)+",  %s.f.x.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfncvt.f.f.w (single-width float to double-width float) tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
-    for i in range(len(rs1_val)):     
-        k = i%31+1
-        if k == 2:
-            continue        
-        print("  TEST_N_FP_1OPERAND_OP_rd_%d( "%k+str(n)+",  %s.f.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n+=1
-
-        k = i%31+1
-        if k == 14:
-            continue        
-        print("  TEST_N_FP_1OPERAND_OP_rs1_%d( "%k+str(n)+",  %s.f.f.w, 0xff100, "%instr +"5201314"+ ", " +rs1_val[i]+ " );",file=f)
-        n +=1
+        k = i % 31 + 1
+        if k % lmul != 0 or k == 8:
+            continue
+        for i in range(loop_num):
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+        for i in range(loop_num):
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            n += 1
+    return (n, 0)
 
 def print_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
     \n\
-    TEST_VV_OP(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
     \n\
@@ -373,13 +248,13 @@ def create_first_test_vfncvt(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
-    generate_macros(f)
+    generate_macros_vfncvt(f, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    num_tests_tuple = generate_tests_vfncvt(instr, f, lmul)
 
     # Common const information
-    print_ending(f)
+    print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs2_val, num_tests_tuple, vsew, f, is_narrow = True)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

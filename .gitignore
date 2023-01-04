@@ -9,3 +9,4 @@ __pycache__/
 log*
 .nfs*
 .DS_Store
+sanity_test/
