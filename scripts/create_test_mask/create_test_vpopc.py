@@ -138,7 +138,7 @@ def print_ending_vpopc(vlen, vsew, f):
     TEST_DATA\n\
     ", file=f)
 
-    generate_walking_data_seg_vpopc(f, vsew)
+    generate_walking_data_seg_vpopc(f, vsew, vlen)
     print_mask_origin_data_ending(f)
 
     print("signature_x12_0:\n\
