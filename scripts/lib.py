@@ -2,6 +2,7 @@ from datetime import date
 import logging
 import os
 import subprocess
+import re
 
 from scripts.import_test_functions import *
 
@@ -123,3 +124,32 @@ def check_spikelog(dir, instr):
   log = "%s/%s"%(dir, 'spike_%s_final.log'%instr)
   if os.system("grep FAIL %s"%log) == 0:
     print("Generated file is WRONG! : %s"%instr)
+
+def rewrite_macro_vtavma(vsew, lmul, vta, vma):
+  if lmul < 1:
+      lmul = str(lmul).replace(".", "")
+  else:
+      lmul = str(int(lmul))
+  print("vta, vma ", vta, vma)
+  new_vtavma = '%s, %s'%('ta' if vta else 'tu', 'ma' if vma else 'mu')
+  print("new_vtavma: ", new_vtavma)
+
+  f_path_1 = os.environ["RVV_ATG_ROOT"] + '/env/macros/vsew%d_lmul%s/test_macros_vector.h'%(vsew, lmul)
+  f1 = open(f_path_1, 'r')
+  alllines1 = f1.readlines()
+  f1.close()
+  f1 = open(f_path_1,'w+')
+  for eachline in alllines1:
+      a = re.sub('t[au], m[au]', new_vtavma, eachline)
+      f1.writelines(a)
+  f1.close()
+
+  f_path_2 = os.environ["RVV_ATG_ROOT"] + '/env/macros/vsew%d_lmul%s_nofail/test_macros_vector.h'%(vsew, lmul)
+  f2 = open(f_path_2, 'r')
+  alllines2 = f2.readlines()
+  f2.close()
+  f2 = open(f_path_2,'w+')
+  for eachline in alllines2:
+      a = re.sub('t[au], m[au]', new_vtavma, eachline)
+      f2.writelines(a)
+  f2.close()

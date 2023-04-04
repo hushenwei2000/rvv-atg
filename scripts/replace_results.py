@@ -201,8 +201,6 @@ def replace_results_spike_new(instr, first_test, spike_log):
         rdLineList = []
         index = 0
         matchVLEPattern = re.compile("vle\d+.v\s+%s"%regList[index])
-        print(index)
-        print(regList[index])
         while 1:
             line = file.readline()
             if not line:
@@ -215,14 +213,10 @@ def replace_results_spike_new(instr, first_test, spike_log):
             else:
                 a = matchVLEPattern.search(line)
                 if a is not None:
-                    print(index)
-                    print(regList[index])
                     index = index + 1
                     if (index < len(regList)):
                         matchVLEPattern = re.compile("vle\d+.v\s+%s"%regList[index])
-                    print("next: ", index)
-                    if (index < len(regList)):
-                        print("next: ", regList[index])
+                    # if (index < len(regList)):
                     mark = True
         print("len rdLinelist=%d"%len(rdLineList))
     file.close()
