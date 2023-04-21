@@ -181,33 +181,63 @@ def generate_dat_seg_vslide(f, vlen, vsew):
     global rd_val
     global vma
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    vma = os.environ["RVV_ATG_VMA"]
+    agnostic_type = int(os.environ['RVV_ATG_AGNOSTIC_TYPE'])
     print("rd_data:", file=f)
-    for i in range(num_elem):
-        print_data_width_prefix(f, vsew)
-        print("%d"%rd_val[i], file=f)
-    print("", file=f)
-    for i in range(num_group_walking):
-        # generate data
-        print("walking_data%d:" % i, file=f)
-        for j in range(num_elem):
+    if vma == "True" and agnostic_type == 1:
+        for i in range(num_elem):
             print_data_width_prefix(f, vsew)
-            print("%d"%walking_val_grouped[i][j], file=f)
+            print("%d"%rd_val[i], file=f)
         print("", file=f)
-        # generate answer
-        for k in range(num_elem + 1):
-            # Each Offset has a answer
-            print("walking_data%d_slideupans_offset_%d:" % (i, k), file=f)
-            for p in range(num_elem):
+        for i in range(num_group_walking):
+            # generate data
+            print("walking_data%d:" % i, file=f)
+            for j in range(num_elem):
                 print_data_width_prefix(f, vsew)
-                print("%d" % (rd_val[p] if (masked and get_mask_bit(p) == 0) else (rd_val[p] if p < k else walking_val_grouped[i][p - k])), file=f)
+                print("%d"%walking_val_grouped[i][j], file=f)
             print("", file=f)
-        for k in range(num_elem + 1):
-            # Each Offset has a answer
-            print("walking_data%d_slidedownans_offset_%d:" % (i, k), file=f)
-            for p in range(num_elem):
+            # generate answer
+            for k in range(num_elem + 1):
+                # Each Offset has a answer
+                print("walking_data%d_slideupans_offset_%d:" % (i, k), file=f)
+                for p in range(num_elem):
+                    print_data_width_prefix(f, vsew)
+                    print("%d" % (1 if (masked and get_mask_bit(p) == 0) else (rd_val[p] if p < k else walking_val_grouped[i][p - k])), file=f)
+                print("", file=f)
+            for k in range(num_elem + 1):
+                # Each Offset has a answer
+                print("walking_data%d_slidedownans_offset_%d:" % (i, k), file=f)
+                for p in range(num_elem):
+                    print_data_width_prefix(f, vsew)
+                    print("%d" % (1 if (masked and get_mask_bit(p) == 0) else (walking_val_grouped[i][p + k] if p + k < num_elem else 0)), file=f)
+                print("", file=f)
+    else:
+        for i in range(num_elem):
+            print_data_width_prefix(f, vsew)
+            print("%d"%rd_val[i], file=f)
+        print("", file=f)
+        for i in range(num_group_walking):
+            # generate data
+            print("walking_data%d:" % i, file=f)
+            for j in range(num_elem):
                 print_data_width_prefix(f, vsew)
-                print("%d" % (rd_val[p] if (masked and get_mask_bit(p) == 0) else (walking_val_grouped[i][p + k] if p + k < num_elem else 0)), file=f)
+                print("%d"%walking_val_grouped[i][j], file=f)
             print("", file=f)
+            # generate answer
+            for k in range(num_elem + 1):
+                # Each Offset has a answer
+                print("walking_data%d_slideupans_offset_%d:" % (i, k), file=f)
+                for p in range(num_elem):
+                    print_data_width_prefix(f, vsew)
+                    print("%d" % (rd_val[p] if (masked and get_mask_bit(p) == 0) else (rd_val[p] if p < k else walking_val_grouped[i][p - k])), file=f)
+                print("", file=f)
+            for k in range(num_elem + 1):
+                # Each Offset has a answer
+                print("walking_data%d_slidedownans_offset_%d:" % (i, k), file=f)
+                for p in range(num_elem):
+                    print_data_width_prefix(f, vsew)
+                    print("%d" % (rd_val[p] if (masked and get_mask_bit(p) == 0) else (walking_val_grouped[i][p + k] if p + k < num_elem else 0)), file=f)
+                print("", file=f)
 
 
 def print_ending_vslide(f, vlen, vsew):

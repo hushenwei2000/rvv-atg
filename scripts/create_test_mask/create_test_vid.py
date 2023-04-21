@@ -9,31 +9,58 @@ instr = 'vid'
 
 def generate_walking_answer_seg_vid(element_num, vlen, vsew, f):
     # Generate prefix-sum of 1 for WalkingOnes
-    for i in range(element_num + 1):
-        print("walking_ones_vid_ans%d:" % i, file=f)
-        vid = 0
-        for j in range(element_num):
-            print("\t", end="", file=f)
-            print_data_width_prefix(f, vsew)
-            if i != j + 1:
-                print("0x0", file=f)  # print(vd[j])
-            else:
-                print(j, file=f)
-        print("", file=f)
+    vma = os.environ["RVV_ATG_VMA"]
+    agnostic_type = int(os.environ['RVV_ATG_AGNOSTIC_TYPE'])
+    if vma == "True" and agnostic_type == 1:
+        for i in range(element_num + 1):
+            print("walking_ones_vid_ans%d:" % i, file=f)
+            vid = 0
+            for j in range(element_num):
+                print("\t", end="", file=f)
+                print_data_width_prefix(f, vsew)
+                if i != j + 1:
+                    print("0x1", file=f)  # print(vd[j])
+                else:
+                    print(j, file=f)
+            print("", file=f)
 
-    # Generate prefix-sum of 1 for WalkingZeros
-    for i in range(element_num + 1):
-        print("walking_zeros_vid_ans%d:" % i, file=f)
-        vid = 0
-        for j in range(element_num):
-            print("\t", end="", file=f)
-            print_data_width_prefix(f, vsew)
-            if i == j + 1:
-                print("0x0", file=f)  # print(vd[j])
-            else:
-                print(j, file=f)
-        print("", file=f)
-
+        # Generate prefix-sum of 1 for WalkingZeros
+        for i in range(element_num + 1):
+            print("walking_zeros_vid_ans%d:" % i, file=f)
+            vid = 0
+            for j in range(element_num):
+                print("\t", end="", file=f)
+                print_data_width_prefix(f, vsew)
+                if i == j + 1:
+                    print("0x1", file=f)  # print(vd[j])
+                else:
+                    print(j, file=f)
+            print("", file=f)
+    else:
+        for i in range(element_num + 1):
+            print("walking_ones_vid_ans%d:" % i, file=f)
+            vid = 0
+            for j in range(element_num):
+                print("\t", end="", file=f)
+                print_data_width_prefix(f, vsew)
+                if i != j + 1:
+                    print("0x0", file=f)  # print(vd[j])
+                else:
+                    print(j, file=f)
+            print("", file=f)
+    
+        # Generate prefix-sum of 1 for WalkingZeros
+        for i in range(element_num + 1):
+            print("walking_zeros_vid_ans%d:" % i, file=f)
+            vid = 0
+            for j in range(element_num):
+                print("\t", end="", file=f)
+                print_data_width_prefix(f, vsew)
+                if i == j + 1:
+                    print("0x0", file=f)  # print(vd[j])
+                else:
+                    print(j, file=f)
+            print("", file=f)
 
 def generate_macros_vid(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)

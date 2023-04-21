@@ -114,38 +114,73 @@ def generate_dat_seg_vslide1(f, vsew):
     global rd_val
     global vma
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    vma = os.environ["RVV_ATG_VMA"]
+    agnostic_type = int(os.environ['RVV_ATG_AGNOSTIC_TYPE'])
     print("rd_data:", file=f)
-    for i in range(num_elem):
-        print_data_width_prefix(f, vsew)
-        print("%d"%rd_val[i], file=f)
-    print("",file=f)
-    for i in range(num_group_walking):
-        # generate data
-        print("walking_data%d:"%i, file=f)
-        for j in range(num_elem):
+    if vma == "True" and agnostic_type == 1:
+        for i in range(num_elem):
             print_data_width_prefix(f, vsew)
-            print("%d"%walking_val_grouped[i][j], file=f)
-        print("", file=f)
-        # generate answer for vslide1up
-        print("walking_data_slide1upans%d:"%i, file=f)
-        for j in range(num_elem):
-            if j == 0:
+            print("%d"%rd_val[i], file=f)
+        print("",file=f)
+        for i in range(num_group_walking):
+            # generate data
+            print("walking_data%d:"%i, file=f)
+            for j in range(num_elem):
                 print_data_width_prefix(f, vsew)
-                print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
-            else:
+                print("%d"%walking_val_grouped[i][j], file=f)
+            print("", file=f)
+            # generate answer for vslide1up
+            print("walking_data_slide1upans%d:"%i, file=f)
+            for j in range(num_elem):
+                if j == 0:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(1 if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
+                else:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(1 if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j-1]), file=f)
+            print("", file=f)
+            # generate answer for vslide1up
+            print("walking_data_slide1downans%d:"%i, file=f)
+            for j in range(num_elem):
+                if j == num_elem - 1:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(1 if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
+                else:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(1 if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j+1]), file=f)
+            print("", file=f)
+    else:
+        for i in range(num_elem):
+            print_data_width_prefix(f, vsew)
+            print("%d"%rd_val[i], file=f)
+        print("",file=f)
+        for i in range(num_group_walking):
+            # generate data
+            print("walking_data%d:"%i, file=f)
+            for j in range(num_elem):
                 print_data_width_prefix(f, vsew)
-                print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j-1]), file=f)
-        print("", file=f)
-        # generate answer for vslide1up
-        print("walking_data_slide1downans%d:"%i, file=f)
-        for j in range(num_elem):
-            if j == num_elem - 1:
-                print_data_width_prefix(f, vsew)
-                print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
-            else:
-                print_data_width_prefix(f, vsew)
-                print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j+1]), file=f)
-        print("", file=f)
+                print("%d"%walking_val_grouped[i][j], file=f)
+            print("", file=f)
+            # generate answer for vslide1up
+            print("walking_data_slide1upans%d:"%i, file=f)
+            for j in range(num_elem):
+                if j == 0:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
+                else:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j-1]), file=f)
+            print("", file=f)
+            # generate answer for vslide1up
+            print("walking_data_slide1downans%d:"%i, file=f)
+            for j in range(num_elem):
+                if j == num_elem - 1:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][0]), file=f)
+                else:
+                    print_data_width_prefix(f, vsew)
+                    print("%d"%(rd_val[j] if (masked and get_mask_bit(j) == 0) else walking_val_grouped[i][j+1]), file=f)
+            print("", file=f)
 
 def print_ending_vslide(f, vlen, vsew):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
