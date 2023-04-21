@@ -4,20 +4,25 @@ from scripts.test_common_info import *
 from scripts.create_test_floating.create_test_common import *
 
 instr = 'vfwcvt'
-rs2_val = ['0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000', '0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000', ]
+rs2_val = ['0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000', '0x00000000', '0x80000000', '0x00000001', '0x80000001', '0x00000002', '0x807FFFFE', '0x007FFFFF', '0x807FFFFF', '0x00800000', '0x80800000', '0x00800001', '0x80855555', '0x7F7FFFFF', '0xFF7FFFFF', '0x3F800000', '0xBF800000',
+           '0x7ecd0345', '0x1aa5b443', '0x95ba65a9', '0x0f16e354', '0x64c51a55', '0x3e894d78', '0x13905c93', '0x72ce5a7d', '0x40be3b56', '0x0c6977da', '0xb0881d34', '0x05335fbc', '0xcb146ae9', '0x6a2ecf99', '0x119b19b9', '0x1ad508c2', '0x85e82f60', '0x16aef408', '0x7dd46fc9', '0x96bb4369', '0x0f4e3fd6', '0x8ea8b9ad', '0x7832a0b1', '0xc2eae431', '0x92c6ae02', '0x5c79e30e', '0x6fa6a71f', '0x2ed65769', '0xaa246101', '0x4f265892', '0x6eaaa4fd', '0xb186515d', ]
 
 
 def generate_macros_vfwcvt(f, lmul):
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
     lmul_1 = 1 if lmul < 1 else int(lmul)
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#undef TEST_FP_W_V_OP \n\
 #define TEST_FP_W_V_OP( testnum, inst, flags, result, val1 ) \\\n\
     TEST_CASE_LOOP_W_FP( testnum, v24, flags, result, v8,     \\\n\
         VSET_VSEW_4AVL \\\n\
+        la x7, rd_origin_data; \\\n\
+        vle%d.v v24, (x7);"%(vsew*2 if vsew < 64 else 64) + " \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la x7, val1; \\\n\
         vle%d.v v8, (x7);"%vsew + " \\\n\
-        inst v24, v8; \\\n\
+        inst v24, v8%s; "%(", v0.t" if masked else "") + " \\\n\
     )", file=f)
     for n in range(1, 32):
         if n % lmul != 0 or n == 24:
@@ -25,9 +30,12 @@ def generate_macros_vfwcvt(f, lmul):
         print("#define TEST_FP_W_V_OP_rs1_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
             TEST_CASE_LOOP_W_FP( testnum, v24, flags, result, v8, \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v24, (x7);"%(vsew*2 if vsew < 64 else 64) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val1; \\\n\
                 vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
-                inst v24, v%d; "%n + " \\\n\
+                inst v24, v%d%s; "%(n, ", v0.t" if masked else "") + " \\\n\
             )", file = f)
 
     for n in range(1, 32):
@@ -36,9 +44,12 @@ def generate_macros_vfwcvt(f, lmul):
         print("#define TEST_FP_W_V_OP_rd_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
             TEST_CASE_LOOP_W_FP( testnum, v%d, flags, result, v8, "%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v%d, (x7);"%(vsew*2 if vsew < 64 else 64, n) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val1; \\\n\
                 vle%d.v v8, (x7);"%(vsew) + " \\\n\
-                inst v%d, v8; "%n + " \\\n\
+                inst v%d, v8%s; "%(n, ", v0.t" if masked else "") + " \\\n\
             )", file = f)
 
 def extract_operands(f, rpt_path):
