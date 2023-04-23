@@ -69,7 +69,7 @@ RVTEST_ISA("RV64RV64IMAFDCVZicsr")
 
 page_test:
     li a3,0x0000000000000000 
-    sd a3,(a3)
+    vsoxei8.v v5,(a3),v16;
     # sfence.vma
 
 

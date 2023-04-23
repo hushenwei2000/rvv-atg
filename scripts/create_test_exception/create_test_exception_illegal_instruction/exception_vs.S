@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------- 
     #-----------------------------------------------------------------------------
     #
-    # try to excute a vector instruction with mstatus.vs closed
+    # test when mstatus.VS or vsstatus.VS is closed, whether vfadd can raise exception
     #
 
     #include "model_test.h"
@@ -24,17 +24,48 @@ RVTEST_ISA("RV64RV64IMAFDCVZicsr")
     RVTEST_VSET
     
 # begin test here-----------------------------------------------------------------------------------
+    csrr a2,misa;
+    andi a2,a2,128;
+    beq x0,a2,no_hyper;
+    li a3,0xab
+    # close FS in vsstatus
+    li t5,1536
+    csrrc a7, vsstatus,t5
+    li a1,0x8000000800;
+    csrrs a1,mstatus,a1;
+    auipc a2, 0;
+    addi a2,a2,16;
+    csrw mepc,a2;
+    mret;
+    nop;
+    vadd.vv v24, v8, v1
+    li t5,1536
+    csrrs x0, vsstatus,t5
+no_hyper:
     li a0,59285
-    li t0,1536
+    # close FS in mstatus
+    li t0,24576
     csrrc x0, mstatus,t0
+    vfadd.vf v24, v8, f1
 # end test here-------------------------------------------------------------------------------------
     TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)
     TEST_PASSFAIL
 
-handle_illegal_instruction:                                                 
-    li t0,59285;                                                    
+handle_illegal_instruction: 
+    li t0,0xab;
+    bne t0,a3,handle_no_hyper;    
+    li a3,0
+    csrr t2,mepc;
+    addi t2,t2,4;
+    csrw mepc,t2;
+    li a1,0x000001800;
+    csrrs a1,mstatus,a1;
+    mret
+handle_no_hyper:                                            
+    li t0,59285;                                                 
     beq a0,t0,pass;   
-    call other_exception;
+    call other_exception;  
+
 
 handle_misaligned_load_store:
     call other_exception;

@@ -24,12 +24,83 @@ RVTEST_ISA("RV64RV64IMAFDCVZicsr")
     RVTEST_VSET
 # begin test here-----------------------------------------------------------------------------------
     li a0,59285;
+    li a7,67
     vsetivli x31, 1, e32, m2, tu, mu;
     li	t2,1;
-    vmv.v.x	v16,t2;
-    li	t2,1;
+    vmv.v.x	v1,t2;
+    vmv.v.x	v3,t2;
+    vmv.v.x	v5,t2;
+    vmv.v.x	v7,t2;
     vmv.v.x	v9,t2;
-    vadd.vv	v24,v16,v9;
+    vmv.v.x	v11,t2;
+    vmv.v.x	v13,t2;
+    vmv.v.x	v15,t2;
+    vmv.v.x	v17,t2;
+    vmv.v.x	v19,t2;
+    vmv.v.x	v21,t2;
+    vmv.v.x	v23,t2;
+    vmv.v.x	v25,t2;
+    vmv.v.x	v27,t2;
+    vmv.v.x	v29,t2;
+    vmv.v.x	v31,t2;
+    vsetivli x31, 1, e32, m4, tu, mu;
+    li	t2,1;
+    vmv.v.x	v1,t2;
+    vmv.v.x	v2,t2;
+    vmv.v.x	v3,t2;
+    vmv.v.x	v5,t2;
+    vmv.v.x	v6,t2;
+    vmv.v.x	v7,t2;
+    vmv.v.x	v9,t2;
+    vmv.v.x	v10,t2;
+    vmv.v.x	v11,t2;
+    vmv.v.x	v13,t2;
+    vmv.v.x	v14,t2;
+    vmv.v.x	v15,t2;
+    vmv.v.x	v17,t2;
+    vmv.v.x	v18,t2;
+    vmv.v.x	v19,t2;
+    vmv.v.x	v21,t2;
+    vmv.v.x	v22,t2;
+    vmv.v.x	v23,t2;
+    vmv.v.x	v25,t2;
+    vmv.v.x	v26,t2;
+    vmv.v.x	v27,t2;
+    vmv.v.x	v29,t2;
+    vmv.v.x	v30,t2;
+    vmv.v.x	v31,t2;
+    vsetivli x31, 1, e32, m8, tu, mu;
+    li	t2,1;
+    vmv.v.x	v1,t2;
+    vmv.v.x	v2,t2;
+    vmv.v.x	v3,t2;
+    vmv.v.x	v4,t2;
+    vmv.v.x	v5,t2;
+    vmv.v.x	v6,t2;
+    vmv.v.x	v7,t2;
+    vmv.v.x	v9,t2;
+    vmv.v.x	v10,t2;
+    vmv.v.x	v11,t2;
+    vmv.v.x	v12,t2;
+    vmv.v.x	v13,t2;
+    vmv.v.x	v14,t2;
+    vmv.v.x	v15,t2;
+    vmv.v.x	v17,t2;
+    vmv.v.x	v18,t2;
+    vmv.v.x	v19,t2;
+    vmv.v.x	v20,t2;
+    vmv.v.x	v21,t2;
+    vmv.v.x	v22,t2;
+    vmv.v.x	v23,t2;
+    vmv.v.x	v25,t2;
+    vmv.v.x	v26,t2;
+    vmv.v.x	v27,t2;
+    vmv.v.x	v28,t2;
+    vmv.v.x	v29,t2;
+    vmv.v.x	v30,t2;
+    vmv.v.x	v31,t2;
+    
+    
 
 
 # end test here-------------------------------------------------------------------------------------
@@ -37,7 +108,14 @@ RVTEST_ISA("RV64RV64IMAFDCVZicsr")
     TEST_PASSFAIL
 
 handle_illegal_instruction:                                                 
-    li t0,59285;                                                    
+    li t0,59285;        
+    beq x0,a7,pass_test;
+    addi a7,a7,-1;
+    csrr t2,mepc;
+    addi t2,t2,4;
+    csrw mepc,t2;
+    mret    
+pass_test:                                             
     beq a0,t0,pass;   
     call other_exception;  
 
