@@ -38,7 +38,7 @@ def parse_args(cwd):
     parser.add_argument("--vta", type=int, default="0",
                         help="Vector Tail Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
-    parser.add_argument("--vma", type=float, default="0",
+    parser.add_argument("--vma", type=int, default="0",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
     parser.add_argument("--masked", type=str, default="True",
@@ -222,6 +222,7 @@ def main():
     setup_logging(args.verbose)
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, args.lmul, cwd, output_dir)
+    rewrite_macro_vtavma(args.vsew, args.lmul, args.vta, args.vma)
     logging.info("RVV-ATG: instr: %s, vlen: %d, vsew: %d, lmul: %f"%(args.i, args.vlen, args.vsew, args.lmul))
     os.environ["RVV_ATG_VLEN"] = str(args.vlen)
     os.environ["RVV_ATG_VSEW"] = str(args.vsew)

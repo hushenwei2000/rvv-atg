@@ -83,8 +83,8 @@ def generate_tests_vfncvt(instr, f, lmul):
     if vsew == 32:
         rs1_val = rs1_val_64
         rs2_val = rs2_val_64
-    rs1_val = list(set(rs1_val))
-    rs2_val = list(set(rs2_val))
+    # rs1_val = list(set(rs1_val))
+    # rs2_val = list(set(rs2_val))
 
     lmul_1 = 1 if lmul < 1 else int(lmul)
     n = 0
@@ -95,6 +95,8 @@ def generate_tests_vfncvt(instr, f, lmul):
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
+    # print("loop_num = ", loop_num);
+    # print("vlen = ", vlen, ", vsew = ", vsew, ", len(rs1_val) = ", len(rs1_val), ", len(rs2_val) = ", len(rs2_val));
     
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfcvt Tests",file=f)
