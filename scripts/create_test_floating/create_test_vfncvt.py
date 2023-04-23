@@ -62,7 +62,7 @@ def generate_macros_vfncvt(f, lmul):
             TEST_CASE_LOOP_FP( testnum, v%d, flags, result, v8, "%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la x7, rd_origin_data; \\\n\
-                vle%d.v v%d, (x7);"%(vsew , n) + " \\\n\
+                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
                 %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val1; \\\n\
                 vle%d.v v8, (x7);"%(vsew*2) + " \\\n\
