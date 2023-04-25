@@ -31,11 +31,11 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
     emul_1 = 1 if emul < 1 else int(emul)
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     seq = 1
-    for filed in range(1, 9):
-        if 24+filed*emul > 32:
+    for field in range(1, 9):
+        if 24+field*emul > 32:
             continue
-        result_identifier = filed
-        print("\n#define TEST_LOAD_VX_%dregs( testnum, inst ) \\"%(filed), file=f)
+        result_identifier = field
+        print("\n#define TEST_LOAD_VX_%dregs( testnum, inst ) \\"%(field), file=f)
         print(" vsetvli x31, x0, e%d, m8, tu, mu; \\\n "%vsew + " \
                 la x7, mem + 40; \\\n\
                 vle%d.v v24, (x7);"%vsew + " \\\n\
@@ -47,12 +47,42 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
                 inst v24, (x7), x8%s;\\"%(rs2, ", v0.t" if masked else ""), file=f)
         if emul >= 2:
             print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
-        for i in range(filed):
+        for i in range(field):
             print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, 24+i*emul_1, result_identifier*10+i), file=f, end = "\\\n")
             seq = seq + 1
         print("VSET_VSEW \n", file=f)
 
-def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base):
+def generate_macros_load_vv_Nregs(f, eew):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    emul = int(eew / vsew)
+    emul_1 = 1 if emul < 1 else int(emul)
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    seq = 1
+    for field in range(1, 9):
+        if 24+field*emul > 32:
+            continue
+        result_identifier = field
+        print("\n#define TEST_LOAD_VV_%dregs( testnum, inst ) \\"%(field), file=f)
+        print(" vsetvli x31, x0, e%d, m8, tu, mu; \\\n "%vsew + " \
+                la x7, mem + 40; \\\n\
+                vle%d.v v24, (x7);"%vsew + " \\\n\
+                VSET_VSEW_4AVL \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                la x7, index; \\\n\
+                vle%d.v v8, (x7);"%vsew + " \\\n\
+                la x7, mem; \\\n\
+                inst v24, (x7), v8%s;\\"%(", v0.t" if masked else ""), file=f)
+        if emul >= 2:
+            print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
+        for i in range(field):
+            print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, 24+i*emul_1, result_identifier*10+i), file=f, end = "\\\n")
+            seq = seq + 1
+        print("VSET_VSEW \n", file=f)
+
+def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_vv = False):
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
     lmul = float(os.environ['RVV_ATG_LMUL'])
@@ -63,27 +93,29 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base):
     element_num_ans_per_reggroup = int(vlen * lmul_1 * emul_1 / 8);
     vl = int(vlen * lmul / vsew)
     mem_mul = int(eew / 8)
-    for filed in range(1, 9):
-        result_identifier = filed
+    for field in range(1, 9):
+        print("-----field: ", field)
+        result_identifier = field
         # Build N-dimension array, Byte addressable always
-        ans = [["" for _1 in range(element_num_ans_per_reggroup)] for _2 in range(filed)]
+        ans = [["" for _1 in range(element_num_ans_per_reggroup)] for _2 in range(field)]
         # Assign ans as RD origin value
-        for i in range(filed):
+        for i in range(field):
             for j in range(element_num_ans_per_reggroup):
-                ans[i][j] = MEM[rd_base + (i * filed + j)]
-                # for k in range(mem_mul): # example, if vsew=32, each element should use 4 elements in MEM
-                #     ans[i][j] = MEM[rd_base + (i * filed + j) + k] + ans[i][j] 
+                ans[i][j] = MEM[rd_base + (i * field + j)]
         # Simulate vlsseg, first column then row
-        # Handle mask: TODO
         for j in range(0, int(vl * (eew / 8)), mem_mul):
             big_element_index = int(j / mem_mul)
-            for i in range(filed):
+            for i in range(field):
                 for index_inside in range(mem_mul):
                     if(not masked or (masked and get_mask_bit(big_element_index) == 1)): # Unmasked
-                        # print(i, j+index_inside, int((rs2 * big_element_index) + (i * mem_mul + index_inside)))
-                        ans[i][j+index_inside] = MEM[int((rs2 * big_element_index) + (i * mem_mul + index_inside))]
+                        stride = 0
+                        if is_vx:
+                            stride = (rs2 * big_element_index)
+                        elif is_vv:
+                            stride = INDEX[big_element_index]
+                        ans[i][j+index_inside] = MEM[int(stride + (i * mem_mul + index_inside))]
         # print
-        for i in range(filed):
+        for i in range(field):
             print("\n.align 4", file=f)
             print("result_%d:"%(int(result_identifier*10)+i), file=f)
             for j in range(element_num_ans_per_reggroup):
@@ -92,7 +124,8 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base):
 
 
 
-def print_load_ending_new(f, eew):
+def print_load_ending_new(f, eew, is_vx = False, is_vv = False):
+    vsew = int(os.environ['RVV_ATG_VSEW'])
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
     TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
@@ -110,10 +143,11 @@ def print_load_ending_new(f, eew):
 mem:", file=f)
     for i in MEM:
         print(".byte 0x%s"%i, file=f)
-    print("\nindex:", file=f)
+    print("\n.align 4\nindex:", file=f)
     for i in INDEX:
-        print(".byte %d"%i, file=f)
-    generate_results_load_vlsseg_Nregs(f, 16, eew, 40); # for vlsseg2e8
+        print_data_width_prefix(f, vsew)
+        print("%d"%i, file=f)
+    generate_results_load_vlsseg_Nregs(f, 16, eew, 40, is_vx = is_vx, is_vv = is_vv);
     print_mask_origin_data_ending(f)
     print("\n\
     signature_x12_0:\n\

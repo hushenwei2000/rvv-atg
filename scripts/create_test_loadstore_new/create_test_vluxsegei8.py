@@ -1,13 +1,13 @@
 import logging
 import os
-from scripts.create_test_loadstore_new.create_test_common import generate_macros_load_vx_Nregs, print_load_ending_new, generate_results_load_vlsseg_Nregs
+from scripts.create_test_loadstore_new.create_test_common import generate_macros_load_vv_Nregs, print_load_ending_new, generate_results_load_vlsseg_Nregs
 from scripts.test_common_info import *
 import re
 
-name = 'vlssege64'
+name = 'vluxsegei8'
 
 def generate_tests(f, vsew, lmul):
-    emul = 64 / vsew * lmul
+    emul = 8 / vsew * lmul
     if emul < 0.125 or emul > 8:
         return
     n = 1
@@ -17,26 +17,26 @@ def generate_tests(f, vsew, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(1):
         if 2 * emul <= 8 and 24 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
-            n += 2
-            print("  TEST_LOAD_VX_2regs( "+str(n)+",  vlsseg2e64.v );", file=f)
+            n += 1
+            print("  TEST_LOAD_VV_2regs( "+str(n)+",  vluxseg2ei8.v );", file=f)
         if 3 * emul <= 8 and 24 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_3regs( "+str(n)+",  vlsseg3e64.v );", file=f)
+            print("  TEST_LOAD_VV_3regs( "+str(n)+",  vluxseg3ei8.v );", file=f)
         if 4 * emul <= 8 and 24 + 4 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_4regs( "+str(n)+",  vlsseg4e64.v );", file=f)
+            print("  TEST_LOAD_VV_4regs( "+str(n)+",  vluxseg4ei8.v );", file=f)
         if 5 * emul <= 8 and 24 + 5 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_5regs( "+str(n)+",  vlsseg5e64.v );", file=f)
+            print("  TEST_LOAD_VV_5regs( "+str(n)+",  vluxseg5ei8.v );", file=f)
         if 6 * emul <= 8 and 24 + 6 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_6regs( "+str(n)+",  vlsseg6e64.v );", file=f)
+            print("  TEST_LOAD_VV_6regs( "+str(n)+",  vluxseg6ei8.v );", file=f)
         if 7 * emul <= 8 and 24 + 7 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_7regs( "+str(n)+",  vlsseg7e64.v );", file=f)
+            print("  TEST_LOAD_VV_7regs( "+str(n)+",  vluxseg7ei8.v );", file=f)
         if 8 * emul <= 8 and 24 + 8 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_LOAD_VX_8regs( "+str(n)+",  vlsseg8e64.v );", file=f)
+            print("  TEST_LOAD_VV_8regs( "+str(n)+",  vluxseg8ei8.v );", file=f)
         
 
     # if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
@@ -52,7 +52,7 @@ def generate_tests(f, vsew, lmul):
     #         n +=1
     #         print("  TEST_VLSSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0x00"+", "+"1"+", "+"4 + tdat"+" );",file=f)
     
-def create_empty_test_vlssege64(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vluxsegei8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating first test for {}".format(name))
 
     path = "%s/%s_first.S" % (output_dir, name)
@@ -62,12 +62,12 @@ def create_empty_test_vlssege64(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     print_common_header(name, f)
 
     # Generate macros to test diffrent register
-    generate_macros_load_vx_Nregs(f, 64, 16); # for vlsseg2e8
+    generate_macros_load_vv_Nregs(f, 8);
 
     # Generate tests
     generate_tests(f, vsew, lmul)
 
-    print_load_ending_new(f, 64, is_vx = True)
+    print_load_ending_new(f, 8, is_vv = True)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

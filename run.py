@@ -4,7 +4,7 @@ from ast import arg
 import os
 
 from scripts.lib import *
-from scripts.replace_results import replace_results
+from scripts.replace_results2 import replace_results
 from scripts.run_riscof_coverage import run_riscof_coverage
 from scripts.run_spike import run_spike
 from scripts.constants import *
@@ -41,6 +41,9 @@ def parse_args(cwd):
     parser.add_argument("--vma", type=int, default="0",
                         help="Vector Mask Agnostic Mode: \
                         0(undisturbed, default), 1(agnostic)")
+    parser.add_argument("--agnostic_type", type=int, default="0",
+                        help="If vta or vma is 1(agnostic),  \
+                        0(retain the value they previously held, default), or 1(written with 1s)")
     parser.add_argument("--masked", type=str, default="True",
                         help="If enable masked")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
@@ -191,21 +194,22 @@ def run_loadstore(cwd, args, cgf, output_dir):
         args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir)
 
     # 2. Use empty tests to generate coverage report
-    (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
+    # (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
 
     # 3. Generate test with not-filled result
-    first_test = create_first_test(
-        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
+    # first_test = create_first_test(
+    #     args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
 
-    # if args.tool == 'sail':
+    if args.tool == 'sail':
+        1
         # 4-1. Run sail and riscof coverage and extract true result from isac_log
         # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
                                                         #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
-    # else:
+    else:
         # 4-2. Or run spike to generate commit info log
-        # spike_first_log = run_spike(args.i, cwd, cgf,
-        #           output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, use_fail_macro=False)
+        spike_first_log = run_spike(args.i, cwd, cgf,
+                  output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     # if args.tool == 'sail':
         # 5-1. Replace old result with true results using sail and isac log
@@ -216,7 +220,7 @@ def run_loadstore(cwd, args, cgf, output_dir):
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+                                                      output_dir, empty_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
 
     check_spikelog(output_dir, args.i)
 
@@ -261,6 +265,7 @@ def main():
     os.environ["RVV_ATG_MASKED"] = str(args.masked)
     os.environ["RVV_ATG_VMA"] = str(args.vma)
     os.environ["RVV_ATG_VTA"] = str(args.vta)
+    os.environ["RVV_ATG_AGNOSTIC_TYPE"] = str(args.agnostic_type)
     if not check_type(args.i, args.t):
         logging.error("Type is not match Instruction!")
         return

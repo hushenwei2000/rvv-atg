@@ -148,8 +148,9 @@ def replace_results_spike(instr, first_test, spike_log):
     fflag_ansListIndex = 0
     for i in range(0, len(eachLine)):
         if "5201314" in eachLine[i]:
-            eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
-            ansListIndex = ansListIndex + 1
+            if ansListIndex < len(ansList):
+                eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
+                ansListIndex = ansListIndex + 1
         if instr.startswith("vf") and "0xff100" in eachLine[i]:
             eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
             fflag_ansListIndex = fflag_ansListIndex + 1
@@ -380,8 +381,9 @@ def replace_results_spike_new(instr, first_test, spike_log):
     fflag_ansListIndex = 0
     for i in range(0, len(eachLine)):
         if "5201314" in eachLine[i]:
-            eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
-            ansListIndex = ansListIndex + 1
+            if ansListIndex < len(ansList):
+                eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
+                ansListIndex = ansListIndex + 1
         if instr.startswith("vf") and "0xff100" in eachLine[i]:
             eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
             fflag_ansListIndex = fflag_ansListIndex + 1
