@@ -7,18 +7,21 @@ instr = 'vwmaccus'
 
 
 def generate_macros(f, lmul):
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     lmul = 1 if lmul < 1 else int(lmul)
     vsew = int(os.environ['RVV_ATG_VSEW'])
     print("#undef TEST_W_VX_OP_RV \n\
 #define TEST_W_VX_OP_RV( testnum, inst, result, val1, val2 ) \\\n\
     TEST_CASE_LOOP_W( testnum, v24, result, \\\n\
         VSET_DOUBLE_VSEW_4AVL \\\n\
-        vmv.v.i v24, 0; \\\n\
+        la x7, rd_origin_data; \\\n\
+        vle%d.v v24, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
         VSET_VSEW_4AVL \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la x7, val2; \\\n\
         vle%d.v v8, (x7);"%vsew + " \\\n\
         li x1, MASK_XLEN(val1); \\\n\
-        inst v24, x1, v8; \\\n\
+        inst v24, x1, v8%s; "%(", v0.t" if masked else "") + " \\\n\
     )", file=f)
     for n in range(2, 32):
         if n % lmul != 0 or n == 8 or n == 16 or n == 24:
@@ -26,12 +29,14 @@ def generate_macros(f, lmul):
         print("#define TEST_W_VX_OP_RV_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
             TEST_CASE_LOOP_W( testnum, v24, result, \\\n\
                 VSET_DOUBLE_VSEW_4AVL \\\n\
-                vmv.v.i v24, 0; \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v24, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
                 VSET_VSEW_4AVL \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val2; \\\n\
                 vle%d.v v8, (x7);"%vsew + " \\\n\
                 li x%d, MASK_XLEN(val1); "%n + " \\\n\
-                inst v24, x%d, v8; "%n + " \\\n\
+                inst v24, x%d, v8%s; "%(n,", v0.t" if masked else "") + " \\\n\
         )",file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
@@ -40,12 +45,14 @@ def generate_macros(f, lmul):
         print("#define TEST_W_VX_OP_RV_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
         TEST_CASE_LOOP_W( testnum, v%d, result, "%n + "\\\n\
             VSET_DOUBLE_VSEW_4AVL \\\n\
-            vmv.v.i v24, 0; \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v%d, (x7);"%(64 if vsew == 64 else vsew*2,n) + " \\\n\
             VSET_VSEW_4AVL \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1);  \\\n\
-            inst v%d, x1, v8; "%n + " \\\n\
+            inst v%d, x1, v8%s; "%(n,", v0.t" if masked else "") + " \\\n\
         )",file=f)
    
 
@@ -159,6 +166,8 @@ def print_ending_vwmaccus(f, num_test, rs1_val, rs2_val):
         print_data_width_prefix(f, vsew * 2)
         print("0x5201314", file=f)
 
+    print_mask_origin_data_ending(f)
+    
     print("\n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\

@@ -1,13 +1,15 @@
 import os
 import re
 
-mask_data_ending = [0x151a11ef,0x86569d27,0x429ede3d,0x20219a51,0x91a8d5fd,0xbd8f6c65,0x466250f,0xe31ffa64,0xc737ad3a,0xe54c8c1e,0x7ca660db,0x692dadf,0x2c63c847,0xfbba7ae7,0x195b62bf,0xf600a3d1,0x34b80fd4,0x3aef5ff4,0x34267ad9,0x681454c0,0x67dd3492,0xb02d663e,0xb2d3f1c5,0x824d39ae]
+mask_data_ending = [0x11111111,0x86569d27,0x429ede3d,0x20219a51,0x91a8d5fd,0xbd8f6c65,0x466250f,0xe31ffa64,0xc737ad3a,0xe54c8c1e,0x7ca660db,0x692dadf,0x2c63c847,0xfbba7ae7,0x195b62bf,0xf600a3d1,0x34b80fd4,0x3aef5ff4,0x34267ad9,0x681454c0,0x67dd3492,0xb02d663e,0xb2d3f1c5,0x824d39ae]
 rd_origin_data = ["0x66da64aa","0xf682191a","0xfd2ce83f","0x67f9ab29","0x112e3ffd","0xc4d9b1e2","0x9ed4e137","0xb49ae54e","0xd075dd45","0x74daa72e","0x48324db4","0x167d97b5","0x8b536536","0xe85755eb","0x1cd86c0a","0x4c811ecf","0x8085dbf1","0x547cdce3","0x65d27882","0xb72d2ec4","0x954ee841","0xb36fd636","0xbc4988da","0xaea05c04","0xce7483a6","0xea0309d7","0x62498466","0x1cd29ac4","0x97f38b62","0x690bcf85","0x97f38b62","0x9bd83b8b"]
 
 def get_mask_bit(index):
     return mask_data_ending[int(index / 32)] >> (index % 32) & 1
 
 def print_common_header(instr, f):
+    
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#----------------------------------------------------------------------------- \n\
     # %s.S\n\
     #-----------------------------------------------------------------------------\n\
@@ -18,7 +20,21 @@ def print_common_header(instr, f):
     #include \"arch_test.h\"\n\
     #include \"riscv_test.h\"\n\
     #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
-
+    vsew = int(os.environ["RVV_ATG_VSEW"])
+    if instr == "viota" :
+        print("#undef TEST_VIOTA_OP", file=f)
+        print("#define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+        VSET_VSEW_4AVL \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+        la  x1, src1_addr; \\\n\
+        la  x7, result_addr; \\\n\
+        vle%d.v v8, (x1);"%vsew +" \\\n\
+        vmseq.vi v2, v8, 1; \\\n\
+        vmv.v.i v16, 2;\\\n\
+        inst v16, v2%s; \\\n\
+        )"%(", v0.t" if masked else ""), file=f)
+        
     print("RVTEST_ISA(\"RV64RV64IMAFDCVZicsr\")\n\
     \n\
     .section .text.init\n\
@@ -589,7 +605,7 @@ def print_mask_origin_data_ending(f):
     # 24 words, mask_data + 0/64/128
     print("\n.align 4", file=f)
     print("mask_data:\n\
-	.word 0x151a11ef\n\
+	.word 0x11111111\n\
 	.word 0x86569d27\n\
 	.word 0x429ede3d\n\
 	.word 0x20219a51\n\

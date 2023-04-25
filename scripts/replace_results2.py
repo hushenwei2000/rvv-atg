@@ -139,19 +139,24 @@ def replace_results_spike(instr, first_test, spike_log):
 
     des_path = first_test.replace("_first", "_second")
     des_path = des_path.replace("_empty", "_second")
+    des_path_temp = des_path + "_temp"
     os.system("cp %s %s" % (first_test, des_path))
-    f = open(des_path)
-    new = f.read()
-    if instr.startswith("vf"):
-        for i in range(len(fflag_ansList)):
-            new = new.replace("0xff100", fflag_ansList[i], 1)
-    for i in range(len(ansList)):
-        new = new.replace("5201314", ansList[i], 1)
-        
+    os.system("cp %s %s" % (first_test, des_path_temp))
+    f = open(des_path_temp, "r")
+    eachLine = f.readlines()
+    ansListIndex = 0
+    fflag_ansListIndex = 0
+    for i in range(0, len(eachLine)):
+        if "5201314" in eachLine[i]:
+            eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
+            ansListIndex = ansListIndex + 1
+        if instr.startswith("vf") and "0xff100" in eachLine[i]:
+            eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
+            fflag_ansListIndex = fflag_ansListIndex + 1
     f.close()
-    f = open(des_path, "w+")
-    print(new, file=f)
-    f.close()
+    with open(des_path, 'w') as f2:
+        f2.writelines(eachLine)
+    os.system("rm %s" % (des_path_temp))
 
     logging.info(
         "Running replace_results finish, dest file: {}".format(des_path))
@@ -177,9 +182,11 @@ def replace_results_spike_new(instr, first_test, spike_log):
     lineList = []
     regList = []
     maskValList = []
+    instructionLineNumber = []
     matchMaskPattern = re.compile("vle\d+.v\s+v0")
     mark = False
     matchMaskValuePattern = re.compile("v0\s+(0x[0-9a-f]*)") # such as v0 0xfffffff7fffffffbfffffffdfffffffe
+    lineNo = 0
     if masked == "True":
         # This loop extract all mask value
         while 1:
@@ -208,6 +215,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
         line = file.readline()
         if not line:
             break
+        lineNo = lineNo + 1
         if mark:
             lineList.append(line)
             mark = False
@@ -218,6 +226,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
                 if reg in riscv_reg_abi_map.keys():
                     reg = riscv_reg_abi_map.get(reg)
                 regList.append(reg)
+                instructionLineNumber.append(lineNo)
                 mark = True
     if instr == 'vadd':  # vadd will use VADD_NOUSE at last, this don't need analyse
         regList.pop()
@@ -227,6 +236,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
     print("len linelist=%d"%len(lineList))
     print("len maskValList=%d"%len(maskValList))
     file.seek(0)
+    lineNo = 0
     # This loop extract rd origin value(before instruction) commit value line into rdLineList
     if len(regList) > 0:
         rdLineList = []
@@ -236,6 +246,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
             line = file.readline()
             if not line:
                 break
+            lineNo = lineNo + 1
             if mark:
                 rdLineList.append(line)
                 if (index >= len(regList)):
@@ -243,7 +254,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
                 mark = False
             else:
                 a = matchVLEPattern.search(line)
-                if a is not None:
+                if a is not None and lineNo < instructionLineNumber[index] and (index < 1 or lineNo > instructionLineNumber[index - 1]):
                     index = index + 1
                     if (index < len(regList)):
                         matchVLEPattern = re.compile("vle\d+.v\s+%s"%regList[index])
@@ -306,6 +317,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
                         ans = ans.replace('0x', '')
                         ans_element_bits = int(vsew/4)
                         valid_bits = int((vlen * min(lmul, 1) / 4))
+                        num_elem_per_reg = int(vlen / vsew)
                         if instr.startswith("vw") or instr.startswith("vfw"):
                             ans_element_bits *= 2
                             valid_bits *= 2
@@ -360,19 +372,25 @@ def replace_results_spike_new(instr, first_test, spike_log):
 
     des_path = first_test.replace("_first", "_second")
     des_path = des_path.replace("_empty", "_second")
+    des_path_temp = des_path + "_temp"
     os.system("cp %s %s" % (first_test, des_path))
-    f = open(des_path)
-    new = f.read()
-    if instr.startswith("vf"):
-        for i in range(len(fflag_ansList)):
-            new = new.replace("0xff100", fflag_ansList[i], 1)
-    for i in range(len(ansList)):
-        new = new.replace("5201314", ansList[i], 1)
-
+    os.system("cp %s %s" % (first_test, des_path_temp))
+    f = open(des_path_temp, "r")
+    eachLine = f.readlines()
+    ansListIndex = 0
+    fflag_ansListIndex = 0
+    for i in range(0, len(eachLine)):
+        if "5201314" in eachLine[i]:
+            if ansListIndex < len(ansList):
+                eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
+                ansListIndex = ansListIndex + 1
+        if instr.startswith("vf") and "0xff100" in eachLine[i]:
+            eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
+            fflag_ansListIndex = fflag_ansListIndex + 1
     f.close()
-    f = open(des_path, "w+")
-    print(new, file=f)
-    f.close()
+    with open(des_path, 'w') as f2:
+        f2.writelines(eachLine)
+    os.system("rm %s" % (des_path_temp))
 
     logging.info(
         "Running replace_results finish, dest file: {}".format(des_path))

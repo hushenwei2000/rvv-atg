@@ -7,39 +7,52 @@ instr = 'vrsub'
 
 
 def generate_macros(f, vsew):
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v16, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1); \\\n\
-            inst v16, v8, x1; \\\n\
+            inst v16, v8, x1%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
     print("#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
             VSET_VSEW_4AVL \\\n\
+            la x7, rd_origin_data; \\\n\
+            vle%d.v v16, (x7);"%vsew + " \\\n\
+            %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
-            inst v16, v8, SEXT_IMM(val1); \\\n\
+            inst v16, v8, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
     for n in range(2, 32):
         print("#define TEST_VX_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE_LOOP( testnum, v16, result, \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v16, (x7);"%vsew + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val2; \\\n\
                 vle%d.v v8, (x7);"%vsew + " \\\n\
                 li x%d, MASK_XLEN(val1); "%n + "\\\n\
-                inst v16, v8, x%d; "%n + " \\\n\
+                inst v16, v8, x%d%s; "%(n, ", v0.t" if masked else "") + " \\\n\
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VX_OP_rd%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE_LOOP( testnum, v%d, result,"%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v%d, (x7);"%(vsew , n) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
                 la x7, val2; \\\n\
                 vle%d.v v8, (x7);"%vsew + " \\\n\
                 li x1, MASK_XLEN(val1); \\\n\
-                inst v%d, v8, x1; "%n + " \\\n\
+                inst v%d, v8, x1%s; "%(n, ", v0.t" if masked else "") + " \\\n\
         ) ", file=f)
 
 
