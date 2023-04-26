@@ -101,7 +101,7 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
         # Assign ans as RD origin value
         for i in range(field):
             for j in range(element_num_ans_per_reggroup):
-                ans[i][j] = MEM[rd_base + (i * field + j)]
+                ans[i][j] = MEM[rd_base + (i * element_num_ans_per_reggroup + j)]
         # Simulate vlsseg, first column then row
         for j in range(0, int(vl * (eew / 8)), mem_mul):
             big_element_index = int(j / mem_mul)
