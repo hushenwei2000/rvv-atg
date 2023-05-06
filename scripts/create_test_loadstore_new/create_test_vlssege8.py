@@ -8,6 +8,8 @@ name = 'vlssege8'
 
 def generate_tests(f, vsew, lmul):
     emul = 8 / vsew * lmul
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(emul)
     if emul < 0.125 or emul > 8:
         return
     n = 1

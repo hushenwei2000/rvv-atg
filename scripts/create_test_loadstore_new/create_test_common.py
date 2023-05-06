@@ -27,7 +27,7 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     lmul = float(os.environ['RVV_ATG_LMUL'])
     lmul_1 = 1 if lmul < 1 else int(lmul)
-    emul = int(eew / vsew)
+    emul = int(eew / vsew * lmul) #16 / vsew * lmul
     emul_1 = 1 if emul < 1 else int(emul)
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     seq = 1
@@ -48,7 +48,39 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
         if emul >= 2:
             print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
         for i in range(field):
+            print("    vsetvli x31, x0, e%d, m%d, tu, mu; "%(vsew,emul_1), file=f, end = "\\\n")
             print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, 24+i*emul_1, result_identifier*10+i), file=f, end = "\\\n")
+            seq = seq + 1
+        print("VSET_VSEW \n", file=f)
+
+def generate_macros_load_vx_offset(f, eew, offset, vd):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    emul = int(eew / vsew * lmul) #16 / vsew * lmul
+    emul_1 = 1 if emul < 1 else int(emul)
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    seq = 1
+    for field in range(1, 2):
+        if 24+field*emul > 32:
+            continue
+        result_identifier = field
+        print("\n#define TEST_LOAD_V%dX_offset( testnum, inst ) \\"%(vd), file=f)
+        print(" vsetvli x31, x0, e%d, m1, tu, mu; \\\n "%(eew) + " \
+                la x7, mem + 40; \\\n\
+                vle%d.v v%d, (x7);"%(eew,vd) + " \\\n\
+                VSET_VSEW_4AVL \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                la x7, mem; \\\n\
+                " + " \\\n\
+                li x8, %d; \\\n\
+                inst v%d, %d(x7)%s;\\"%(offset, vd ,offset ,", v0.t" if masked else ""), file=f)
+        if emul >= 2:
+            print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
+        for i in range(field):
+            print("    vsetvli x31, x0, e%d, m%d, tu, mu; "%(vsew,emul_1), file=f, end = "\\\n")
+            print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(vd, vd+i*emul_1, 1*10+i), file=f, end = "\\\n")
             seq = seq + 1
         print("VSET_VSEW \n", file=f)
 
@@ -90,7 +122,7 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
     lmul_1 = 1 if lmul < 1 else int(lmul)
     emul = int(eew / vsew)
     emul_1 = 1 if emul < 1 else int(emul)
-    element_num_ans_per_reggroup = int(vlen * lmul_1 * emul_1 / 8);
+    element_num_ans_per_reggroup = int(vlen * emul_1 / 8);
     vl = int(vlen * lmul / vsew)
     mem_mul = int(eew / 8)
     for field in range(1, 9):
