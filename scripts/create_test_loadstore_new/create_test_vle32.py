@@ -4,12 +4,10 @@ from scripts.create_test_loadstore_new.create_test_common import generate_macros
 from scripts.test_common_info import *
 import re
 
-name = 'vle8'
-
-
+name = 'vle32'
 
 def generate_tests(f, vsew, lmul):
-    emul = 8 / vsew * lmul
+    emul = 32 / vsew * lmul
     if emul < 0.125 or emul > 8:
         return
     n = 1
@@ -21,19 +19,19 @@ def generate_tests(f, vsew, lmul):
 
         for n in range(1,32):
             if emul <= 8 and n + emul <= 32 and n % emul == 0:
-                print("  TEST_LOAD_V%dX7_offset( " %(n)+str(n)+",  vle8.v );", file=f)
+                print("  TEST_LOAD_V%dX7_offset( " %(n)+str(n)+",  vle32.v );", file=f)
         for n in range(1,32):
             if emul <= 8 and n + emul <= 32 and n % emul == 0:      
-                print("  TEST_LOAD_V%dXFF_offset( " %(n)+str(n+32)+",  vle8ff.v );", file=f)
+                print("  TEST_LOAD_V%dXFF_offset( " %(n)+str(n+32)+",  vle32ff.v );", file=f)
         for n in range(5,31):
             if emul <= 8 and 2 + emul <= 32 and 2 % emul == 0 and n != 7:
-                print("  TEST_LOAD_V2X%d_offset( " %(n)+str(n+64)+",  vle8.v );", file=f)
+                print("  TEST_LOAD_V2X%d_offset( " %(n)+str(n+64)+",  vle32.v );", file=f)
 
-        
+         
 
 
     
-def create_empty_test_vle8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vle32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating first test for {}".format(name))
 
     path = "%s/%s_first.S" % (output_dir, name)
@@ -44,14 +42,14 @@ def create_empty_test_vle8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
     # Generate macros to test diffrent register
     for i in range(1,32):
-        generate_macros_load_vx_offset(f, 8, 0, i, 7); 
+        generate_macros_load_vx_offset(f, 32, 0, i, 7); 
     for i in range(5,31):
-        generate_macros_load_vx_offset(f, 8, 0, 2, i); 
-
+        generate_macros_load_vx_offset(f, 32, 0, 2, i); 
+    
     # Generate tests
     generate_tests(f, vsew, lmul)
 
-    print_load_ending_new(f, 8, 1, is_vx = True)
+    print_load_ending_new(f, 32, 4, is_vx = True)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

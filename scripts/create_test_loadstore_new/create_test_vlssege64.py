@@ -67,7 +67,7 @@ def create_empty_test_vlssege64(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Generate tests
     generate_tests(f, vsew, lmul)
 
-    print_load_ending_new(f, 64, is_vx = True)
+    print_load_ending_new(f, 64, 16, is_vx = True)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
