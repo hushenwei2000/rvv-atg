@@ -1,0 +1,14 @@
+vrgather:
+    config:
+      - check ISA:=regex(.*V.*)
+    opcode:   
+      vrgather.vv: 0
+      vrgather.vx: 0
+      vrgather.vi: 0
+    rs1:
+      <<: *v_regs
+    rd:
+      <<: *v_regs
+    val_comb:
+      abstract_comb:
+        <<: [*rs1val_walking_vector, *rs2val_walking_vector]

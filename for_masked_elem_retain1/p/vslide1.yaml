@@ -1,0 +1,16 @@
+vslide1:
+    config: 
+      - check ISA:=regex(.*V.*)
+    opcode: 
+      vslide1up.vx: 0
+      vslide1down.vx: 0
+      vslidedown.vi: 0
+    rs1:
+      <<: *all_regs
+    rs2:
+      <<: *v_regs
+    rd: 
+      <<: *v_regs
+    val_comb:
+      abstract_comb:
+        <<: [*rs2val_walking_vector]
