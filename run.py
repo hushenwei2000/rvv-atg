@@ -101,7 +101,7 @@ def run_vf(cwd, args, cgf, output_dir):
                                                         output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
     else:
         # 4-2. Or run spike to generate commit info log
-        spike_first_log = run_spike(args.i, cwd, cgf,
+        spike_first_log = run_spike(args.i, cwd, 
                   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False)
 
     if args.tool == 'sail':
@@ -136,7 +136,7 @@ def run_integer(cwd, args, cgf, output_dir):
                                                           output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
     else:
         # 4-2. Or run spike to generate commit info log
-        spike_first_log = run_spike(args.i, cwd, cgf,
+        spike_first_log = run_spike(args.i, cwd,
                 output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False)
 
     search_ins = args.i
@@ -169,7 +169,7 @@ def run_mask(cwd, args, cgf, output_dir):
                                                           output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
     else:
         # 2-2. Or run spike to generate commit info log
-        spike_first_log = run_spike(args.i, cwd, cgf,
+        spike_first_log = run_spike(args.i, cwd, 
                 output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False)
 
     if args.tool == 'sail':
@@ -208,7 +208,7 @@ def run_loadstore(cwd, args, cgf, output_dir):
                                                         #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
     else:
         # 4-2. Or run spike to generate commit info log
-        spike_first_log = run_spike(args.i, cwd, cgf,
+        spike_first_log = run_spike(args.i, cwd, 
                   output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     # if args.tool == 'sail':
@@ -222,6 +222,27 @@ def run_loadstore(cwd, args, cgf, output_dir):
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
                                                       output_dir, empty_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
 
+    check_spikelog(output_dir, args.i)
+
+def run_random(cwd, args, output_dir):
+    # 1. Generate test with not-filled result
+    first_test = create_first_test(
+        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, '')
+
+    # 2. Run spike to generate commit info log
+    spike_first_log = run_spike(args.i, cwd, 
+            output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False)
+
+    search_ins = "vadd"
+    if args.i in ["vmadc", "vmsbc", "vmseq", "vmsgt", "vmsgtu", "vmsle", "vmsleu", "vmslt", "vmsltu", "vmsne"]:
+        search_ins = "vcpop"
+    
+    # 3. Replace results
+    des_path = replace_results(search_ins, first_test, spike_first_log, 'spike')
+
+    # 4. Run spike check correctness
+    spike_final_log = run_spike(args.i, cwd, 
+            output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
     check_spikelog(output_dir, args.i)
 
 def run_exception(cwd,args):
@@ -277,6 +298,8 @@ def main():
         run_mask(cwd, args, cgf, output_dir)
     elif args.t == "l":
         run_loadstore(cwd, args, cgf, output_dir)
+    elif args.t == "r": # random
+        run_random(cwd, args, output_dir)
 
 if __name__ == "__main__":
     main()

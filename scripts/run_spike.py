@@ -3,12 +3,11 @@ import os
 
 from scripts.constants import *
 
-def run_spike(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro):
+def run_spike(instr, rvv_atg_root,  output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro):
     gcc = GCC_CONST
     objdump = OBJDUMP_CONST
     logging.info("Running spike: {}.{}".format(instr, suffix))
     test_path = os.path.basename(test_path)
-    cgf_path = os.path.basename(cgf_path)
     spike_log_name = "spike_%s_%s.log"%(instr, suffix)
     os.chdir(output_dir)
     if lmul < 1:
