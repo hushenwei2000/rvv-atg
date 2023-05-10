@@ -10,6 +10,8 @@ def generate_tests(f, vsew, lmul):
     emul = 16 / vsew * lmul
     if emul < 0.125 or emul > 8:
         return
+    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+    print(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -67,7 +69,7 @@ def create_empty_test_vlssege16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Generate tests
     generate_tests(f, vsew, lmul)
 
-    print_load_ending_new(f, 16, is_vx = True)
+    print_load_ending_new(f, 16, 16, is_vx = True)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

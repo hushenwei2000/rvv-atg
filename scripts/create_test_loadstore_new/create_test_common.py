@@ -27,7 +27,7 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     lmul = float(os.environ['RVV_ATG_LMUL'])
     lmul_1 = 1 if lmul < 1 else int(lmul)
-    emul = int(eew / vsew)
+    emul = int(eew / vsew * lmul) #16 / vsew * lmul
     emul_1 = 1 if emul < 1 else int(emul)
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     seq = 1
@@ -48,9 +48,62 @@ def generate_macros_load_vx_Nregs(f, eew, rs2):
         if emul >= 2:
             print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
         for i in range(field):
+            print("    vsetvli x31, x0, e%d, m%d, tu, mu; "%(vsew,emul_1), file=f, end = "\\\n")
             print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, 24+i*emul_1, result_identifier*10+i), file=f, end = "\\\n")
             seq = seq + 1
         print("VSET_VSEW \n", file=f)
+
+global seq 
+seq = 1
+def generate_macros_load_vx_offset(f, eew, offset, vd, rs):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    emul = int(eew / vsew * lmul) #16 / vsew * lmul
+    emul_1 = 1 if emul < 1 else int(emul)
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    for field in range(1, 2):
+        if 24+field*emul > 32:
+            continue
+        # result_identifier = field
+        print("\n#define TEST_LOAD_V%dX%d_offset( testnum, inst ) \\"%(vd,rs), file=f)
+        print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\\n "%(eew,emul_1) + " \
+                la x7, mem + 40; \\\n\
+                vle%d.v v%d, (x7);"%(eew,vd) + " \\\n\
+                VSET_VSEW_4AVL \\\n\
+                %s "%("la x7, mask_data; \\\n  vsetivli x31, %d, e8, m1, tu, mu; \\\n  vle%d.v v0, (x7); \\\n  "%(vlen/vsew,vsew) if masked else "")+" \
+                la x%d, mem; \\\n\
+                "%(rs) + " VSET_VSEW_4AVL \\\n " + "\\\n\
+                inst v%d, %d(x%d)%s;\\"%(vd ,offset,rs ,", v0.t" if masked else ""), file=f)
+        if emul >= 2:
+            print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
+        for i in range(field):
+            print("    vsetvli x31, x0, e%d, m%d, tu, mu; "%(vsew,emul_1), file=f, end = "\\\n")     
+            global seq       
+            print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, vd+i*emul_1, 1*10+i), file=f, end = "\\\n")
+
+            seq = seq + 1
+        print("VSET_VSEW \n", file=f)
+        if(rs==7):   
+            # print("\n#ifndef TEST_LOAD_V%dXFF_offset( testnum, inst ) "%(vd), file=f) 
+            print("\n#define TEST_LOAD_V%dXFF_offset( testnum, inst ) \\"%(vd), file=f)
+            print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\\n "%(eew,emul_1) + " \
+                    la x7, mem + 40; \\\n\
+                    vle%d.v v%d, (x7);"%(eew,vd) + " \\\n\
+                    VSET_VSEW_4AVL \\\n\
+                    %s "%("la x7, mask_data; \\\n  vsetivli x31, %d, e8, m1, tu, mu; \\\n  vle%d.v v0, (x7); \\\n  "%(vlen/vsew,vsew) if masked else "")+" \
+                    la x7, mem; \\\n\
+                    " + " VSET_VSEW_4AVL \\\n " + "\\\n\
+                    li x8, %d; \\\n\
+                    inst v%d, %d(x7)%s;\\"%(offset, vd ,offset ,", v0.t" if masked else ""), file=f)
+            if emul >= 2:
+                print(" vsetvli x31, x0, e%d, m%d, tu, mu; \\ "%(vsew,emul), file=f)
+            for i in range(field):
+                print("    vsetvli x31, x0, e%d, m%d, tu, mu; "%(vsew,emul_1), file=f, end = "\\\n")
+                print("    TEST_CASE_LOOP( %d, v%d, result_%d)"%(seq, vd+i*emul_1, 1*10+i), file=f, end = "\\\n")
+                seq = seq + 1
+            print("VSET_VSEW \\\n ", file=f)
 
 def generate_macros_load_vv_Nregs(f, eew):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -88,9 +141,9 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
     lmul = float(os.environ['RVV_ATG_LMUL'])
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     lmul_1 = 1 if lmul < 1 else int(lmul)
-    emul = int(eew / vsew)
+    emul = int(eew / vsew* lmul)
     emul_1 = 1 if emul < 1 else int(emul)
-    element_num_ans_per_reggroup = int(vlen * lmul_1 * emul_1 / 8);
+    element_num_ans_per_reggroup = int(vlen * emul_1 / 8);
     vl = int(vlen * lmul / vsew)
     mem_mul = int(eew / 8)
     for field in range(1, 9):
@@ -101,7 +154,9 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
         # Assign ans as RD origin value
         for i in range(field):
             for j in range(element_num_ans_per_reggroup):
-                ans[i][j] = MEM[rd_base + (i * field + j)]
+                if((rd_base + (i * element_num_ans_per_reggroup + j)>1024)):    #will overflow otherwise
+                    continue
+                ans[i][j] = MEM[rd_base + (i * element_num_ans_per_reggroup + j)]
         # Simulate vlsseg, first column then row
         for j in range(0, int(vl * (eew / 8)), mem_mul):
             big_element_index = int(j / mem_mul)
@@ -124,10 +179,11 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
 
 
 
-def print_load_ending_new(f, eew, is_vx = False, is_vv = False):
+def print_load_ending_new(f, eew, rs2, is_vx = False, is_vv = False):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
+    vsetvli x31,x0,e8,m1;\n\
     TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
     TEST_PASSFAIL\n\
     #endif\n\
@@ -147,7 +203,8 @@ mem:", file=f)
     for i in INDEX:
         print_data_width_prefix(f, vsew)
         print("%d"%i, file=f)
-    generate_results_load_vlsseg_Nregs(f, 16, eew, 40, is_vx = is_vx, is_vv = is_vv);
+    # generate_results_load_vlsseg_Nregs(f, 16, eew, 40, is_vx = is_vx, is_vv = is_vv);#for vlsseg
+    generate_results_load_vlsseg_Nregs(f, rs2, eew, 40, is_vx = is_vx, is_vv = is_vv);#for vle8
     print_mask_origin_data_ending(f)
     print("\n\
     signature_x12_0:\n\
