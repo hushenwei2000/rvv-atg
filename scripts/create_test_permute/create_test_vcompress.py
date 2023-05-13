@@ -14,7 +14,7 @@ rd_val = [3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17,
           33, 35, 36, 37, 39, 40, 41, 42, 43, 44, 45, 47,
           48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
           61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 105, 107, 109, 111, 113, 115] # 66
-vma = False  # False to turn to undisturb
+
 num_elem = 0
 num_group_walking = 0
 walking_val_grouped = []
@@ -72,6 +72,9 @@ def generate_walking_mask_seg(f, vlen, vsew):
         print("", file=f)
 
 def generate_dat_seg_vcompress(f, vsew):
+    vma = os.environ["RVV_ATG_VMA"]
+    vma = True if vma == "True" else False;
+    agnostic_type = int(os.environ['RVV_ATG_AGNOSTIC_TYPE'])
     global walking_val_grouped
     global num_elem
     global mask_val
@@ -103,7 +106,7 @@ def generate_dat_seg_vcompress(f, vsew):
                     continue
             for p in range(index, num_elem):
                 print_data_width_prefix(f, vsew)
-                print("%d" % (0 if vma else rd_val[p]), file=f)
+                print("%d" % (1 if (vma and agnostic_type == 1) else rd_val[p]), file=f)
             print("", file=f)
 
 

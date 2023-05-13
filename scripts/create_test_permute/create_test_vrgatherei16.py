@@ -12,7 +12,6 @@ rs2_val = [-2147483648, -1431655766, -1073741825, -536870913, -268435457, -13421
 def generate_macros(f, lmul, vsew):
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
-    lmul = 1 if lmul < 1 else int(lmul)
     rs1lmul = (16 / vsew) * lmul
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \\\n\
@@ -116,7 +115,6 @@ def extract_operands(f, vsew):
 
 
 def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = True, generate_vx = True, generate_vv = True):
-    lmul_1 = 1 if lmul < 1 else int(lmul)
     n = 0
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])

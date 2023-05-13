@@ -34,7 +34,7 @@ def generate_walking_answer_seg_viota(element_num, vlen, vsew, f):
                     if j < i:
                         print("0x0", file=f)
                     else:
-                        print("0x%d"%(0 if (get_mask_bit(i-1) == 0) else 1), file=f)
+                        print("0x%d"%(0 if (masked and get_mask_bit(i-1) == 0) else 1), file=f)
         print("", file=f)
 
     # Generate prefix-sum of 1 for WalkingZeros
