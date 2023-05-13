@@ -1446,7 +1446,7 @@ test_ ## testnum: \
   )
 
 #define TEST_VCOMPRESS_OP( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \
-  TEST_CASE_LOOP( testnum, v16, src_addr, \
+  TEST_CASE_LOOP( testnum, v16, result_addr, \
     VSET_VSEW_4AVL \
     la  x1, src_addr; \
     la  x2, rd_addr; \
