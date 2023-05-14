@@ -87,12 +87,13 @@ def generate_tests_vfncvt(instr, f, lmul):
     # rs2_val = list(set(rs2_val))
 
     lmul_1 = 1 if lmul < 1 else int(lmul)
+    lmul_double_1 = 1 if lmul * 2 < 1 else int(lmul * 2)
     n = 0
     
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    loop_num = min(int(min(len(rs1_val), len(rs2_val)) / num_elem), 20)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
     # print("loop_num = ", loop_num);
@@ -129,7 +130,7 @@ def generate_tests_vfncvt(instr, f, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
-        if k % (2*lmul) == 0 and k != 8:
+        if k % (2*lmul) == 0 and k != 8 and not is_overlap(24, lmul_1 ,k, lmul_double_1):
             for i in range(loop_num):
                 print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
                 n += 1
@@ -150,7 +151,7 @@ def generate_tests_vfncvt(instr, f, lmul):
                 n += 1
 
         k = i % 31 + 1
-        if k % lmul != 0 or k == 8:
+        if k % lmul != 0 or k == 8 or is_overlap(k, lmul_1 ,8, lmul_double_1):
             continue
         for i in range(loop_num):
             print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)

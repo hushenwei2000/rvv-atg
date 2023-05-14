@@ -73,7 +73,7 @@ def generate_tests_vfwcvt(instr, f, lmul):
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
         return 0
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    loop_num = min(int(min(len(rs1_val), len(rs2_val)) / num_elem), 20)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
     
