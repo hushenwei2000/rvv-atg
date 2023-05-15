@@ -190,5 +190,3 @@ from scripts.create_test_loadstore.create_test_vsuxsegei8 import *
 from scripts.create_test_loadstore.create_test_vsuxsegei16 import *
 from scripts.create_test_loadstore.create_test_vsuxsegei32 import *
 
-# Random
-from scripts.create_test_random.create_test_war import *
