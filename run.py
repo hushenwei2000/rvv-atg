@@ -4,7 +4,7 @@ from ast import arg
 import os
 
 from scripts.lib import *
-from scripts.replace_results2 import replace_results
+from scripts.replace_results import replace_results
 from scripts.run_riscof_coverage import run_riscof_coverage
 from scripts.run_spike import run_spike
 from scripts.constants import *
