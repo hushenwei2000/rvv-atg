@@ -194,31 +194,45 @@ def run_loadstore(cwd, args, cgf, output_dir):
         args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir)
 
     # 2. Use empty tests to generate coverage report
-    # (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
-    #                                                   output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
+    (rpt_empty, isac_log_empty) = run_riscof_coverage(args.i, cwd, cgf,
+                                                      output_dir, empty_test, 'empty', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
 
     # 3. Generate test with not-filled result
-    # first_test = create_first_test(
-    #     args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
+    first_test = create_first_test(
+        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir, rpt_empty)
 
     if args.tool == 'sail':
-        1
         # 4-1. Run sail and riscof coverage and extract true result from isac_log
-        # (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
-                                                        #   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
+        (rpt_first, isac_log_first) = run_riscof_coverage(args.i, cwd, cgf,
+                                                          output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False, tool=args.tool)
     else:
         # 4-2. Or run spike to generate commit info log
         spike_first_log = run_spike(args.i, cwd, 
                   output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
-    # if args.tool == 'sail':
+    if args.tool == 'sail':
         # 5-1. Replace old result with true results using sail and isac log
-        # des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
-    # else:
+        des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
+    else:
         # 5-2. Or use spike log
-        # des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
+        des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
 
     # 6. Run final riscof coverage
+    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+                                                      output_dir, empty_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+
+    check_spikelog(output_dir, args.i)
+
+def run_loadstore_new(cwd, args, cgf, output_dir):
+    # 1. Create empty test file
+    empty_test = create_empty_test(
+        args.i, args.xlen, args.vlen, args.vsew, args.lmul, args.vta, args.vma, output_dir)
+
+    # 2. Or run spike to generate commit info log
+    spike_first_log = run_spike(args.i, cwd, 
+                output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
+
+    # 3. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
                                                       output_dir, empty_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
 
@@ -297,7 +311,10 @@ def main():
     elif args.t == "m" or args.t == "p":
         run_mask(cwd, args, cgf, output_dir)
     elif args.t == "l":
-        run_loadstore(cwd, args, cgf, output_dir)
+        if args.i in ["vlssege8", "vlssege16", "vlssege32", "vlssege64"]:
+            run_loadstore_new(cwd, args, cgf, output_dir)
+        else:
+            run_loadstore(cwd, args, cgf, output_dir)
     elif args.t == "r": # random
         run_random(cwd, args, output_dir)
 
