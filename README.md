@@ -7,21 +7,22 @@
 2. RISCV-ISAC RVV Support
    1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
    2. `cd riscv-isac-rvv`
-   3. `git checkout vetcor`
+   3. `git checkout vetcor`  # IMPORTANT!!!
    4. `pip install . --prefix=~/.local`  # Anywhere you want  
    5. Add `~/.local` to your PATH   
    
    If the terminal can find `riscv_isac` command then it's successful
 3. Spike
    1. Install Latest [https://github.com/riscv-software-src/riscv-isa-sim](https://github.com/riscv-software-src/riscv-isa-sim).
+   ```
    > $ apt-get install device-tree-compiler  
    > $ mkdir build  
    > $ cd build  
    > $ ../configure --prefix=$RISCV  --enable-commitlog   
+   ⚠️ Need to add `--enable-commitlog`   
    > $ make  
    > $ [sudo] make install   
-   
-   ⚠️ Need to add `--enable-commitlog`   
+   ```
    2. Add `<spike_path>/build` to your PATH
    
    If the terminal can find `spike` command then it's successful
@@ -59,6 +60,12 @@ python check_all.py
 
 - Check all generated folders. Find out if test file FAIL and the statistics of COVERAGE.
 - Output will in 'check_all.out'.
+
+## Known Bugs
+- Lack of vmerge, vext tests
+- Lack of load store eew=64 tests
+- vluxsegei8, vluxsegei16, vluxsegei32 can not be generated
+- vlre8, vlre32 can not be generated
 
 ## Support Configuration
 
