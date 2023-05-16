@@ -16,7 +16,7 @@ integer = ['vadc', 'vadd', 'vand', 'vdiv', 'vdivu', 'vmax', 'vmaxu', 'vmin', 'vm
 integer_short = ['vadd', 'vzext', 'vadc', 'vmadc', 'vsll', 'vmsgt', 'vredand']
 integer_widen_short = ['vwadd', 'vwaddu', 'vnsrl', 'vwredsumu']
 
-mask = ['vfirst', 'vid', 'viota', 'vmand', 'vmsbf', 'vpopc']
+mask = ['vpopc']
 
 # Exclude 'vfncvt', 'vfwcvt', 'vfcvt', 
 floatingpoint = ['vfadd', 'vfclass', 'vfdiv', 'vfmacc', 'vfmadd', 'vfmax', 'vfmerge', 'vfmin', 'vfmsac', 'vfmsub', 'vfmul', 'vfmv', 'vfnmacc', 'vfnmadd', 'vfnmsac', 'vfnmsub', 'vfrdiv', 'vfrec7', 'vfredmax', 'vfredmin', 'vfredosum', 'vfredusum', 'vfrsqrt7', 'vfrsub', 'vfsgnj', 'vfsgnjn', 'vfsgnjx', 'vfsqrt', 'vfsub', 'vfwadd', 'vfwmacc', 'vfwmsac', 'vfwmul', 'vfwnmacc', 'vfwnmsac', 'vfwredsum', 'vfwsub']
@@ -147,27 +147,34 @@ def runcommand_loadstore(ins):
 
 def runcommand_mask(ins):
     # passed 32
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --masked=False --lmul 8' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --masked=False --lmul 8' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --masked=False --lmul 8' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 1' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.5' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.25' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.125' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 2' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 4' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 8' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 1' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.5' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.25' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.125' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 2' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 4' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 8' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.5' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.25' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.125' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 2' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 8' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 1' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.5' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.25' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.125' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 2' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 4' % ins)
+    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 8' % ins)
     
 
 def run_integer():
@@ -177,12 +184,14 @@ def run_integer():
     for d in dirs:
         if d.startswith(str(date.today())[5:]):
             instr = d.split('-')[2]
+            instr_index = d.find(instr)
+            full_instr = d[instr_index:]
             log = "%s/%s"%(d, 'spike_%s_final.log'%instr)
             if os.system("grep FAIL %s"%log) == 0:
                 print("Generated file is WRONG! : %s"%instr)
-                os.system('cp %s ./generate_all'%log)
+                os.system('cp %s ./generate_all/spike_%s.log'%(log, full_instr))
             elf = "%s/%s"%(d, 'ref_final.elf')
-            os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
+            os.system('cp %s ./generate_all/%s.elf'%(elf, full_instr))
 
 def run_fixpoint():
     pool = multiprocessing.Pool(30)
@@ -233,12 +242,14 @@ def run_mask():
     for d in dirs:
         if d.startswith(str(date.today())[5:]):
             instr = d.split('-')[2]
+            instr_index = d.find(instr)
+            full_instr = d[instr_index:]
             log = "%s/%s"%(d, 'spike_%s_final.log'%instr)
             if os.system("grep FAIL %s"%log) == 0:
                 print("Generated file is WRONG! : %s"%instr)
-                os.system('cp %s ./generate_all'%log)
+                os.system('cp %s ./generate_all/spike_%s.log'%(log, full_instr))
             elf = "%s/%s"%(d, 'ref_final.elf')
-            os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
+            os.system('cp %s ./generate_all/%s.elf'%(elf, full_instr))
 
 def run_loadstore():
     pool = multiprocessing.Pool(30)
@@ -260,7 +271,7 @@ def main():
     setup_logging(True)
     # Modify here to choose which categories you want to generate
     # run_integer()
-    # run_mask()
+    run_mask()
     # run_floatingpoint()
     # run_fixpoint()
     # run_permute()
