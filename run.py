@@ -57,10 +57,6 @@ def parse_args(cwd):
                         help="Type of Instruction: i, f, m", dest="t")
     parser.add_argument("--tool", type=str,
                         help="Tool to rgenerate log: spike(default), sail", default="spike")
-    parser.add_argument("--etype", type=str,
-                        help="Type of exception to test",default="illegal_instruction")
-    parser.add_argument("--etest", type=str,
-                        help="which exception to test",default="vs")
     parser.add_argument("-b","--batch", type=int, default="1",
                         help="Batch mode")
     args = parser.parse_args()
@@ -240,25 +236,6 @@ def run_loadstore_new(cwd, args, cgf, output_dir):
 
 
 
-def run_exception(cwd,args):
-    gcc = GCC_CONST
-    objdump = OBJDUMP_CONST
-    # 1. create output directory
-    etype = args.etype
-    etest = args.etest
-    output = args.o
-    if output is None:
-        output = str(date.today())[5:] + "-" + str(etype)+ "-" + str(etest)
-    os.system("rm -rf {}".format(output))
-
-    logging.info("Creating output directory: {}".format(output))
-    subprocess.run(["mkdir", "-p", output])
-    #2. run make
-    os.chdir('./scripts/create_test_exception')
-    os.system("rm -rf ./build")
-    os.system("make GCC=%s OBJ=%s TYPE=%s TEST=%s DEBUG=%s" %(gcc, objdump, args.etype, args.etest, args.batch))
-    #3. move output to output directory
-    os.system("mv ./build %s/%s" %(cwd,output))
 
 def main():
     # Full path of current dir
@@ -266,11 +243,6 @@ def main():
     os.environ["RVV_ATG_ROOT"] = cwd
     args = parse_args(cwd)
     setup_logging(args.verbose)
-    # run exception test
-    if args.t == "e":
-        # print("get e!")
-        run_exception(cwd, args)
-        return
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, args.lmul, cwd, output_dir)
     rewrite_macro_vtavma(args.vsew, args.lmul, args.vta, args.vma)
