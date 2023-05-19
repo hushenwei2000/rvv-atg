@@ -884,6 +884,50 @@ def generate_macros_vwred(f, lmul):
                 )",file=f)
 
 
+def generate_macros_ext_op(f, lmul):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    lmul = 1 if lmul < 1 else int(lmul)
+    print("#undef TEST_EXT_OP \n\
+#define TEST_EXT_OP( testnum, inst, result, val1 ) \\\n\
+    TEST_CASE_LOOP( testnum, v24, result,  \\\n\
+        VSET_VSEW_4AVL \\\n\
+        la x7, rd_origin_data; \\\n\
+        vle%d.v v24, (x7);"%vsew + " \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+        la x7, val1; \\\n\
+        vle%d.v v8, (x7);"%vsew + " \\\n\
+        inst v24, v8%s;"%(", v0.t" if masked else "") + " \\\n\
+    )", file=f)
+    for n in range(1, 32):
+        if n % lmul != 0 or n == 24:
+            continue
+        print("#define TEST_EXT_OP_rs1_%d( testnum, inst, result, val1 )"%n + " \\\n\
+            TEST_CASE_LOOP( testnum, v24, result, \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v24, (x7);"%vsew + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                la x7, val1; \\\n\
+                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
+                inst v24, v%d%s; "%(n, ", v0.t" if masked else "") + " \\\n\
+            )", file = f)
+
+    for n in range(1, 32):
+        if n % lmul != 0 or n == 8:
+            continue
+        print("#define TEST_EXT_OP_rd_%d( testnum, inst, result, val1 )"%n + " \\\n\
+            TEST_CASE_LOOP( testnum, v%d, result, "%n + " \\\n\
+                VSET_VSEW_4AVL \\\n\
+                la x7, rd_origin_data; \\\n\
+                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
+                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                la x7, val1; \\\n\
+                vle%d.v v8, (x7);"%(vsew) + " \\\n\
+                inst v%d, v8%s; "%(n, ", v0.t" if masked else "") + " \\\n\
+            )", file = f)
+
 def extract_operands(f, rpt_path):
     rs1_val = []
     rs2_val = []
@@ -1779,3 +1823,88 @@ def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', ge
             n += 1
             print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
                 instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+
+def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    vsew = int(os.environ['RVV_ATG_VSEW'])
+    lmul_1 = 1 if lmul < 1 else int(lmul)
+    n = 0
+    
+    num_elem = int((vlen * lmul / vsew))
+    if num_elem == 0:
+        return 0
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    step_bytes = int(vlen * lmul / 8)
+    
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # %s Tests"%instr,file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    for i in range(loop_num):
+        if int(vsew / 2) >= 8: 
+            print("TEST_EXT_OP( %d,  %s.vf2, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
+            n += 1
+    count1 = n
+    for i in range(loop_num):
+        if int(vsew / 4) >= 8:
+            print("TEST_EXT_OP( %d,  %s.vf4, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+    count2 = n
+    for i in range(loop_num):
+        if int(vsew / 8) >= 8:
+            print("TEST_EXT_OP( %d,  %s.vf8, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+    
+    print("  #-------------------------------------------------------------",file=f)
+    print("  # %s Tests (different register)"%instr,file=f)
+    print("  #-------------------------------------------------------------",file=f)
+    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1  
+        if k % lmul != 0 or k == 8:
+            continue
+        if int(vsew / 2) >= 8: 
+            print("TEST_EXT_OP_rd_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
+            n += 1
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1  
+        if k % lmul != 0 or k == 8:
+            continue
+        if int(vsew / 4) >= 8:
+            print("TEST_EXT_OP_rd_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1  
+        if k % lmul != 0 or k == 8:
+            continue
+        if int(vsew / 8) >= 8:
+            print("TEST_EXT_OP_rd_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+
+
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1
+        if k % lmul != 0 or k == 24:
+            continue
+        if int(vsew / 2) >= 8: 
+            print("TEST_EXT_OP_rs1_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
+            n += 1
+
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1
+        if k % lmul != 0 or k == 24:
+            continue
+        if int(vsew / 4) >= 8:
+            print("TEST_EXT_OP_rs1_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+
+    for i in range(min(32, loop_num)):
+        k = i % 31 + 1
+        if k % lmul != 0 or k == 24:
+            continue
+        if int(vsew / 8) >= 8:
+            print("TEST_EXT_OP_rs1_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
+            n += 1
+    
+    return (n, 0, 0)

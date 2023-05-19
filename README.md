@@ -62,10 +62,8 @@ python check_all.py
 - Output will in 'check_all.out'.
 
 ## Known Bugs
-- Lack of vmerge, vext tests
+- Lack of vmerge tests
 - Lack of load store eew=64 tests
-- vluxsegei8, vluxsegei16, vluxsegei32 can not be generated
-- vlre8, vlre32 can not be generated
 
 ## Support Configuration
 

@@ -63,6 +63,8 @@ from scripts.create_test_integer.create_test_vwmulu import *
 from scripts.create_test_integer.create_test_vwmulsu import *
 from scripts.create_test_integer.create_test_vwsub import *
 from scripts.create_test_integer.create_test_vwsubu import *
+from scripts.create_test_integer.create_test_vzext import *
+from scripts.create_test_integer.create_test_vsext import *
 
 # Fix point
 from scripts.create_test_fixpoint.create_test_vaadd import *

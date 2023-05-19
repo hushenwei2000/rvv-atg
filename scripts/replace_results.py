@@ -205,7 +205,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
                 # print('========================================={}=================='.format(a))
                 if a is not None:
                     mark = True
-    str = instr + "(\.[a-z]*)*\s+([a-z]*[0-9]*)," # such as vcpop.m a4; vadd.vv v14
+    str = instr + "(\.[a-z0-9]*)*\s+([a-z]*[0-9]*)," # such as vcpop.m a4; vadd.vv v14
     file.seek(0)
     matchPattern = re.compile(str)
     mark = False
