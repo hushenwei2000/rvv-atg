@@ -65,6 +65,7 @@ from scripts.create_test_integer.create_test_vwsub import *
 from scripts.create_test_integer.create_test_vwsubu import *
 from scripts.create_test_integer.create_test_vzext import *
 from scripts.create_test_integer.create_test_vsext import *
+from scripts.create_test_integer.create_test_vmerge import *
 
 # Fix point
 from scripts.create_test_fixpoint.create_test_vaadd import *
