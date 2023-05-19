@@ -6,6 +6,7 @@ import subprocess
 from scripts.lib import setup_logging
 
 # IMPORTANT!
+# If you use `python3` not `python`, you should replace all `python` in this file to `python3`
 # Please Read this file roughly before running it.
 # It is recommended to not to run too many instructions at once, because it will take a long time to finish and may hard to debug when have bugs. 
 
