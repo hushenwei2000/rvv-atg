@@ -204,7 +204,7 @@ def run_loadstore(cwd, args, cgf, output_dir):
     else:
         # 4-2. Or run spike to generate commit info log
         spike_first_log = run_spike(args.i, cwd, 
-                  output_dir, empty_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
+                  output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     if args.tool == 'sail':
         # 5-1. Replace old result with true results using sail and isac log
@@ -215,7 +215,7 @@ def run_loadstore(cwd, args, cgf, output_dir):
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, empty_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+                                                      output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
 
     check_spikelog(output_dir, args.i)
 
@@ -264,10 +264,12 @@ def main():
     elif args.t == "m" or args.t == "p":
         run_mask(cwd, args, cgf, output_dir)
     elif args.t == "l":
-        if args.i in ["vlssege8", "vlssege16", "vlssege32", "vlssege64"]:
-            run_loadstore_new(cwd, args, cgf, output_dir)
-        else:
-            run_loadstore(cwd, args, cgf, output_dir)
+        # TODO: new load store
+        # if args.i in ["vlssege8", "vlssege16", "vlssege32", "vlssege64"]:
+        #     run_loadstore_new(cwd, args, cgf, output_dir)
+        # else:
+        #     run_loadstore(cwd, args, cgf, output_dir)
+        run_loadstore(cwd, args, cgf, output_dir)
 
 
 if __name__ == "__main__":
