@@ -69,6 +69,7 @@ python check_all.py
 
 | Parameter | Numbers                   | Current Support | Note                           |
 | --------- | ------------------------- | --------------- | ------------------------------ |
+| FLEN      | FP16, BF16, 32, 64        | 32, 64          |                                |
 | vlen      | 128 ~ 2^16                | 128 ~ 1024      | Spike now support largest 4096 |
 | vsew      | 8, 16, 32, 64             | All             |                                |
 | lmul      | 1/8, 1/4, 1/2, 1, 2, 4, 8 | All             | lmul=8 except load/store， 1/8 except eew>=32 loadstore       |
