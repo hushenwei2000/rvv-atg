@@ -100,12 +100,18 @@ def run_vf(cwd, args, cgf, output_dir):
         spike_first_log = run_spike(args.i, cwd, 
                   output_dir, first_test, 'first', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=False)
 
+    search_ins = args.i
+    original_ins = args.i
+    if args.i.startswith("vmf"):
+        search_ins = "vcpop"
+
+
     if args.tool == 'sail':
         # 5-1. Replace old result with true results using sail and isac log
-        des_path = replace_results(args.i, first_test, isac_log_first, 'sail')
+        des_path = replace_results(search_ins, first_test, isac_log_first, 'sail', original_ins)
     else:
         # 5-2. Or use spike log
-        des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
+        des_path = replace_results(search_ins, first_test, spike_first_log, 'spike', original_ins)
 
     # 6. Run final riscof coverage
     (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,

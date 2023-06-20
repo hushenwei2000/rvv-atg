@@ -1,0 +1,14 @@
+vmfne:
+    config: 
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode: 
+      vmfne.vv: 0
+      vmfne.vf: 0
+    rs1:
+      <<: *v_quard_regs
+    rd: 
+      <<: *v_quard_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(vsew, vsew, "vmfne", 2, rvv_sew = vsew)': 0

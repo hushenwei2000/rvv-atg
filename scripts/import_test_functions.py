@@ -120,6 +120,12 @@ from scripts.create_test_floating.create_test_vfrec7 import *
 from scripts.create_test_floating.create_test_vfredmax import *
 from scripts.create_test_floating.create_test_vfredmin import *
 from scripts.create_test_floating.create_test_vfredosum import *
+from scripts.create_test_floating.create_test_vmfeq import *
+from scripts.create_test_floating.create_test_vmfne import *
+from scripts.create_test_floating.create_test_vmflt import *
+from scripts.create_test_floating.create_test_vmfle import *
+from scripts.create_test_floating.create_test_vmfgt import *
+from scripts.create_test_floating.create_test_vmfge import *
 
 # mask
 from scripts.create_test_mask.create_test_vmand import *
@@ -148,8 +154,10 @@ from scripts.create_test_permute.create_test_vmre import *
 # load 
 from scripts.create_test_loadstore.create_test_vle8 import *
 from scripts.create_test_loadstore.create_test_vle16 import *
+from scripts.create_test_loadstore.create_test_vle64 import *
 from scripts.create_test_loadstore.create_test_vle32 import *
 from scripts.create_test_loadstore.create_test_vlse8 import *
+from scripts.create_test_loadstore.create_test_vlse64 import *
 from scripts.create_test_loadstore.create_test_vlse16 import *
 from scripts.create_test_loadstore.create_test_vlse32 import *
 from scripts.create_test_loadstore.create_test_vlre8 import *

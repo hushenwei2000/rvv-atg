@@ -421,6 +421,17 @@ test_ ## testnum: \
   .int result; \
   .popsection
 
+#define TEST_CASE_MASK_FP_4VL( testnum, testreg, flags, correctval, code... ) \
+test_ ## testnum: \
+    code; \
+    li TESTNUM, testnum; \
+    li x7, correctval; \
+    VSET_VSEW_4AVL \
+    vpopc.m x14, testreg; \
+    VSET_VSEW \
+    frflags a1; \
+    li a2, flags; \
+
 #define TEST_CASE_FP_INT( testnum, testreg, flags, correctval_eew, correctval, val, code... ) \
 test_ ## testnum: \
   li x7, 0; \

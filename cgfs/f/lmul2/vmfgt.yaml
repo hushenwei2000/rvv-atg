@@ -1,0 +1,13 @@
+vmfgt:
+    config: 
+      - check ISA:=regex(.*V.*)
+      - check ISA:=regex(.*F.*)
+    opcode: 
+      vmfgt.vf: 0
+    rs1:
+      <<: *v_even_regs
+    rd: 
+      <<: *v_even_regs
+    val_comb:
+      abstract_comb:
+        'ibm_b1(vsew, vsew, "vmfgt", 2, rvv_sew = vsew)': 0

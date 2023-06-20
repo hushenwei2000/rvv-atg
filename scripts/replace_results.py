@@ -16,7 +16,7 @@ loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8
 
 
 # from sail log
-def replace_results_sail(instr, first_test, isac_log_first):
+def replace_results_sail(instr, first_test, isac_log_first, origin_inst = ""):
     logging.info("Running replace_results: {}".format(first_test))
     instr = instr.replace("_b1", "")
 
@@ -62,7 +62,7 @@ def replace_results_sail(instr, first_test, isac_log_first):
 
     return des_path
 
-def replace_results_spike(instr, first_test, spike_log):
+def replace_results_spike(instr, first_test, spike_log, origin_inst = ""):
     logging.info("Running replace_results: {}".format(first_test))
     instr = instr.replace("_b1", "")
 
@@ -103,7 +103,7 @@ def replace_results_spike(instr, first_test, spike_log):
     print("len reglist=%d"%len(regList))
     print("len anslist=%d"%len(ansList))
     # Extract fflas
-    if instr.startswith("vf"):
+    if (instr.startswith("vf") or ("vmf" in origin_inst)):
         file = open(spike_log, "r")
         fflag_lineList = []
         fflag_regList = []
@@ -149,7 +149,7 @@ def replace_results_spike(instr, first_test, spike_log):
             if ansListIndex < len(ansList):
                 eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
                 ansListIndex = ansListIndex + 1
-        if instr.startswith("vf") and "0xff100" in eachLine[i]:
+        if (instr.startswith("vf") or ("vmf" in origin_inst)) and "0xff100" in eachLine[i]:
             eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
             fflag_ansListIndex = fflag_ansListIndex + 1
     f.close()
@@ -161,7 +161,7 @@ def replace_results_spike(instr, first_test, spike_log):
         "Running replace_results finish, dest file: {}".format(des_path))
     return des_path
 
-def replace_results_spike_new(instr, first_test, spike_log):
+def replace_results_spike_new(instr, first_test, spike_log, origin_inst = ""):
     logging.info("Running replace_results: {}".format(first_test))
     instr = instr.replace("_b1", "")
 
@@ -336,7 +336,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
 
     print("len anslist=%d"%len(ansList))
     # Extract fflas
-    if instr.startswith("vf"):
+    if (instr.startswith("vf") or ("vmf" in origin_inst)):
         file = open(spike_log, "r")
         fflag_lineList = []
         fflag_regList = []
@@ -383,7 +383,7 @@ def replace_results_spike_new(instr, first_test, spike_log):
             if ansListIndex < len(ansList):
                 eachLine[i] = eachLine[i].replace("5201314", ansList[ansListIndex], 1)
                 ansListIndex = ansListIndex + 1
-        if instr.startswith("vf") and "0xff100" in eachLine[i]:
+        if (instr.startswith("vf") or ("vmf" in origin_inst)) and "0xff100" in eachLine[i]:
             eachLine[i] = eachLine[i].replace("0xff100", fflag_ansList[fflag_ansListIndex], 1)
             fflag_ansListIndex = fflag_ansListIndex + 1
     f.close()
@@ -396,13 +396,13 @@ def replace_results_spike_new(instr, first_test, spike_log):
     return des_path
 
 
-def replace_results(instr, test_file, log_path, tool):
+def replace_results(instr, test_file, log_path, tool, origin_inst = ""):
     if tool == 'spike':
         if (instr in mask) or (instr in permute and "vrgather" not in instr) or (instr in loadstore) or ("red" in instr) or (instr.startswith("vfmv")):
             print('+++++++++++++++++++++++++++++++++++++++ without new +++++++++++++++++++++++++++++++++++++++++++')
-            return replace_results_spike(instr, test_file, log_path)
+            return replace_results_spike(instr, test_file, log_path, origin_inst)
         else:
             print('---------------------------------------- with new ---------------------------------------------')
-            return replace_results_spike_new(instr, test_file, log_path)
+            return replace_results_spike_new(instr, test_file, log_path, origin_inst)
     else:
-        return replace_results_sail(instr, test_file, log_path)
+        return replace_results_sail(instr, test_file, log_path, origin_inst)
