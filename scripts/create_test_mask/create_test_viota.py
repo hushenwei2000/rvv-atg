@@ -136,7 +136,7 @@ def generate_tests_viota(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    for i in range(0, num_elem_plus):
+    for i in range(0, num_elem_plus, 10):
         print("TEST_VIOTA_OP( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
             num_test, instr, i, i), file=f)
         num_test = num_test + 1

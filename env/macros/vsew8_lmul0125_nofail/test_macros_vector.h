@@ -926,7 +926,6 @@ test_ ## testnum: \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
     li  x2, stride; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
     inst v16, (x1), x2; \
     VSET_VSEW \
   )
@@ -945,7 +944,6 @@ test_ ## testnum: \
 #define TEST_VLE_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
     inst v16, (x1); \
     VSET_VSEW \
   )
@@ -953,7 +951,6 @@ test_ ## testnum: \
 #define TEST_VLEFF_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
     inst v16, (x1); \
     csrr x30, vl; \
   )
@@ -1018,7 +1015,6 @@ test_ ## testnum: \
 //     li x7, MASK_EEW(result1, eew); \
 //     li x8, MASK_EEW(result2, eew); \
 //     li x9, MASK_EEW(result3, eew); \
-//     vsetivli x31, 1, MK_EEW(eew), mf8, tu, mu; \
 //     vmv.v.x v1, x7; \
 //     vmv.v.x v2, x8; \
 //     vmv.v.x v3, x9; \
@@ -1032,7 +1028,6 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1065,7 +1060,6 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1103,7 +1097,6 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1114,7 +1107,6 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result, \
     la  x1, base; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1148,7 +1140,6 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \

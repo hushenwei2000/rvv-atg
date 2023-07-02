@@ -12,8 +12,9 @@ for d in dirs:
         vsew = d.split('-')[4]
         lmul = d.split('-')[5]
         log = "%s/%s"%(d, 'spike_%s_final.log'%instr) 
-        if os.system("grep FAIL %s"%(log)) == 0:
-            print("Generated file is WRONG! : %s"%d)
+        if os.system("grep pass %s"%(log)) != 0:
+            print("Generated file is WRONG or not exist! : %s"%d)
+            continue
         report = "%s/coverage_final.rpt"%d
         try:
             f = open(report, 'r')

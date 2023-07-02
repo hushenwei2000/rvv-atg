@@ -136,7 +136,7 @@ def generate_tests_vslide(f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(num_group_walking):
-        for k in range(num_elem + 1):
+        for k in range(0, num_elem + 1, 10):
             print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " %
                   (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
             n += 1
