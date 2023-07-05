@@ -10,3 +10,4 @@ log*
 .nfs*
 .DS_Store
 sanity_test/
+riscof_work

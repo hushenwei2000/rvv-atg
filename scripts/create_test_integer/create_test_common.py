@@ -19,6 +19,7 @@ def generate_macros_vvvxvi(f, lmul, no_fail = False):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v16, v8%s;"%(", v0.t" if masked else "") + " \\\n\
+            MY_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
     print("#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
@@ -30,6 +31,7 @@ def generate_macros_vvvxvi(f, lmul, no_fail = False):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1); \\\n\
             inst v16, v8, x1%s;"%(", v0.t" if masked else "") + " ; \\\n\
+            MY_RVTEST_SIGUPD(x12, v16) \\\n\
         )", file=f)
     print("#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
@@ -40,6 +42,7 @@ def generate_macros_vvvxvi(f, lmul, no_fail = False):
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v16, v8, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + " ; \\\n\
+            MY_RVTEST_SIGUPD(x24, v16) \\\n\
         )", file=f)
     for n in range(2, 32):
         if n % lmul != 0 or n == 8 or n == 16 or n == 24:
@@ -959,6 +962,7 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+        print("  RVTEST_SIGBASE( x20,signature_x20_0)", file=f)
         for i in range(loop_num):
             n += 1
             print("  TEST_VV_OP( "+str(n)+",  %s.%s, "%(instr, instr_suffix) + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)

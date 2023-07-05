@@ -18,7 +18,6 @@ def print_common_header(instr, f):
     #\n\n\
     #include \"model_test.h\"\n\
     #include \"arch_test.h\"\n\
-    #include \"riscv_test.h\"\n\
     #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
     vsew = int(os.environ["RVV_ATG_VSEW"])
     if instr == "viota" :
@@ -45,7 +44,7 @@ def print_common_header(instr, f):
     \n\
     RVTEST_CASE(0,\"//check ISA:=regex(.*64.*);check ISA:=regex(.*V.*);def TEST_CASE_1=True;\",%s)\n\
     \n\
-    RVTEST_RV64UV\n\
+    #define MY_RVTEST_SIGUPD(basereg, vreg) vmv.x.s(x1, vreg); RVTEST_SIGUPD(basereg, x1); \n\
     RVMODEL_BOOT\n\
     RVTEST_CODE_BEGIN\n\
     RVTEST_VSET\n\
@@ -55,8 +54,6 @@ def print_common_header(instr, f):
 def print_common_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -66,6 +63,10 @@ def print_common_ending(f):
     RVTEST_DATA_BEGIN\n\
     \n\
     TEST_DATA\n\
+    \n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
     \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
@@ -100,7 +101,8 @@ def print_common_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_common_withmask_ending(f):
@@ -119,7 +121,12 @@ def print_common_withmask_ending(f):
     TEST_DATA\n\
     \n", file=f)
     print_mask_origin_data_ending(f)
-    print("  signature_x12_0:\n\
+    print("\
+        RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
+    signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
     \n\
@@ -152,7 +159,8 @@ def print_common_withmask_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def extract_operands(f, rpt_path):
@@ -256,6 +264,10 @@ def print_load_ending(f):
     idx64dat8:  .word 0x00000000\n\
     idx64dat9:  .zero 5201314\n\
     \n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -289,7 +301,8 @@ def print_load_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_loaddword_ending(f):
@@ -363,6 +376,10 @@ def print_loaddword_ending(f):
     idx64dat8:  .word 0x00000000\n\
     idx64dat9:  .zero 5201314\n\
     \n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -396,7 +413,8 @@ def print_loaddword_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 
@@ -481,6 +499,10 @@ def print_loadls_ending(f):
     idx64dat7:  .word 0x0000000c\n\
     idx64dat8:  .word 0x00000000\n\
     \n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -514,7 +536,8 @@ def print_loadls_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 
@@ -565,6 +588,10 @@ def print_loadlr_ending(f):
     tdta27:  .zero 32\n\
     tdta28:  .zero 7584\n\
     \n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -598,7 +625,8 @@ def print_loadlr_ending(f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_mask_origin_data_ending(f):
@@ -724,6 +752,10 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     print_mask_origin_data_ending(f)
 
     print("\n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -757,7 +789,8 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1, generate_wvwx = True):
@@ -832,6 +865,10 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
             print("0x5201314", file=f)
     print_mask_origin_data_ending(f)
     print("\n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -865,7 +902,8 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, generate_rv = False, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1):
@@ -925,6 +963,10 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     print_mask_origin_data_ending(f)
 
     print("\n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -958,7 +1000,8 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1, generate_wvwf = True):
@@ -1035,6 +1078,10 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     print_mask_origin_data_ending(f)
 
     print("\n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -1068,7 +1115,8 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vsew, f, is_widen = False, is_narrow = False):
@@ -1121,6 +1169,10 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
 
     print_mask_origin_data_ending(f)
     print("\n\
+    RVTEST_DATA_END\n\
+    \n\
+    RVMODEL_DATA_BEGIN\n\
+    \n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -1154,7 +1206,8 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
+    \n\
     ", file=f)
 
 

@@ -8,7 +8,15 @@
 //-----------------------------------------------------------------------
 
 // VSEW temporarily hard-coded to 32 bits
-#define RVTEST_VSET vsetivli x31, 1, e32, tu, mu;
+#define TESTNUM gp
+#define RVTEST_VECTOR_ENABLE                                            \
+  li a0, (MSTATUS_VS & (MSTATUS_VS >> 1)) |                             \
+         (MSTATUS_FS & (MSTATUS_FS >> 1));                              \
+  csrs mstatus, a0;                                                     \
+  csrwi fcsr, 0;                                                        \
+  csrwi vcsr, 0;
+
+#define RVTEST_VSET RVTEST_VECTOR_ENABLE; vsetivli x31, 1, e32, tu, mu; 
 #define __riscv_vsew 32
 #define __e_riscv_vsew e32
 #define __riscv_vsew_bytes 4
