@@ -8,6 +8,8 @@ instr = 'vlse16'
 
 def generate_macros(f):
     for n in range(2, 30):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VLSE_OP_1%d( testnum, inst, eew, result1, result2, stride, base )"%n + " \\\n\
             TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
                 la  x%d, base; "%n + "\\\n\
@@ -83,11 +85,11 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     for i in range(100):     
         k = i%31+1
         n+=1
-        if( k % lmul == 0 and k % emul == 0):
+        if( k % lmul == 0 and k % emul == 0 and k != 31 and k != 12 and k != 20 and k != 24):
             print("  TEST_VLSE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0xf00f"+", "+"0x0ff0"+" , "+" -4 "+" , "+"2 + tdat4"+");",file=f)
         
         k = i%30+2
-        if(k == 31):
+        if(k == 31  or k == 12 or k == 20 or k == 24):
             continue;
         n +=1
         print("  TEST_VLSE_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff"+", "+"0x00ff"+" , "+" 2 "+" , "+"0 + tdat"+");",file=f)

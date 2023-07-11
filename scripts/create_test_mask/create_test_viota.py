@@ -168,8 +168,6 @@ def print_ending_viota(vlen, vsew, lmul, f):
     # generate const information
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -185,7 +183,10 @@ def print_ending_viota(vlen, vsew, lmul, f):
     generate_walking_answer_seg_viota(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
     print_mask_origin_data_ending(f)
 
-    print("signature_x12_0:\n\
+    print("\n\
+    RVTEST_DATA_END\n\
+    RVMODEL_DATA_BEGIN\n\
+    signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
     \n\
@@ -204,6 +205,17 @@ def print_ending_viota(vlen, vsew, lmul, f):
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -218,7 +230,7 @@ def print_ending_viota(vlen, vsew, lmul, f):
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
     ", file=f)
 
 

@@ -28,6 +28,15 @@ rs2_val_64 = ['0x0000000000000000', '0x8000000000000000', '0x0000000000000001', 
               '0x8c5fb19bc11df6bf', '0x513c9cc3a6d05c60', '0x6c1e50ea1c4c0904', '0xbcce36a4ea2e073c', '0xe93686ad573ac3ea', '0xab23e40ff9b44f35', '0x88345d514f0ed9b1', '0xe398452da7a322ce', '0xd9eace733df87393', '0xc81593dad9a0d54e', '0x1b809cf6332b2845', '0x69d97d5e8bcff755', '0x898622dcfff2d599', '0x70f978be54ed7687', '0x76b51fb5288a87c1', '0xaca8aba5b6787f82', '0x872ad316864f6302', '0x7f55b187ec3d34a2', '0xc9ba75a7a3204dd7', '0x6ae296496e39c63e', '0x693a26c4c15f26ff', '0x96df12c2783db4a2', '0x4c0d6288959ec61e', '0xf7bdcda44267bf4b', '0xb7704960b18a128a', '0xc9eb305ad26d0ec9', '0xc9ecc64ef8ccbcc4', '0x10d37eb2301af9a5', '0x6e1646940216d165', '0x1637d7cc103f5daa', '0x423b04bf9347445e', '0x487a9e340ecf662f', '0x3bd11c2a06c01b4a', '0x42a9731f38a94368', '0x4cc0a65525bf4b48', '0xf95d58ef93c687a8', '0x7ac8ef3fbe104ff0', '0xfa1f01c3e96acc82', '0x1f84c8b875692896', '0x39510d7797590b51', '0xc0dae30a0a277839', '0xb3772df99dafebd3', '0xdf0a6b16c24390b3', '0x0eed32ac19bd6e20', '0xa4516ecbe25b3735', '0x0513613798e408f9', '0x77c20ff03d74d279', '0x63495ea1c2b94cc0', '0xb0dde1fdc6d7d612', '0x04e933f72952c76f', '0xa016d951e41a8ae3', '0xb022688fe3db5627', '0x04f1569df0334d2b', '0xf78fea873d54d8c9', '0x48a6d6799ed158ae', '0xd0d56957c1f989ec', '0x507d42579f1b30c1', '0xbec601e6ac77700b', '0x5190cae6f85a8d23', '0x2e800b8886570168', '0x989ad11a146fa261', '0x7728f4a1abc957e1', '0x762d77aeca8aa81a', '0x18c4c857050e7a94',
               '0xe4683ee0be29f1e8', '0xa618026503b9801e', '0xd839aa2f24d575d6', '0xc0a0733ac0bb11c6', '0xdde5f8d6229c1737', '0x05151e912e7aae4c', '0xb463146f6d2a49d6', '0xf7da8ace0e0305fe', '0xab350651865a1ca5', '0x64a57112602ffde4', '0x27d5f04b71e61194', '0xf175ddae40ef0ceb', '0x28f9386871cc9153', '0x5a8e15e18bf63141', '0x17873cd77d5839f8', '0x02221aee03035d74', '0x0b6d73f969db55bb', '0x82e3f55d6fbbcc8b', '0xd93277512dd02ed3', '0xc55060831648976a', '0xdb4e496419d7ee82', '0x5f03d45f6fd1691a', '0x8d93c9b276b4bb61', '0xa989cce975309325', '0x00f99609771cf8d5', '0x2da6c11b9ec12bb7', '0xd087129a3f858e45', '0xb8556e88bc783450', '0x5a6c75cfe369b8fa', '0x5ddfdf6e75b0a91e', '0x06ecea8ee0bae841', '0x88498de5aaf179c1', '0x5abc5eac3031916e', '0xa161a79678c0adae', '0x097b9051bdb40772', '0xfc766f0c976b653a', '0x28b20ff760740be0', '0x57df4467c61fb6dd', '0x81e417514b3deeff', '0x5974407dddc651a0', '0x71cf238d90e9b6f5', '0x15b65c6f606a80eb', '0xd67891686486deb9', '0xf3b44ac722626d16', '0x52a44ef6bcfea4e9', '0xe183fdb8df660210', '0x42039f18e91b73ca', '0xa6003940f4e05aa6', '0x545fc4995e5d9392', '0xd7fe8a88618dd57e', '0x3cf73fd1210a504c', '0x00a36dcbab729d65', '0x4a78605ec8eb2a29', '0xad3df02237202a35', '0x8f9e6c24f1e1a7e4', '0xe3bb750487e8962a', '0xf06abb22fdabd911', '0xcea4b7ea01d1083e', '0x2af8c695b7ce6de6', '0xac11211c7677137b', '0x0598a363a1141ce6', '0xfcf7ec2f3b95f492', '0x10a995e3f56bbe06', '0x818e70a2e93fb6de']
 
+def generate_fdat_seg(f):
+    print("fdat_rs1:", file=f)
+    for i in range(len(rs1_val)):
+        print("fdat_rs1_" + str(i) + ":  .word " + rs1_val[i], file=f)
+    print("", file=f)
+    print("fdat_rs2:", file=f)
+    for i in range(len(rs2_val)):
+        print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
+
 
 def valid_aligned_regs(reg):
     i = reg // 8
@@ -1332,3 +1341,70 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
     
     return (vv_test_num, vx_test_num, 0)
     
+def print_ending(f, generate_data = True):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
+    ", file=f)
+
+    if generate_data:
+        generate_fdat_seg(f)
+
+    print("\n\
+    RVTEST_DATA_END\n\
+    RVMODEL_DATA_BEGIN\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVMODEL_DATA_END\n\
+    ", file=f)

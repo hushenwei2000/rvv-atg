@@ -185,8 +185,6 @@ def print_load_ending_new(f, eew, rs2, is_vx = False, is_vv = False):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
     vsetvli x31,x0,e8,m1;\n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -208,6 +206,8 @@ mem:", file=f)
     generate_results_load_vlsseg_Nregs(f, rs2, eew, 40, is_vx = is_vx, is_vv = is_vv);#for vle8
     print_mask_origin_data_ending(f)
     print("\n\
+    RVTEST_DATA_END\n\
+    RVMODEL_DATA_BEGIN\n\
     signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
@@ -227,6 +227,17 @@ mem:", file=f)
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -241,5 +252,5 @@ mem:", file=f)
     \n\
     #endif\n\
     \n\
-    RVTEST_DATA_END\n\
+    RVMODEL_DATA_END\n\
     ", file=f)

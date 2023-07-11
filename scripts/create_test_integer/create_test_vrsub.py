@@ -184,7 +184,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     for i in range(loop_num):
         n += 1
         print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %
-              instr+"rd_data_vi+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, 16), file=f)
+              instr+"rd_data_vi+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, 15), file=f)
     vi_test_num = n - vx_test_num
 
     return (0, vx_test_num, vi_test_num)

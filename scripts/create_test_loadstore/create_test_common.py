@@ -30,9 +30,6 @@ def generate_vlseg3_macro(f, emul):
                 VMVXS_AND_MASK_EEW( x15, v%d, eew )"%(8+emul) + " \\\n\
                 VMVXS_AND_MASK_EEW( x16, v%d, eew )"%(8+emul*2) + "\\\n\
                 VSET_VSEW \\\n\
-                bne x14, x7, fail; \\\n\
-                bne x15, x8, fail; \\\n\
-                bne x16, x9, fail; \\\n\
         ", file=f)
 
 def generate_macros_vlseg(f, lmul, vsew, eew):
@@ -41,6 +38,8 @@ def generate_macros_vlseg(f, lmul, vsew, eew):
     # testreg is v8
     generate_vlseg3_macro(f, emul)
     for n in range(1, 32):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VLSEG1_OP_1%d( testnum, inst, eew, result, base )"%n + " \\\n\
             TEST_CASE( testnum, v8, result, \\\n\
                 la  x%d, base; "%n + "\\\n\
@@ -61,6 +60,8 @@ def generate_macros_vlsseg(f, lmul, vsew, eew):
     # testreg is v8
     generate_vlseg3_macro(f, emul)
     for n in range(1, 32):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VLSSEG1_OP_1%d(  testnum, inst, eew, result, stride, base )"%n + " \\\n\
             TEST_CASE( testnum, v8, result, \\\n\
                 la  x%d, base; "%n + "\\\n\
@@ -86,7 +87,7 @@ def generate_macros_vlsseg(f, lmul, vsew, eew):
 def generate_macros_vlxei(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     for n in range(2, 30):
-        if n == 30:
+        if n == 30 or n == 12 or n == 20 or n == 24:
             continue
         print("#define TEST_VLXEI_OP_1%d( testnum, inst, index_eew, result1, result2, base_data, base_index )"%n + " \\\n\
             TEST_CASE_LOAD( testnum, v16, __riscv_vsew, result1, result2, \\\n\
@@ -160,6 +161,8 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     # testreg is v8
     generate_vlseg3_macro(f, lmul)
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VLXSEG1_OP_1%d( testnum, inst, index_eew, result, base_data, base_index  )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base_data; "%n + " \\\n\
@@ -212,6 +215,8 @@ def generate_macros_vse(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     for n in range(1,30):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSE_OP_1%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\
@@ -273,6 +278,8 @@ def generate_vsseg3_macro(f, emul):
 
 def generate_macros_vsse(f):
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSE_OP_1%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\
@@ -335,6 +342,8 @@ def generate_macros_vsse(f):
 
 def generate_macros_vsuxei(f):
     for n in range(1,30):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSXEI_OP_1%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base_data; "%n + " \\\n\
@@ -396,6 +405,8 @@ def generate_macros_vsseg(f, lmul, vsew, eew):
     generate_vlseg3_macro(f,emul)
     generate_vsseg3_macro(f,emul)
     for n in range(1,30):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSEG1_OP_1%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\
@@ -457,6 +468,8 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
             load_inst v8, (x1), v24; \\\n\
         )", file=f)
     for n in range(1,30):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSXSEG1_OP_1%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base_data; "%n + " \\\n\
@@ -527,6 +540,8 @@ def generate_macros_vssseg(f, lmul, vsew, eew):
             load_inst v8, (x1), x2; \\\n\
         )", file=f)
     for n in range(1,29):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSSEG1_OP_1%d( testnum, load_inst, store_inst, eew, result, stride, base  )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\

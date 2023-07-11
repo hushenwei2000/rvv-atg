@@ -34,12 +34,12 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
    
     for i in range(100):     
         k = i%30+1
-        if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
+        if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul) and k!= 12 and k != 20 and k !=24  and k!= 29 and k != 30:
             n+=1
             print("  TEST_VSSE_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"0"+", "+"0 + tdat"+" );",file=f)
     
         k = i%30+2
-        if(k == 31):
+        if(k == 31 or k == 12 or k == 20 or k == 24 or k == 29 or k == 30):
             continue;
         n +=1
         print("  TEST_VSSE_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"0"+", "+"-8 + tdat8"+" );",file=f)

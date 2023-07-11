@@ -3,7 +3,7 @@ import os
 
 from scripts.constants import *
 
-def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro, tool):
+def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, tool):
     gcc = GCC_CONST
     objdump = OBJDUMP_CONST
     logging.info("Running riscof coverage: {}.{}".format(instr, suffix))
@@ -19,7 +19,7 @@ def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, su
         lmul_num = int(lmul_num)
     logging.info("Running riscof coverage: {}.{}, stage: Compiling...".format(instr, suffix))
 
-    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T /work/stu/swhu/projects/riscof-sample/spike/env/link.ld         -I %s/env/macros/vsew%d_lmul%s%s         -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64 -I /work/stu/swhu/projects/riscof-sample/spike/env %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, vsew, lmul, ("" if use_fail_macro else "_nofail"), rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
+    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T /work/stu/swhu/projects/riscof-sample/spike/env/link.ld         -I %s/env/macros/vsew%d_lmul%s        -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64 -I /work/stu/swhu/projects/riscof-sample/spike/env %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, vsew, lmul,  rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
     
     print(gcc_string)
     os.system(gcc_string)

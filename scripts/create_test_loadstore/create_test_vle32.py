@@ -8,6 +8,8 @@ instr = 'vle32'
 
 def generate_macros(f):
     for n in range(2, 31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VLE_OP_1%d( testnum, inst, eew, result1, result2, base )"%n + " \\\n\
             TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
                 la  x%d, base; "%n + "\\\n\
@@ -68,11 +70,11 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     for i in range(100):     
         k = i%31+1
         n+=1
-        if( k % lmul == 0 and k % emul == 0):
+        if( k % lmul == 0 and k % emul == 0 and k != 12 and k != 20 and k != 24):
             print("  TEST_VLE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xff00ff00"+", "+"0x0ff00ff0"+" , "+"4 + tdat"+");",file=f)
         
         k = i%30+2
-        if(k == 31):
+        if(k == 31 or k == 12 or k == 20 or k == 24):
             continue;
         n +=1
         print("  TEST_VLE_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+" , "+"0 + tdat4"+");",file=f)

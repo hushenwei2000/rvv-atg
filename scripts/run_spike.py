@@ -3,7 +3,7 @@ import os
 
 from scripts.constants import *
 
-def run_spike(instr, rvv_atg_root,  output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul, use_fail_macro):
+def run_spike(instr, rvv_atg_root,  output_dir, test_path, suffix, xlen, flen, vlen, elen, vsew, lmul):
     gcc = GCC_CONST
     objdump = OBJDUMP_CONST
     logging.info("Running spike: {}.{}".format(instr, suffix))
@@ -16,7 +16,7 @@ def run_spike(instr, rvv_atg_root,  output_dir, test_path, suffix, xlen, flen, v
         lmul = str(int(lmul))
     logging.info("Running spike: {}.{}, stage: Compiling...".format(instr, suffix))
 
-    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T %s/env/p/link.ld         -I %s/env/macros/vsew%d_lmul%s%s         -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64  %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, rvv_atg_root, vsew, lmul, ("" if use_fail_macro else "_nofail"), rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
+    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T %s/env/p/link.ld         -I %s/env/macros/vsew%d_lmul%s         -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64  %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, rvv_atg_root, vsew, lmul, rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
     
     print(gcc_string)
     os.system(gcc_string)

@@ -44,10 +44,14 @@ def print_common_header(instr, f):
     \n\
     RVTEST_CASE(0,\"//check ISA:=regex(.*64.*);check ISA:=regex(.*V.*);def TEST_CASE_1=True;\",%s)\n\
     \n\
-    #define MY_RVTEST_SIGUPD(basereg, vreg) vmv.x.s(x1, vreg); RVTEST_SIGUPD(basereg, x1); \n\
     RVMODEL_BOOT\n\
     RVTEST_CODE_BEGIN\n\
     RVTEST_VSET\n\
+    \n\
+    RVTEST_SIGBASE( x12,signature_x12_1)\n\
+    RVTEST_SIGBASE( x20,signature_x20_0)\n\
+    RVTEST_SIGBASE( x24,signature_x24_0)\n\
+    \n\
     " % instr, file=f)
 
 
@@ -87,6 +91,17 @@ def print_common_ending(f):
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -108,8 +123,6 @@ def print_common_ending(f):
 def print_common_withmask_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -143,6 +156,17 @@ def print_common_withmask_ending(f):
     \n\
     \n\
     signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
     #ifdef rvtest_mtrap_routine\n\
@@ -196,8 +220,6 @@ def print_data_width_prefix(f, vsew):
 def print_load_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -287,6 +309,17 @@ def print_load_ending(f):
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -308,8 +341,6 @@ def print_load_ending(f):
 def print_loaddword_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -399,6 +430,17 @@ def print_loaddword_ending(f):
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -421,8 +463,6 @@ def print_loaddword_ending(f):
 def print_loadls_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -522,6 +562,17 @@ def print_loadls_ending(f):
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -544,8 +595,6 @@ def print_loadls_ending(f):
 def print_loadlr_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -609,6 +658,17 @@ def print_loadlr_ending(f):
     \n\
     \n\
     signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
     #ifdef rvtest_mtrap_routine\n\
@@ -706,8 +766,6 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -775,6 +833,17 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -805,8 +874,6 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -888,6 +955,17 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -917,8 +995,6 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -986,6 +1062,17 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -1015,8 +1102,6 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     print(test_num_tuple)
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -1101,6 +1186,17 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     signature_x20_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
     mtrap_sigptr:\n\
@@ -1129,8 +1225,6 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
 
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
         \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -1190,6 +1284,17 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
     \n\
     \n\
     signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    signature_x24_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x24_2:\n\
         .fill 376,4,0xdeadbeef\n\
     \n\
     #ifdef rvtest_mtrap_routine\n\

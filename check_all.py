@@ -11,31 +11,7 @@ for d in dirs:
         vlen = d.split('-')[3]
         vsew = d.split('-')[4]
         lmul = d.split('-')[5]
-        log = "%s/%s"%(d, 'spike_%s_final.log'%instr) 
-        if os.system("grep pass %s"%(log)) != 0:
-            print("Generated file is WRONG or not exist! : %s"%d)
+        ass = "%s/%s"%(d, '%s_first.S'%instr) 
+        if os.system("test -e %s"%(ass)) != 0:
+            print("Generated file is not exist! : %s"%d)
             continue
-        report = "%s/coverage_final.rpt"%d
-        try:
-            f = open(report, 'r')
-            lines = f.readlines()
-            # Collect instruction's coverages
-            flag = False
-            for line in lines:
-                if flag:
-                    print(line, file=out)
-                    if 'coverage' in line:
-                        Flag = False
-                        break
-                if 'mnemonics' in line:
-                    flag = True
-            # Collect other coverage
-            for line in lines:
-                if ('rd:' in line) or ('rs1:' in line) or ('rs2:' in line) or ('val_comb:' in line) or ('coverage' in line):
-                    print(line, file = out)
-            # Collect configuration information
-            print("{}, {}, {}".format(vlen, vsew, lmul), file = out)
-
-            f.close()
-        except FileNotFoundError:
-            print ("File is not found: %s."%report, file=out)

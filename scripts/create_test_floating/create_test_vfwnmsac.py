@@ -5,11 +5,6 @@ from scripts.create_test_floating.create_test_common import *
 
 instr = 'vfwnmsac'
 
-def extract_operands(f, rpt_path):
-    # Floating pooints tests don't need to extract operands, rs1 and rs2 are fixed
-    return 0
-
-
 def generate_tests(f, lmul):
     n = 1
     print("  #-------------------------------------------------------------",file=f)
@@ -43,60 +38,6 @@ def generate_tests(f, lmul):
         print("  TEST_W_FP_VV_OP_NEGRESULT_rd%d( "%k+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
 
-def print_ending(f):
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-    \n\
-    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
-    TEST_PASSFAIL\n\
-    #endif\n\
-    \n\
-    RVTEST_CODE_END\n\
-    RVMODEL_HALT\n\
-    \n\
-    .data\n\
-    RVTEST_DATA_BEGIN\n\
-    \n\
-    TEST_DATA\n\
-    \n\
-    ", file=f)
-
-    print("signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVTEST_DATA_END\n\
-    ", file=f)
-
-
 def create_empty_test_vfwnmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating empty test for {}".format(instr))
 
@@ -109,7 +50,7 @@ def create_empty_test_vfwnmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     print("  TEST_W_FP_VV_OP_NEGRESULT( 1,  %s.vv, fmul.d, 0, 1, 1);"%instr, file=f)
 
     # Common const information
-    print_ending(f)
+    print_ending(f, generate_data=False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -128,9 +69,6 @@ def create_first_test_vfwnmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
 
     # Common header files
     print_common_header(instr, f)
-
-    # Extract operands
-    extract_operands(f, rpt_path)
 
     # Generate macros to test diffrent register
     generate_macros_vfwmacc(f, vsew, lmul)

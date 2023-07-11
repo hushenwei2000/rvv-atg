@@ -62,13 +62,13 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     if 2 * lmul <= 8 and 2 + 2 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
         for i in range(100):     
             k = i%30+1
-            if k != 8 and k != 16 and k % lmul == 0 and k % emul == 0 and k + 2 * lmul <= 32 and not is_overlap(k, lmul*2, 8, emul):
+            if k != 8 and k != 16 and k % lmul == 0 and k % emul == 0 and k + 2 * lmul <= 32 and not is_overlap(k, lmul*2, 8, emul) and k!= 12 and k != 20 and k !=24:
                 n+=1
                 print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+"8"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx8dat"+");",file=f)
             
             k = i%30+2
-            # if(k == 31):
-            #     continue;
+            if( k == 12 or k == 20 or k == 24):
+                continue;
             n +=1
             print("  TEST_VLXSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+"8"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx8dat"+" );",file=f)
     

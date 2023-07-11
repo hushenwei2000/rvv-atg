@@ -61,12 +61,12 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
         for i in range(100):     
             k = i%30+1
-            if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32: # (insn.rd() + nf * emul) <= NVPR
+            if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32 and k!= 12 and k != 20 and k !=24: # (insn.rd() + nf * emul) <= NVPR
                 n+=1
                 print("  TEST_VLSSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff"+", "+" 2 "+", "+"0 + tdat"+" );",file=f)
             
             k = i%30+2
-            if(k == 31):
+            if(k == 31 or k == 12 or k == 20 or k == 24):
                 continue;
             n +=1
             print("   TEST_VLSSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0xff00"+", "+" 2 "+", "+"4 + tdat"+" );",file=f)
