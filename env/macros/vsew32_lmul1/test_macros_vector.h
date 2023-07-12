@@ -71,6 +71,7 @@ test_ ## testnum: \
     li x7, MASK_VSEW(correctval); \
     li TESTNUM, testnum; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_W( testnum, testreg, correctval, code... ) \
 test_ ## testnum: \
@@ -244,6 +245,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v8, v8, 1; \
@@ -506,9 +508,9 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     vpopc.m x14, testreg; \
     VSET_VSEW \
-    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     frflags a1; \
     li a2, flags; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
 
 #define TEST_CASE_FP_INT( testnum, testreg, flags, correctval_eew, correctval, val, code... ) \
 test_ ## testnum: \

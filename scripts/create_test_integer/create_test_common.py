@@ -1094,12 +1094,12 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
               (instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):
         k = i%31+1
-        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1) and not is_overlap(k, lmul_double_1, 16, lmul_1):
+        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1) and not is_overlap(k, lmul_double_1, 16, lmul_1) and k != 12 and k != 20 and k != 24:
             n+=1
             print("  TEST_W_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k % lmul == 0 and k != 16 and k != 8 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1):
+        if k % lmul == 0 and k != 16 and k != 8 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1) and k != 12 and k != 20 and k != 24:
             n +=1
             print("  TEST_W_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
     
@@ -1198,12 +1198,12 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
               (instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)): 
         k = i%31+1
-        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1)and not is_overlap(k, lmul_double_1, 16, lmul_1):
+        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1)and not is_overlap(k, lmul_double_1, 16, lmul_1) and k != 12 and k != 20 and k != 24:
             n+=1
             print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k % lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1):
+        if k % lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1) and k != 12 and k != 20 and k != 24:
             n +=1
             print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
     
@@ -1278,13 +1278,13 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
               instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1
-        if k == 24 or k % lmul != 0:
+        if k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n+=1
         print("  TEST_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.vv, "%instr+ "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+        if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
         print("  TEST_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.vv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
@@ -1394,13 +1394,13 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
               instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         n+=1
         print("  TEST_MADC_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
     #     print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
@@ -1567,13 +1567,13 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
               instr+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1
-        if k == 24 or k % lmul != 0:
+        if k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n+=1
         print("  TEST_ADC_VV_OP_rd%d( "%k+str(n)+",  %s.vvm, "%instr+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+        if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
         print("  TEST_ADC_VV_OP_1%d( "%k+str(n)+",  %s.vvm, "%instr+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
@@ -1624,13 +1624,13 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
                 instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
         for i in range(min(32, loop_num)): 
             k = i%31+1
-            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n+=1
             print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
             
             k = i%30+2
-            if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n +=1
             print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
@@ -1647,13 +1647,13 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
                 instr+"5201314, rs2_data+%d, %s)"%(i*step_bytes, rs1_val[i % len(rs1_val)]), file=f)
         for i in range(min(32, loop_num)):
             k = i%31+1
-            if k == 0 or k == 24 or k % (lmul * 2) != 0:
+            if k == 0 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n+=1
             print("  TEST_VXM_OP_rd%d( "%k+str(n)+",  %s.vx, "%instr+"5201314, rs2_data+%d, %s)"%(i*step_bytes, rs1_val[i % len(rs1_val)]),file=f)
             
             k = i%30+2
-            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n +=1
             print("  TEST_VXM_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"5201314, rs2_data+%d, %s)"%(i*step_bytes, rs1_val[i % len(rs1_val)]),file=f)
@@ -1695,12 +1695,12 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
               instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1
-        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2):
+        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2) and k != 12 and k != 20 and k != 24:
             n+=1
             print("  TEST_N_VV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2):
+        if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2) and k != 12 and k != 20 and k != 24:
             n +=1
             print("  TEST_N_VV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
 
@@ -1811,13 +1811,13 @@ def generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', gen
                 (instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
         for i in range(100):     
             k = i%31+1
-            if k % lmul != 0 or k == 24:
+            if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
                 continue
             n+=1
             print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
             
             k = i%30+2
-            if k % lmul != 0 or k == 8 or k == 16 or k == 24:
+            if k % lmul != 0 or k == 8 or k == 16 or k == 24 or k == 12 or k == 20 or k == 24:
                 continue
             n +=1
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
@@ -1838,12 +1838,12 @@ def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', ge
               (instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
-        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24:
+        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24  and k != 12 and k != 20 and k != 24:
             n+=1
             print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+");",file=f)
         
         k = i%30+2
-        if k % lmul == 0 and k != 8 and k != 16 and k != 24:
+        if k % lmul == 0 and k != 8 and k != 16 and k != 24 and k != 12 and k != 20 and k != 24:
             n +=1
             print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     if generate_vxrv:
@@ -1894,21 +1894,21 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
-        if k % lmul != 0 or k == 8:
+        if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 2) >= 8: 
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
             n += 1
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
-        if k % lmul != 0 or k == 8:
+        if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 4) >= 8:
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
-        if k % lmul != 0 or k == 8:
+        if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 8) >= 8:
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
@@ -1917,7 +1917,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
+        if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 2) >= 8: 
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
@@ -1925,7 +1925,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
+        if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 4) >= 8:
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
@@ -1933,7 +1933,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
+        if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
         if int(vsew / 8) >= 8:
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)

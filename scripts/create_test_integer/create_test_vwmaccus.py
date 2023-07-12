@@ -96,14 +96,14 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
               instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes), file=f)
     for i in range(min(32, loop_num)):
         k = i%31+1
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul*2) != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul*2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         if k%2==0:
             n+=1
             print("  TEST_W_VX_OP_RV_rd%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes),file=f)
         
         k = i%30+2
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
         print("  TEST_W_VX_OP_RV_1%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes),file=f)

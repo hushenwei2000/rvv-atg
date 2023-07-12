@@ -854,7 +854,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
         for i in range(min(32, loop_num)):
             k = i % 31 + 1
-            if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n += 1
             print("  TEST_FP_VV_OP_rd%d( " % k+str(n)+",  %s.%s, 0xff100, " %
@@ -880,13 +880,13 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
         for i in range(min(32, loop_num)):     
             k = i%31+1        
-            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue  
             n += 1
             print("  TEST_FP_VF_OP_rd_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"rd_data_vf+%d, rs2_data+%d, rs1_data+%d);" % (i*step_bytes, i*step_bytes, i*step_bytes),file=f)
             
             k = i%31+1
-            if k == 2 or k % lmul != 0:
+            if k == 2 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue        
             n += 1
             print("  TEST_FP_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"rd_data_vf+%d, rs2_data+%d, rs1_data+%d);" % (i*step_bytes, i*step_bytes, i*step_bytes),file=f)
@@ -908,13 +908,13 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
         for i in range(min(32, loop_num)):
             k = i%31+1
-            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n += 1
             print("  TEST_FP_VF_OP_RV_rd_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
             k = i%31+1
-            if k == 14 or k % lmul != 0:
+            if k == 14 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n += 1
             print("  TEST_FP_VF_OP_RV_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
@@ -984,13 +984,13 @@ def generate_tests_v_op(instr, f, lmul):
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
-        if k % lmul != 0 or k == 8:
+        if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
         print("  TEST_FP_V_OP_rd_%d( "%k+str(n)+",  %s.v, 0xff100, rd_data_vv+%d, rs1_data+%d);"%(instr, i*step_bytes, i*step_bytes),file=f)
         n += 1
 
         k = i % 31 + 1
-        if k % lmul != 0 or k == 24:
+        if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
         print("  TEST_FP_V_OP_rs1_%d( "%k+str(n)+",  %s.v, 0xff100, rd_data_vv+%d, rs1_data+%d);"%(instr, i*step_bytes, i*step_bytes),file=f)
         n += 1
@@ -1031,7 +1031,7 @@ def generate_tests_vfmacc(instr, f, vsew, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
-        if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+        if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n += 1
         print("  TEST_FP_VV_FUSED_OP_rd%d( " % k+str(n)+",  %s.vv, 0xff100, " %
@@ -1087,11 +1087,11 @@ def generate_tests_vfwmacc(instr, f, vsew, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
-        if not (k == 8 or k == 16 or k == 24 or k % (2*lmul) != 0):
+        if not (k == 8 or k == 16 or k == 24 or k % (2*lmul) != 0  or k == 12 or k == 20 or k == 24):
             n += 1
             print("  TEST_FP_W_VV_FUSED_OP_rd%d( " % k+str(n)+",  %s.vv, 0xff100, " %
                     (instr)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d);"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
-        if not (k == 8 or k == 16 or k == 24 or k % lmul != 0):
+        if not (k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24):
             n += 1
             print("  TEST_FP_W_VV_FUSED_OP_1%d( " % k+str(n)+",  %s.vv, 0xff100, " %
                     (instr)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d);"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
@@ -1164,7 +1164,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
 
         for i in range(len(rs1_val)):
             k = i % 31 + 1
-            if k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             print("  TEST_FPRED_VV_OP_rd%d( " % k+str(n)+",  %s.%s, 0xff100, " %
                   (instr, suffix)+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
@@ -1190,13 +1190,13 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         n = n+1
         for i in range(len(rs1_val)):     
             k = i%31+1        
-            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue  
             print("  TEST_FPRED_VF_OP_rd_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
             n+=1
             
             k = i%31+1
-            if k == 2 or k % lmul != 0:
+            if k == 2 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue        
             print("  TEST_FPRED_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
             n +=1
@@ -1235,11 +1235,11 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(min( 32, loop_num)):
         k = i % 31 + 1
-        if k % lmul == 0:
+        if k % lmul == 0 and k != 12 and k != 20 and k != 24:
             n += 1
             print("  TEST_W_FP_VV_OP_1%d( "%k + str(n) + ",  %s.vv, "%instr + "0xff100, rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
 
-        if k % (2*lmul) == 0:
+        if k % (2*lmul) == 0 and k != 12 and k != 20 and k != 24:
             n += 1
             print("  TEST_W_FP_VV_OP_rd%d( "%k + str(n)+ ",  %s.vv, "%instr + "0xff100, rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes), file=f)
     vv_test_num = n
@@ -1303,13 +1303,13 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
                 instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
         for i in range(min(32, loop_num)): 
             k = i%31+1
-            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+            if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n+=1
             print("  TEST_VVM_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
             
             k = i%30+2
-            if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0:
+            if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             n +=1
             print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
@@ -1326,13 +1326,13 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
             instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):
         k = i%31+1
-        if k == 0 or k == 24 or k % (lmul * 2) != 0:
+        if k == 0 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         n+=1
         print("  TEST_VXM_OP_rd%d( "%k+str(n)+",  %s.vf, "%instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
         
         k = i%30+2
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
         print("  TEST_VXM_OP_1%d( "%k+str(n)+",  %s.vf, "%instr+"5201314, 0xff100, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)

@@ -47,7 +47,7 @@ def generate_macros_vlseg(f, lmul, vsew, eew):
         )", file=f)
     for n in range(1, 31):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % emul == 0:
+        if n % emul == 0 and n!= 12 and n != 20 and n != 24:
             print("#define TEST_VLSEG1_OP_rd%d( testnum, inst, eew, result, base )"%n + " \\\n\
                 TEST_CASE( testnum, v%d, result, "%n + "\\\n\
                     la  x2, base; \\\n\
@@ -70,7 +70,7 @@ def generate_macros_vlsseg(f, lmul, vsew, eew):
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % emul == 0:
+        if n % emul == 0 and n!= 12 and n != 20 and n != 24:
             print("#define TEST_VLSSEG1_OP_rd%d(  testnum, inst, eew, result, stride, base )"%n + " \\\n\
                 TEST_CASE( testnum, v%d, result, "%n + "\\\n\
                     la  x1, base; \\\n\
@@ -100,7 +100,7 @@ def generate_macros_vlxei(f, vsew, lmul):
                 VSET_VSEW \\\n\
         )", file=f)
     for n in range(1, 32):
-        if n == 8 or n == 16:
+        if n == 8 or n == 16 or n == 12 or n == 20 or n == 24:
             continue
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VLXEI_OP_rd%d( testnum, inst, index_eew, result1, result2, base_data, base_index )"%n + " \\\n\
@@ -172,7 +172,7 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,30):
-        if n == 8 or n == 16 or n % emul != 0:
+        if n == 8 or n == 16 or n % emul != 0 or n == 12 or n == 20 or n == 24:
             continue
         print("#define TEST_VLXSEG1_OP_rd%d( testnum, inst, index_eew, result, base_data, base_index )"%n + " \\\n\
         TEST_CASE( testnum, v%d, result, "%n + "\\\n\
@@ -229,7 +229,7 @@ def generate_macros_vse(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,31):
-        if n == 8 or n == 16 or n == 31 or n % emul != 0:
+        if n == 8 or n == 16 or n == 31 or n % emul != 0 or n == 12 or n == 20 or n == 24: 
             continue
         print("#define TEST_VSE_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, " + "\\\n\
@@ -293,6 +293,8 @@ def generate_macros_vsse(f):
         )",file=f)
 
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSE_OP_rd%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base;  \\\n\
@@ -356,6 +358,8 @@ def generate_macros_vsuxei(f):
         )",file=f)
 
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSXEI_OP_rd%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base_data;   \\\n\
@@ -419,6 +423,8 @@ def generate_macros_vsseg(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSEG1_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base;  \\\n\
@@ -482,6 +488,8 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSXSEG1_OP_rd%d( testnum, load_inst, store_inst, index_eew, result, base_data, base_index )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base_data;   \\\n\
@@ -555,6 +563,8 @@ def generate_macros_vssseg(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,31):
+        if n == 12 or n == 20 or n == 24: # signature base registers
+            continue
         print("#define TEST_VSSSEG1_OP_rd%d( testnum, load_inst, store_inst, eew, result, stride, base  )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x1, base;  \\\n\

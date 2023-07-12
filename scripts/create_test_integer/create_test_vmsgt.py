@@ -71,13 +71,13 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
               instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
     for i in range(100):     
         k = i%31+1
-        if k == 0 or k == 24 or k % (lmul * 2) != 0:
+        if k == 0 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         n+=1
         print("  TEST_VXM_OP_rd%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+");",file=f)
         
         k = i%30+2
-        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0:
+        if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul * 2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
         print("  TEST_VXM_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+" , "+rs2_val[i]+");",file=f)

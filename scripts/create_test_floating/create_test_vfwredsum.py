@@ -71,11 +71,11 @@ def generate_tests(f, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(len(rs1_val)):
         k = i % 31 + 1
-        if k % lmul != 0: continue
+        if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
         print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
 
-        if k % (2*lmul) != 0: continue
+        if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
         print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
 

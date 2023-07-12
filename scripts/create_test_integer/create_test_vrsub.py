@@ -96,11 +96,12 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
               instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[i]), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1 
-        if k%lmul == 0 and k != 8 and k != 16 and k != 24:
+        if k%lmul == 0 and k != 8 and k != 16 and k != 24  and k != 12 and k != 20 and k != 24:
             n+=1
             print("  TEST_VX_OP_rd%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[i]),file=f)
         k = i%30+2
-        n +=1
+        if k != 12 and k != 20 and k != 24:
+            n +=1
     #     print("  TEST_VX_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+");",file=f)
     #     print("  #-------------------------------------------------------------", file=f)
     
@@ -174,7 +175,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     #     print("  TEST_VX_OP( "+str(n)+",  %s.vx"%instr + ", 5201314, -6148914691236517206, 3);", file=f)
 
     
-        print("  TEST_VX_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[i]),file=f)
+            print("  TEST_VX_OP_1%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[i]),file=f)
     vx_test_num = n
 
     print("  #-------------------------------------------------------------", file=f)

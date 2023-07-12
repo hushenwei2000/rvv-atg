@@ -37,7 +37,7 @@ all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=perm
 
 # Modify here if you want to test different VSEW, VLEN, LMUL ect..
 def runcommand_integer(ins):
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 1' % ins)
+    os.system('python run.py -t i -i %s --vsew 32 --lmul 2' % ins)
 
 
 def runcommand_fixpoint(ins):
@@ -60,7 +60,7 @@ def runcommand_mask(ins):
 
 def run_integer():
     pool = multiprocessing.Pool(2)
-    pool.map(runcommand_integer, integer_widen_short)
+    pool.map(runcommand_integer, integer)
 
 def run_fixpoint():
     pool = multiprocessing.Pool(2)
@@ -92,12 +92,12 @@ def main():
     subprocess.run(["mkdir", "-p", 'generate_all'])
     setup_logging(True)
     # Modify here to choose which categories you want to generate
-    # run_integer()
+    run_integer()
     # run_mask()
     # run_floatingpoint()
     # run_fixpoint()
     # run_permute()
-    run_loadstore()
+    # run_loadstore()
 
 
 if __name__ == "__main__":

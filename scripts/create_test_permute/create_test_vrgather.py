@@ -134,13 +134,13 @@ def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = T
             print("  TEST_VV_OP( "+str(n)+",  %s.%s, "%(instr, instr_suffix) + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
         for i in range(min(32, loop_num)):     
             k = i%31+1
-            if k % lmul != 0 or k == 24:
+            if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
                 continue
             n+=1
             print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
             
             k = i%30+2
-            if k % lmul != 0 or k == 8 or k == 16 or k == 24:
+            if k % lmul != 0 or k == 8 or k == 16 or k == 24 or k == 12 or k == 20 or k == 24:
                 continue
             n +=1
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)

@@ -1,3 +1,4 @@
+#include "test_macros.h"
 // See LICENSE for license details.
 
 #ifndef __TEST_MACROS_VECTOR_H
@@ -8,7 +9,17 @@
 //-----------------------------------------------------------------------
 
 // VSEW temporarily hard-coded to 32 bits
-#define RVTEST_VSET vsetivli x31, 1, e32, m4, tu, mu;
+#define TESTNUM gp
+#define RVTEST_VECTOR_ENABLE                                            \
+  li a0, (MSTATUS_VS & (MSTATUS_VS >> 1)) |                             \
+         (MSTATUS_FS & (MSTATUS_FS >> 1));                              \
+  csrs mstatus, a0;                                                     \
+  csrwi fcsr, 0;                                                        \
+  csrwi vcsr, 0;
+#define VECTOR_RVTEST_SIGUPD(basereg, vreg) vmv.x.s x1, vreg; RVTEST_SIGUPD(basereg, x1);
+#define VECTOR_RVTEST_SIGUPD_F(basereg, vreg, flagreg) vfmv.f.s f1, vreg; RVTEST_SIGUPD_F(basereg, f1, flagreg);
+
+#define RVTEST_VSET RVTEST_VECTOR_ENABLE; x31, 1, e32, m4, tu, mu;
 #define __riscv_vsew 32
 #define __e_riscv_vsew e32
 #define __riscv_vsew_bytes 4
@@ -27,13 +38,11 @@
 #define MASK_HALF_VSEW(x)   ((x) & ((1 << ((__riscv_vsew / 2) - 1) << 1) - 1))
 #define MASK_QUART_VSEW(x)  ((x) & ((1 << ((__riscv_vsew / 4) - 1) << 1) - 1))
 #define MASK_EIGHTH_VSEW(x) ((x) & ((1 << ((__riscv_vsew / 8) - 1) << 1) - 1))
-#define MASK_XLEN(x)        ((x) & ((1 << (__riscv_xlen - 1) << 1) - 1))
 #define MASK_BITS(eew)      ((-1 << (64 - eew)) >> (64 - eew))
 #define MK_EEW(eew_num) e##eew_num
 #define MK_VLE_INST(eew_num) vle##eew_num.v
 #define MK_VSE_INST(eew_num) vse##eew_num.v
 
-#define SEXT_IMM(x)            ((x) | (-(((x) >> 4) & 1) << 4))
 #define SEXT_HALF_TO_VSEW(x)   ((x) | (-(((x) >> ((__riscv_vsew / 2) - 1)) & 1) << ((__riscv_vsew / 2) - 1)))
 #define SEXT_QUART_TO_VSEW(x)  ((x) | (-(((x) >> ((__riscv_vsew / 4) - 1)) & 1) << ((__riscv_vsew / 4) - 1)))
 #define SEXT_EIGHTH_TO_VSEW(x) ((x) | (-(((x) >> ((__riscv_vsew / 8) - 1)) & 1) << ((__riscv_vsew / 8) - 1)))
@@ -63,7 +72,7 @@ test_ ## testnum: \
     li x7, MASK_VSEW(correctval); \
     li TESTNUM, testnum; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_W( testnum, testreg, correctval, code... ) \
 test_ ## testnum: \
@@ -73,7 +82,7 @@ test_ ## testnum: \
     VSET_DOUBLE_VSEW \
     VMVXS_AND_MASK_DOUBLEVSEW(x14, testreg) \
     VSET_VSEW \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_MASK( testnum, testreg, correctval, code... ) \
 test_ ## testnum: \
@@ -81,7 +90,7 @@ test_ ## testnum: \
     li x7, correctval; \
     li TESTNUM, testnum; \
     vpopc.m x14, testreg; \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_MASK_4VL( testnum, testreg, correctval, code... ) \
 test_ ## testnum: \
@@ -91,7 +100,7 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     vpopc.m x14, testreg; \
     VSET_VSEW \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_SCALAR_SETVSEW_AFTER( testnum, testreg, correctval, code... ) \
 test_ ## testnum: \
@@ -99,7 +108,7 @@ test_ ## testnum: \
     li x7, correctval; \
     li TESTNUM, testnum; \
     VSET_VSEW \
-    bne testreg, x7, fail;
+    RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_AVG_VV( testnum, inst, testvs1, testreg, correctval00, correctval01, correctval10, correctval11, code... ) \
 test_ ## testnum: \
@@ -109,22 +118,22 @@ test_ ## testnum: \
     inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 1; \
     inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval01); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 2; \
     inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval10); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 3; \
     inst testreg, v8, testvs1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11); \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_AVG_VX( testnum, inst, testreg, vs2reg, correctval00, correctval01, correctval10, correctval11, code... ) \
 test_ ## testnum: \
@@ -134,22 +143,22 @@ test_ ## testnum: \
     inst testreg, vs2reg, x1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 1; \
     inst testreg, vs2reg, x1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval01); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 2; \
     inst testreg, vs2reg, x1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval10); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 3; \
     inst testreg, vs2reg, x1; \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11); \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_AVG_VI( testnum, inst, testreg, correctval00, correctval01, correctval10, correctval11, val2, code... ) \
 test_ ## testnum: \
@@ -159,22 +168,22 @@ test_ ## testnum: \
     inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval00); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 1; \
     inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval01); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 2; \
     inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval10); \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     csrwi vxrm, 3; \
     inst testreg, v8, (val2); \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     li x7, MASK_VSEW(correctval11); \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_CASE_LOAD( testnum, testreg, eew, correctval1, correctval2, code... ) \
 test_ ## testnum: \
@@ -184,7 +193,7 @@ test_ ## testnum: \
     vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VSET_VSEW \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     vslidedown.vi v16, testreg, 1; \
     VSET_VSEW \
@@ -193,7 +202,7 @@ test_ ## testnum: \
     vsetivli x31, 1, MK_EEW(eew), m4, tu, mu; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VSET_VSEW \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 // For simplicity, all vlseg/vsseg test use 3 fields
 #define TEST_CASE_VLSEG3( testnum, testreg, eew, correctval1, correctval2, correctval3, code... ) \
@@ -208,9 +217,9 @@ test_ ## testnum: \
     VMVXS_AND_MASK_EEW( x15, v9, eew ) \
     VMVXS_AND_MASK_EEW( x16, v10, eew ) \
     VSET_VSEW \
-    bne x14, x7, fail; \
-    bne x15, x8, fail; \
-    bne x16, x9, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
+    VECTOR_RVTEST_SIGUPD(x24, v9); \
+    VECTOR_RVTEST_SIGUPD(x12, v10);
 
 // For simplicity, all vlre/vsre test use 2 fields
 #define TEST_CASE_VLRE( testnum, eew, correctval1, correctval2, code... ) \
@@ -223,8 +232,8 @@ test_ ## testnum: \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VMVXS_AND_MASK_EEW( x15, v17, eew ) \
     VSET_VSEW \
-    bne x14, x7, fail; \
-    bne x15, x8, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, v16); \
+    VECTOR_RVTEST_SIGUPD(x20, v17);
 
 // Load from `correctval_addr_reg` to v15 as correctval_vec, compare each element with `testreg`; vl should be set before calling `TEST_CASE_LOOP()`
 #define TEST_CASE_LOOP( testnum, testreg, correctval_addr_reg, code...) \
@@ -237,7 +246,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v8, v8, 1; \
@@ -255,7 +264,7 @@ test_ ## testnum: \
     csrr x30, vl; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v8, v8, 1; \
@@ -270,7 +279,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v8 ) \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v8, v8, 1; \
@@ -296,7 +305,7 @@ test_loop_vslide1_ ## testnum: \
 test_loop_vslide2_ ## testnum: \
     VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v15 ) \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v15, v15, 1; \
     addi x31, x31, 1; \
@@ -312,7 +321,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, v15 ) \
-    bne x14, x7, fail; \
+    VECTOR_RVTEST_SIGUPD(x20, testreg); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi v15, v15, 1; \
@@ -329,10 +338,9 @@ test_ ## testnum: \
   vfmv.f.s f3, testreg; \
   feq.s a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -351,10 +359,9 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     frflags x11; \
     li x12, fflag; \
-    bne x11, x12, fail; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, correctval_reg ) \
-    bne x14, x7, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi correctval_reg, correctval_reg, 1; \
@@ -372,10 +379,9 @@ test_ ## testnum: \
     csrr x30, vl; \
     frflags x11; \
     li x12, fflag; \
-    bne x11, x12, fail; \
 1:  VMVXS_AND_MASK_VSEW( x14, testreg ) \
     VMVXS_AND_MASK_VSEW( x7, correctval_reg ) \
-    bne x14, x7, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
     addi x31, x31, 1; \
     vslidedown.vi testreg, testreg, 1; \
     vslidedown.vi correctval_reg, correctval_reg, 1; \
@@ -394,10 +400,9 @@ test_ ## testnum: \
   VSET_VSEW \
   feq.d a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -421,10 +426,9 @@ test_ ## testnum: \
   VSET_VSEW \
   feq.d a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -442,10 +446,9 @@ test_ ## testnum: \
   vfmv.f.s f3, testreg; \
   feq.s a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -467,10 +470,9 @@ test_ ## testnum: \
   VSET_VSEW \
   feq.d a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -488,10 +490,9 @@ test_ ## testnum: \
   code; \
   li x7, result; \
   vpopc.m x14, testreg; \
-  bne x14, x7, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -508,10 +509,9 @@ test_ ## testnum: \
     VSET_VSEW_4AVL \
     vpopc.m x14, testreg; \
     VSET_VSEW \
-    bne x14, x7, fail; \
     frflags a1; \
     li a2, flags; \
-    bne a1, a2, fail;
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
 
 #define TEST_CASE_FP_INT( testnum, testreg, flags, correctval_eew, correctval, val, code... ) \
 test_ ## testnum: \
@@ -525,10 +525,9 @@ test_ ## testnum: \
   vsetivli x31, 1, MK_EEW(correctval_eew), m4, tu, mu; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
-  bne x14, x7, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -548,10 +547,9 @@ test_ ## testnum: \
   vsetivli x31, 1, MK_EEW(correctval_eew), m4, tu, mu; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
-  bne x14, x7, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -568,10 +566,9 @@ test_ ## testnum: \
   vfmv.f.s f3, testreg; \
   feq.s a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -591,10 +588,9 @@ test_ ## testnum: \
   VSET_VSEW \
   feq.d a0, f2, f3; \
   li a3, 1; \
-  bne a0, a3, fail; \
   frflags a1; \
   li a2, flags; \
-  bne a1, a2, fail; \
+  VECTOR_RVTEST_SIGUPD_F(x20, testreg, a1); \
   .pushsection .data; \
   .align 2; \
   test_ ## testnum ## _data: \
@@ -937,13 +933,10 @@ test_ ## testnum: \
 
 // TEST_CASE wont check flags so check here
 #define TEST_FP_HEX_1OPERAND_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE( testnum, v24, result, \
+  TEST_CASE_FP( testnum, v14, flags, result, 0, 0, \
     li x7, MASK_VSEW(val); \
-    vmv.v.x v8, x7; \
-    inst v24, v8; \
-    frflags a1; \
-    li a2, flags; \
-    bne a1, a2, fail; \
+    vmv.v.x v1, x7; \
+    inst v14, v1; \
   )
 
 #define TEST_VVM_OP( testnum, inst, result, val1, val2 ) \
@@ -1056,7 +1049,7 @@ test_ ## testnum: \
     vsetivli x31, 4, MK_EEW(eew), m4, tu, mu; \
     inst v16, (x1); \
     csrr x30, vl; \
-    bne x30, x31, fail; \
+    RVTEST_SIGUPD(x20, x31); \
   )
 
 #define TEST_VLSEG3_OP( testnum, inst, eew, result1, result2, result3, base ) \
@@ -1558,7 +1551,7 @@ test_ ## testnum: \
     li TESTNUM, testnum; \
     inst x14, v14; \
     VSET_VSEW \
-    bne x14, x7, fail;
+    VECTOR_RVTEST_SIGUPD(x20, testreg);
 
 #define TEST_VMV_OP( testnum, result ) \
     li TESTNUM, testnum; \
@@ -1566,7 +1559,7 @@ test_ ## testnum: \
     li x8, 0; \
     vmv.s.x v14, x7; \
     VMVXS_AND_MASK_VSEW( x8, v14 ) \
-    bne x8, x7, fail;
+    RVTEST_SIGUPD(x20, x8);
 
 #define TEST_VFMVS_OP( testnum, base ) \
     li TESTNUM, testnum; \
@@ -1576,7 +1569,7 @@ test_ ## testnum: \
     vfmv.f.s f8, v14; \
     fcvt.w.s x8, f8; \
     fcvt.w.s x7, f7; \
-    bne x8, x7, fail;
+    RVTEST_SIGUPD(x20, x8);
 
 #define TEST_VFMVF_OP( testnum, base ) \
     li TESTNUM, testnum; \
@@ -1586,7 +1579,7 @@ test_ ## testnum: \
     vfmv.f.s f8, v16; \
     fcvt.w.s x8, f8; \
     fcvt.w.s x7, f7; \
-    bne x8, x7, fail;
+    RVTEST_SIGUPD(x20, x8);
 
 
 
@@ -1647,12 +1640,6 @@ test_ ## testnum: \
 // Pass and fail code (assumes test num is in TESTNUM)
 //-----------------------------------------------------------------------
 
-#define TEST_PASSFAIL \
-        bne x0, TESTNUM, pass; \
-fail: \
-        RVTEST_FAIL; \
-pass: \
-        RVTEST_PASS \
 
 
 //-----------------------------------------------------------------------

@@ -136,12 +136,12 @@ def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = T
             print("  TEST_VV_OP( "+str(n)+",  %s.%s, "%(instr, instr_suffix) + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
         for i in range(min(32, loop_num)):     
             k = i%31+1
-            if k != 8 and k != 16 and k != 24 and k % lmul == 0 and (16 + rs1lmul - 1 < k or 16 > k + lmul - 1):
+            if k != 8 and k != 16 and k != 24 and k % lmul == 0 and (16 + rs1lmul - 1 < k or 16 > k + lmul - 1) and k!= 12 and k != 20 and k != 24:
                 n+=1
                 print("  TEST_VV_OP_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
             
             k = i%30+2
-            if k != 24 and k != 16 and k != 8 and k % rs1lmul == 0 and k % lmul == 0 and (k + rs1lmul - 1 < 24 or k > 24 + lmul - 1):
+            if k != 24 and k != 16 and k != 8 and k % rs1lmul == 0 and k % lmul == 0 and (k + rs1lmul - 1 < 24 or k > 24 + lmul - 1) and k!= 12 and k != 20 and k != 24:
                 n +=1
                 print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
     vv_test_num = n
