@@ -45,7 +45,6 @@ def create_empty_test_vfredosum(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_FP_VV_OP( 1,  %s.vs, 0, 1, 1, 1);"%instr, file=f)
 
     # Common const information
     print_ending(f)

@@ -15,7 +15,6 @@ def create_empty_test_vfsqrt(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_FP_1OPERAND_OP( 1,  %s.v, 0, 1, 1);"%instr, file=f)
 
     # Common const information
     print_ending(f, generate_data=False)

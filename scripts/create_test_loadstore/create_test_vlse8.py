@@ -9,7 +9,7 @@ instr = 'vlse8'
 
 def generate_macros(f):
       for n in range(2, 30):
-            if n == 12 or n == 20 or n == 24: # signature base registers
+            if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
                   continue
             print("#define TEST_VLSE_OP_1%d( testnum, inst, eew, result1, result2, stride, base )"%n + " \\\n\
                   TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\

@@ -132,7 +132,6 @@ def create_empty_test_vfcvt(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_VFMVF_OP( 1,  fdat_rs1_0 );", file=f)
 
     # Common const information
     print_ending(f)

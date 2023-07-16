@@ -19,7 +19,7 @@
 #define VECTOR_RVTEST_SIGUPD(basereg, vreg) vmv.x.s x1, vreg; RVTEST_SIGUPD(basereg, x1);
 #define VECTOR_RVTEST_SIGUPD_F(basereg, vreg, flagreg) vfmv.f.s f1, vreg; RVTEST_SIGUPD_F(basereg, f1, flagreg);
 
-#define RVTEST_VSET RVTEST_VECTOR_ENABLE; x31, 1, e32, m4, tu, mu;
+#define RVTEST_VSET RVTEST_VECTOR_ENABLE; vsetivli x31, 1, e32, m4, tu, mu;
 #define __riscv_vsew 32
 #define __e_riscv_vsew e32
 #define __riscv_vsew_bytes 4
@@ -779,29 +779,7 @@ test_ ## testnum: \
     inst v24, v16, SEXT_IMM(val1); \
   )
 
-#define TEST_WVU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, ZEXT_DOUBLE_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    li x7, MASK_VSEW(val2); \
-    vmv.v.x v2, x7; \
-    inst v14, v1, v2; \
-  )
 
-#define TEST_WXU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, ZEXT_DOUBLE_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    li x1, MASK_XLEN(val2); \
-    inst v14, v1, x1; \
-  )
-
-#define TEST_WIU_OP( testnum, inst, result, val1, val2 ) \
-  TEST_CASE( testnum, v14, result, \
-    li x7, ZEXT_DOUBLE_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    inst v14, v1, SEXT_IMM(val2); \
-  )
 
 #define TEST_W_WV_OP( testnum, inst, result, val1, val2 ) \
   TEST_CASE_W( testnum, v24, result, \
@@ -862,48 +840,7 @@ test_ ## testnum: \
   )
 
 
-#define TEST_VZEXT2_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, ZEXT_VSEW(MASK_HALF_VSEW(val1)), \
-    li x7, MASK_HALF_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vzext.vf2 v14, v1; \
-  )
 
-#define TEST_VSEXT2_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, SEXT_HALF_TO_VSEW(MASK_HALF_VSEW(val1)), \
-    li x7, MASK_HALF_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vsext.vf2 v14, v1; \
-  )
-
-#define TEST_VZEXT4_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, ZEXT_VSEW(MASK_QUART_VSEW(val1)), \
-    li x7, MASK_QUART_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vzext.vf4 v14, v1; \
-  )
-
-#define TEST_VSEXT4_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, SEXT_QUART_TO_VSEW(MASK_QUART_VSEW(val1)), \
-    li x7, MASK_QUART_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vsext.vf4 v14, v1; \
-  )
-
-#define TEST_VZEXT8_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, ZEXT_VSEW(MASK_EIGHTH_VSEW(val1)), \
-    li x7, MASK_EIGHTH_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vzext.vf8 v14, v1; \
-  )
-
-
-#define TEST_VSEXT8_OP( testnum, val1 ) \
-  TEST_CASE( testnum, v14, SEXT_EIGHTH_TO_VSEW(MASK_EIGHTH_VSEW(val1)), \
-    li x7, MASK_EIGHTH_VSEW(val1); \
-    vmv.v.x v1, x7; \
-    vsext.vf8 v14, v1; \
-  )
 
 #define TEST_FP_1OPERAND_OP( testnum, inst, flags, result, val ) \
   TEST_CASE_FP( testnum, v24, flags, result, val, 0, \
@@ -931,13 +868,6 @@ test_ ## testnum: \
     inst v14, v2; \
   )
 
-// TEST_CASE wont check flags so check here
-#define TEST_FP_HEX_1OPERAND_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE_FP( testnum, v14, flags, result, 0, 0, \
-    li x7, MASK_VSEW(val); \
-    vmv.v.x v1, x7; \
-    inst v14, v1; \
-  )
 
 #define TEST_VVM_OP( testnum, inst, result, val1, val2 ) \
   TEST_CASE_MASK( testnum, v24, result, \
@@ -1249,6 +1179,15 @@ test_ ## testnum: \
     load_inst v16, (x1); \
   )
 
+#define TEST_FP_VV_OP( testnum, inst, flags, result, val1, val2 ) \
+  TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
+    flw f0, 0(a0); \
+    flw f1, 4(a0); \
+    vfmv.s.f v8, f0; \
+    vfmv.s.f v16, f1; \
+    flw f2, 8(a0); \
+    inst v24, v8, v16; \
+  )
 
 #define TEST_FP_VV_FUSED_OP( testnum, inst, flags, result, val1, val2 ) \
   TEST_CASE_FP( testnum, v24, flags, result, val1, val2,     \
@@ -1433,13 +1372,6 @@ test_ ## testnum: \
     inst v14, v2; \
   )
 
-#define TEST_INT_FP_OP( testnum, inst, flags, result, val ) \
-  TEST_CASE_INT_FP( testnum, v14, flags, result, val,   \
-    li x7, MASK_VSEW(val); \
-    vmv.v.x v1, x7; \
-    flw f2, 0(a0); \
-    inst v14, v1; \
-  )
 
 #define TEST_W_INT_FP_OP( testnum, inst, flags, result, val ) \
   TEST_W_CASE_INT_FP( testnum, v24, flags, result, val,   \

@@ -18,13 +18,14 @@ def generate_macros(f, lmul):
             inst v24, v8, x%d; "%n + " \\\n\
         )", file=f)
     for n in range(1, 32):
-        print("#define TEST_VXM_OP_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
-        TEST_CASE_MASK( testnum, v%d, result, "%n + "\\\n\
-            li x7, MASK_VSEW(val1); \\\n\
-            vmv.v.x v8, x7; \\\n\
-            li x1, MASK_XLEN(val2); \\\n\
-            inst v%d, v8, x1; "%n + " \\\n\
-        ) ", file=f)
+        if n != 8 and n != 16:
+            print("#define TEST_VXM_OP_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
+            TEST_CASE_MASK( testnum, v%d, result, "%n + "\\\n\
+                li x7, MASK_VSEW(val1); \\\n\
+                vmv.v.x v8, x7; \\\n\
+                li x1, MASK_XLEN(val2); \\\n\
+                inst v%d, v8, x1; "%n + " \\\n\
+            ) ", file=f)
     print("#define TEST_VXM_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
         TEST_CASE_MASK( testnum, v8, result, \\\n\
             li x7, MASK_VSEW(val1); \\\n\

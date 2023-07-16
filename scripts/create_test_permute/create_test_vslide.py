@@ -157,7 +157,7 @@ def generate_tests_vslide(f, vsew, lmul):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)", file=f)
 
     for i in range(1, 32):
-        if i != 8 and i != 16 and i != 24 and i % lmul == 0:
+        if i != 8 and i != 16 and i != 24 and i % lmul == 0 and i != 12 and i != 20:
             print("  TEST_VSLIDE_VX_OP_rd_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
                     i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
@@ -171,7 +171,7 @@ def generate_tests_vslide(f, vsew, lmul):
                 print("  TEST_VSLIDE_VI_OP_rs2_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i %
                     num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
                 n += 1
-        if i != 1 and i != 7 and i % lmul == 0:
+        if i != 1 and i != 7 and i % lmul == 0 and i != 24 and i != 12 and i != 20:
             print("  TEST_VSLIDE_VX_OP_rs1_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
                   num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1

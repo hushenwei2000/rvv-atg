@@ -52,7 +52,8 @@ def generate_macros_vpopc(f, vsew, lmul):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     # generate the macro
-    print("#define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \\\n\
+    print("#undef TEST_VPOPC_OP \\\n\
+          #define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \\\n\
     TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x2, vm_addr; \\\n\

@@ -47,7 +47,6 @@ def create_empty_test_vfwnmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_W_FP_VV_OP_NEGRESULT( 1,  %s.vv, fmul.d, 0, 1, 1);"%instr, file=f)
 
     # Common const information
     print_ending(f, generate_data=False)

@@ -16,7 +16,6 @@ def create_empty_test_vnclipu(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print("  TEST_W_AVG_WV_OP( 1,  vnclipu.wv, 0x0, 0x0, 0x0000, 0x000, 0x00, 0x00 );", file=f)
 
     # Common const information
     print_common_ending(f)

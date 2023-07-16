@@ -697,17 +697,18 @@ def generate_macros_vvmvxmvim(f, lmul, generate_vv = True, generate_vx = True):
                 inst v24, v8, x%d%s; "%(n, (", v0.t" if masked else "")) + " \\\n\
             )", file=f)
         for n in range(1, 32):
-            print("#define TEST_VXM_OP_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
-            TEST_CASE_MASK_4VL( testnum, v%d, result, "%n + "\\\n\
-                VSET_VSEW_4AVL \\\n\
-                la x7, rd_origin_data; \\\n\
-                vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
-                %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
-                la x7, val1; \\\n\
-                vle%d.v v8, (x7);"%vsew + " \\\n\
-                li x1, MASK_XLEN(val2); \\\n\
-                inst v%d, v8, x1%s; "%(n, (", v0.t" if masked else "")) + " \\\n\
-            ) ", file=f)
+            if n != 8 and n != 16:
+                print("#define TEST_VXM_OP_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
+                TEST_CASE_MASK_4VL( testnum, v%d, result, "%n + "\\\n\
+                    VSET_VSEW_4AVL \\\n\
+                    la x7, rd_origin_data; \\\n\
+                    vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
+                    %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+                    la x7, val1; \\\n\
+                    vle%d.v v8, (x7);"%vsew + " \\\n\
+                    li x1, MASK_XLEN(val2); \\\n\
+                    inst v%d, v8, x1%s; "%(n, (", v0.t" if masked else "")) + " \\\n\
+                ) ", file=f)
         print("#define TEST_VXM_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
             TEST_CASE_MASK_4VL( testnum, v8, result, \\\n\
                 VSET_VSEW_4AVL \\\n\

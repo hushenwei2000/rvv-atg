@@ -13,7 +13,7 @@ instr4 = 'vl1re64'
 
 def generate_macros(f):
     for n in range(1,30):
-        if n == 12 or n == 20 or n == 24: # signature base registers
+        if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
         print("#define TEST_VSRE1_OP_1%d(  testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\

@@ -188,7 +188,7 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
 
     for i in range(32):
-        if i == 0 or i == 8 or i == 16 or i == 15 or (0 >= i and i + lmul - 1 >= 0):  # 15 is used for TEST_CASE_LOOP
+        if i == 0 or i == 8 or i == 16 or i == 15 or (0 >= i and i + lmul - 1 >= 0 or i == 12 or i == 20 or i == 24):  # 15 is used for TEST_CASE_LOOP
             continue
         if i % vemul != 0: # guarantee is_aligned(insn.rd(), vemul)
             continue
@@ -197,14 +197,14 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
         no = no + 1
 
     for i in range(32):
-        if i == 0 or i == 8 or i == 16 or i == 15 or (8 + lmul - 1 >= i and i + lmul - 1 >= 8) or (i >= 16 and 16 + lmul - 1 >= i):  # 15 is used for TEST_CASE_LOOP
+        if i == 0 or i == 8 or i == 16 or i == 15 or (8 + lmul - 1 >= i and i + lmul - 1 >= 8) or (i >= 16 and 16 + lmul - 1 >= i) or i == 12 or i == 20 or i == 24:  # 15 is used for TEST_CASE_LOOP
             continue
         print("TEST_VCOMPRESS_OP_rs1_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
             i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
         no = no + 1
 
     for i in range(32):
-        if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0:  # 15 is used for TEST_CASE_LOOP
+        if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0 or i == 12 or i == 20 or i == 24:  # 15 is used for TEST_CASE_LOOP
             continue
         print("TEST_VCOMPRESS_OP_rs2_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
             i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
