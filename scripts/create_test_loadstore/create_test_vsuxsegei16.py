@@ -80,7 +80,6 @@ def create_empty_test_vsuxsegei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print("  TEST_VSXEI_OP( 10, vluxei16.v, vsuxei16.v, 16, 0x00aa00aa, 0  + tdat , idx16dat );", file=f)
 
     # Common const information
     #print_common_ending(f)

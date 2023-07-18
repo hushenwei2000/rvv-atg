@@ -1693,86 +1693,18 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VV_OP( "+str(n)+",  %s.wv, " %
-              instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
+              instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes*2, i*step_bytes), file=f)
     for i in range(min(32, loop_num)):     
         k = i%31+1
         if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2) and k != 12 and k != 20 and k != 24:
             n+=1
-            print("  TEST_N_VV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
+            print("  TEST_N_VV_OP_rd%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes*2, i*step_bytes),file=f)
         
         k = i%30+2
         if k%lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul, 16, lmul*2) and k != 12 and k != 20 and k != 24:
             n +=1
-            print("  TEST_N_VV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
+            print("  TEST_N_VV_OP_1%d( "%k+str(n)+",  %s.wv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes*2, i*step_bytes),file=f)
 
-    # if vsew == 8:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 101, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 10, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 12, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -86);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 101);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 10);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 12);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, -86, 3);", file=f)
-    # elif vsew == 16:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 26213, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 180, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 182, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -21846);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 26213);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 180);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 182);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, -21846, 3);", file=f)
-    # elif vsew == 32:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 1717986917, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46339, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46341, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -1431655766);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 1717986917);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 46339);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 46341);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, -1431655766, 3);", file=f)
-    # elif vsew == 64:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000498, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000500, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 7378697629483820645);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 3037000498);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 3037000500);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, -6148914691236517206, 3);", file=f)
 
     vv_test_num = n
     print("  #-------------------------------------------------------------", file=f)
@@ -1782,7 +1714,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VX_OP( "+str(n)+",  %s.wx, " %
-              instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes, rs1_val[i % len(rs1_val)]), file=f)
+              instr+"rd_data_vx+%d, rs2_data+%d, %s)"%(i*step_bytes, i*step_bytes*2, rs1_val[i % len(rs1_val)]), file=f)
     
     vx_test_num = n - vv_test_num
     
@@ -1793,7 +1725,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VI_OP( "+str(n)+",  %s.wi, " %
-              instr+"rd_data_vi+%d, rs2_data+%d, 4)"%(i*step_bytes, i*step_bytes), file=f)
+              instr+"rd_data_vi+%d, rs2_data+%d, 4)"%(i*step_bytes, i*step_bytes*2), file=f)
 
     vi_test_num = n - vx_test_num
     return (vv_test_num, vx_test_num, vi_test_num)

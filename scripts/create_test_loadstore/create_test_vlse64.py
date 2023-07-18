@@ -99,7 +99,6 @@ def create_empty_test_vlse64(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print(" TEST_VLSE_OP( 26, vlse64.v, 32, 0xff00ff0000ff00ff, 0xf00ff00f0ff00ff0, 8, 0  + tdat );", file=f)
 
     # Common const information
     #print_common_ending(f)

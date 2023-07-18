@@ -83,7 +83,6 @@ def create_empty_test_vluxsegei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print(" TEST_VLXSEG1_OP( 3, vluxseg2ei16.v, 16, 0x00ff00ff, 0  + tdat, idx16dat );", file=f)
 
     # Common const information
     #print_common_ending(f)

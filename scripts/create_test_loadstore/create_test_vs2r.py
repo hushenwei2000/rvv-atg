@@ -91,7 +91,6 @@ def create_empty_test_vs2r(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
     generate_macros(f, vsew, lmul)
 
-    print(" TEST_VSRE2_OP( 6, vl2re8.v,  vs2r.v, 8,  0xff, 0x00,  0  + tdat );", file=f)
 
     # Common const information
     #print_common_ending(f)

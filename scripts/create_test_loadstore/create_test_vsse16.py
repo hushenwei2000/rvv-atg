@@ -55,7 +55,6 @@ def create_empty_test_vsse16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print(" TEST_VSSE_OP( 10, vlse16.v, vsse16.v, 16, 0x00aa, 2, 0  + tdat ); ", file=f)
 
     # Common const information
     #print_common_ending(f)

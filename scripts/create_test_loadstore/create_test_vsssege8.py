@@ -115,7 +115,6 @@ def create_empty_test_vsssege8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print("  TEST_VSSSEG1_OP( 3, vlsseg2e8.v, vssseg2e8.v, 8, 0x0f, 1,  12 + tdat  ); ", file=f)
 
     # Common const information
     #print_common_ending(f)

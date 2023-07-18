@@ -90,7 +90,6 @@ def create_empty_test_vle32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print(" TEST_VLE_OP( 25, vle32.v, 32, 0xf00ff00f, 0x00ff00ff,  0  + tdat4 );", file=f)
 
     # Common const information
     #print_common_ending(f)

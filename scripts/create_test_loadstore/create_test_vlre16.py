@@ -134,8 +134,6 @@ def create_empty_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print("   TEST_VLRE1_OP( 6, vl1re16.v, 16, 0x0ff0ff00ff0000ff, 2  + tdat );", file=f)
-
     # Common const information
     #print_common_ending(f)
     # Load const information

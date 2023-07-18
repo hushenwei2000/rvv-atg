@@ -48,7 +48,6 @@ def create_empty_test_vluxei32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print(" TEST_VLXEI_OP( 2, vluxei32.v, 32, 0x00ff00ff, 0xff00ff00, 0  + tdat , idx32dat );", file=f)
 
     # Common const information
     #print_common_ending(f)

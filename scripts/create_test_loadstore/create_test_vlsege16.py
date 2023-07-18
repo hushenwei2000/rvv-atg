@@ -74,7 +74,6 @@ def create_empty_test_vlsege16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print(" TEST_VLSEG1_OP(11, vlseg2e16.v, 16, 0x00ff, 0  + tdat );", file=f)
 
     # Common const information
     #print_common_ending(f)

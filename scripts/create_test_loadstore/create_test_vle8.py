@@ -99,7 +99,6 @@ def create_empty_test_vle8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    print(" TEST_VLE_OP( 10, vle8.v, 8, 0x00, 0xff,  1 + tdat );", file=f)
 
     # Common const information
     #print_common_ending(f)

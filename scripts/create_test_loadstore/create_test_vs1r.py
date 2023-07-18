@@ -105,7 +105,6 @@ def create_empty_test_vs1r(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(name, f)
 
-    print(" TEST_VSRE1_OP( 2, vl1re8.v,  vs1r.v, 8,  0xff,  0  + tdat  );", file=f)
 
     # Common const information
     #print_common_ending(f)
