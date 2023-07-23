@@ -1806,17 +1806,17 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
     for i in range(loop_num):
-        if int(vsew / 2) >= 8: 
+        if int(vsew / 2) >= 8 and lmul / 2 >= 0.125: 
             print("TEST_EXT_OP( %d,  %s.vf2, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
             n += 1
     count1 = n
     for i in range(loop_num):
-        if int(vsew / 4) >= 8:
+        if int(vsew / 4) >= 8 and lmul / 4 >= 0.125:
             print("TEST_EXT_OP( %d,  %s.vf4, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
     count2 = n
     for i in range(loop_num):
-        if int(vsew / 8) >= 8:
+        if int(vsew / 8) >= 8 and lmul / 8 >= 0.125:
             print("TEST_EXT_OP( %d,  %s.vf8, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
     
@@ -1829,21 +1829,21 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
         k = i % 31 + 1  
         if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 2) >= 8: 
+        if int(vsew / 2) >= 8 and lmul / 2 >= 0.125: 
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
             n += 1
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
         if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 4) >= 8:
+        if int(vsew / 4) >= 8 and lmul / 4 >= 0.125:
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
         if k % lmul != 0 or k == 8 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 8) >= 8:
+        if int(vsew / 8) >= 8 and lmul / 8 >= 0.125:
             print("TEST_EXT_OP_rd_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
 
@@ -1852,7 +1852,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 2) >= 8: 
+        if int(vsew / 2) >= 8 and lmul / 2 >= 0.125: 
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf2, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
             n += 1
 
@@ -1860,7 +1860,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 4) >= 8:
+        if int(vsew / 4) >= 8 and lmul / 4 >= 0.125:
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf4, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count1 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
 
@@ -1868,7 +1868,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 24 or k == 12 or k == 20 or k == 24:
             continue
-        if int(vsew / 8) >= 8:
+        if int(vsew / 8) >= 8 and lmul / 8 >= 0.125:
             print("TEST_EXT_OP_rs1_%d( %d,  %s.vf8, "%(k, n, instr) + "rd_data_vv+%d, rs1_data+%d);"%((count2 + i)*step_bytes, i*step_bytes), file=f)
             n += 1
     

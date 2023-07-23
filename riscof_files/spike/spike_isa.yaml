@@ -1,0 +1,15 @@
+hart_ids: [0]
+hart0:
+  ISA: RV64IMAFDCVZicsr
+  physical_addr_sz: 32
+  User_Spec_Version: '2.3'
+  supported_xlen: [64]
+  misa:
+   reset-val: 0x800000000020112D
+   rv64:
+     accessible: true
+     mxl:
+       implemented: true
+     extensions:
+       implemented: true
+ 

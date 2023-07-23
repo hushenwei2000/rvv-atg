@@ -11,8 +11,7 @@
    
    If the terminal can find `spike` command then it's successful
 
-
-3. RISCV-ISAC RVV Support (**ONLY NEEDED** if you need use `riscof coverage` command)
+3. RISCV-ISAC RVV Support (ONLY if you need use `riscof coverage` command)
    1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
    2. `cd riscv-isac-rvv`
    3. `git checkout vetcor`  # IMPORTANT!!!
@@ -20,6 +19,10 @@
    5. Add `~/.local` to your PATH   
    
    If the terminal can find `riscv_isac` command then it's successful
+
+4. Modify files in `riscof_files`
+   1. Modify `riscof_files/env/test_macros_vector.h`, you can copy from `env/macros/vsewXX_lmulXX` and paste to the file
+   2. Modify `riscof_files/config.ini`, write your path of RVV-ATG
 
 ## Usage
 
@@ -63,12 +66,11 @@ python generate_all.py
 
 ### Notice of Failure Tests
 
-- elen = 64 for default
+- **elen = 64 for default**
   - vsew should <= elen * lmul
   - So, when lmul = 0.125, load/store eew=32+ cannot test. 
 
-- If there are failure tests, **most probably** is because that configuration can not be tested on that instruction. For example test widen instruction when vsew=64, or test floating point when vsew=8/16, or the elen related restriction above.
-  - At present, users need to determine which configurations can be produced to avoid such failure. <kbd>FutureSupport</kbd>
+- If there are failure tests, most probably is because that configuration can not be tested on that instruction. For example test widen instruction when vsew=64, or test floating point when vsew=8/16, or the elen related restriction above.
 
 ## Current Support
 

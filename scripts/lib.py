@@ -143,13 +143,3 @@ def rewrite_macro_vtavma(vsew, lmul, vta, vma):
       a = re.sub('t[au], m[au]', new_vtavma, eachline)
       f1.writelines(a)
   f1.close()
-
-  f_path_2 = os.environ["RVV_ATG_ROOT"] + '/env/macros/vsew%d_lmul%s_nofail/test_macros_vector.h'%(vsew, lmul)
-  f2 = open(f_path_2, 'r')
-  alllines2 = f2.readlines()
-  f2.close()
-  f2 = open(f_path_2,'w+')
-  for eachline in alllines2:
-      a = re.sub('t[au], m[au]', new_vtavma, eachline)
-      f2.writelines(a)
-  f2.close()
