@@ -18,7 +18,7 @@
 #define VECTOR_RVTEST_SIGUPD(basereg, vreg) vmv.x.s x1, vreg; RVTEST_SIGUPD(basereg, x1);
 #define VECTOR_RVTEST_SIGUPD_F(basereg, vreg, flagreg) vfmv.f.s f1, vreg; RVTEST_SIGUPD_F(basereg, f1, flagreg);
 
-#define RVTEST_VSET RVTEST_VECTOR_ENABLE;  x31, 1, e64, tu, mu;
+#define RVTEST_VSET RVTEST_VECTOR_ENABLE; vsetivli x31, 1, e64, tu, mu;
 #define __riscv_vsew 64
 #define __e_riscv_vsew e64
 #define __riscv_double_vsew 128
