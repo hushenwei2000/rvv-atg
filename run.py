@@ -61,7 +61,7 @@ def parse_args(cwd):
                         help="Batch mode")
     args = parser.parse_args()
     if args.elen == -1:
-        args.elen = args.vlen
+        args.elen = 64
     if args.flen == -1:
         if args.vsew == 32 or args.vsew == 64:
             args.flen = args.vsew
