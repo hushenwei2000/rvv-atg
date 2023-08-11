@@ -6,15 +6,17 @@ import re
 
 instr = 'vfclass'
 
+rs1_val_local = rs1_val + finf_and_nan
+rs2_val_local = rs2_val + finf_and_nan
 
 def generate_fdat_seg(f):
     print("fdat_rs1:", file=f)
-    for i in range(len(rs1_val)):
-        print("fdat_rs1_" + str(i) + ":  .word " + rs1_val[i], file=f)
+    for i in range(len(rs1_val_local)):
+        print("fdat_rs1_" + str(i) + ":  .word " + rs1_val_local[i], file=f)
     print("", file=f)
     print("fdat_rs2:", file=f)
-    for i in range(len(rs2_val)):
-        print("fdat_rs2_" + str(i) + ":  .word " + rs2_val[i], file=f)
+    for i in range(len(rs2_val_local)):
+        print("fdat_rs2_" + str(i) + ":  .word " + rs2_val_local[i], file=f)
 
 def extract_operands(f, rpt_path):
     # Floating pooints tests don't need to extract operands, rs1 and rs2 are fixed
@@ -77,6 +79,11 @@ def print_ending(f):
 
 
 def create_empty_test_vfclass(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+    if vsew == 64:
+        rs1_val_local = rs1_val_64 + dinf_and_nan
+        rs2_val_local = rs2_val_64 + dinf_and_nan
+        
+    
     logging.info("Creating empty test for {}".format(instr))
 
     path = "%s/%s_empty.S" % (output_dir, instr)
@@ -118,7 +125,7 @@ def create_first_test_vfclass(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     num_tests_tuple = generate_tests_v_op(instr, f, lmul)
 
     # Common const information
-    print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, num_tests_tuple, vsew, f, generate_vf = False)
+    print_common_ending_rs1rs2rd_vvvfrv(rs1_val_local, rs2_val_local, num_tests_tuple, vsew, f, generate_vf = False)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
