@@ -64,6 +64,7 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 6. run `riscof run --config=config.ini --suite=test_suite --env=env`
 
 ## Known Bugs
+- Not support floating-point vsew=16
 - Lack of vmerge tests
 - Lack of load store eew=64 tests
 
