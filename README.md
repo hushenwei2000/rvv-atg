@@ -20,10 +20,6 @@
    
    If the terminal can find `riscv_isac` command then it's successful
 
-4. Modify files in `riscof_files`
-   1. Modify `riscof_files/env/test_macros_vector.h`, you can copy from `env/macros/vsewXX_lmulXX` and paste to the file
-   2. Modify `riscof_files/config.ini`, write your path of RVV-ATG
-
 ## Usage
 
 ### Generate One Instruction
@@ -48,6 +44,20 @@ python generate_all.py
 - **Modyfy `main` function to run different type of instructions.**
 - Test file will generate in `generate_all` folder.
 - ⚠️ Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
+
+## Run Tests On RISCOF
+
+1. Modify `riscof_files/env/test_macros_vector.h`, you can select your prefered configuration and copy from `env/macros/vsewXX_lmulXX` and paste to `riscof_files/env/test_macros_vector.h`
+
+2. `cd riscof_files`
+
+3. Modify your reference model and DUT to be testes in `config.ini`, in current file, we use sail as reference and spike as DUT
+
+4. Modify GCC in `sail_cSim/riscof_sail_cSim.py` and `spike/riscof_spike.py`
+
+5. copy the `.S` test files to `test_suite`
+
+6. run `riscof run --config=config.ini --suite=test_suite --env=env`
 
 ## Known Bugs
 - Lack of vmerge tests
