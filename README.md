@@ -42,8 +42,12 @@ python generate_all.py
 - This will use default parameter configuration to generate all integer instructions tests.
 - **Modify `runcommand_<type>` function to run different parameter.**
 - **Modyfy `main` function to run different type of instructions.**
-- Test file will generate in `generate_all` folder.
-- ⚠️ Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
+
+After genering, run `python move_generate_all_elf.py`, this will check if generated file is valid. If you see 
+   - `No first.S for vXX` is OK, ignore it
+   - `No RVMODEL_DATA_END for vXX` then it means vXX you should use generate one instruction method to regenerate it. Regenerate all of them and rerun `move_generate_all_elf.py` until no `No RVMODEL_DATA_END` appear.
+   - All tests will in `generate_all` folder.
+
 
 ## Run Tests On RISCOF
 

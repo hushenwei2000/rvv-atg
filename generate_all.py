@@ -37,55 +37,50 @@ all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=perm
 
 # Modify here if you want to test different VSEW, VLEN, LMUL ect..
 def runcommand_integer(ins):
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 2' % ins)
+    os.system('python run.py -t i -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
 
 
 def runcommand_fixpoint(ins):
-    os.system('python run.py -t x -i %s' % ins)
+    os.system('python run.py -t x -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
 
 def runcommand_permute(ins):
-    os.system('python run.py -t p -i %s' % ins)
+    os.system('python run.py -t p -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
 
 
 def runcommand_floatingpoint(ins):
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
+    os.system('python run.py -t f -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
 
 def runcommand_loadstore(ins):
-    os.system('python run.py -t l -i %s' % ins)
+    os.system('python run.py -t l -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
 
 def runcommand_mask(ins):
     # passed 32
-    os.system('python run.py -t m -i %s' % ins)
+    os.system('python run.py -t m -i %s --vlen 256 --vsew 16 --lmul 8' % ins)
     
 
 def run_integer():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_integer, integer)
 
 def run_fixpoint():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_fixpoint, fixpoint)
-    dirs = os.listdir('.')
 
 def run_permute():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_permute, permute)
-    dirs = os.listdir('.')
 
 def run_floatingpoint():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_floatingpoint, floatingpoint)
 
-
 def run_mask():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_mask, mask)
-    dirs = os.listdir('.')
 
 def run_loadstore():
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_loadstore, loadstore)
-    dirs = os.listdir('.')
 
 # Generate all and Put final ELF to a directory
 def main():
@@ -93,11 +88,10 @@ def main():
     setup_logging(True)
     # Modify here to choose which categories you want to generate
     run_integer()
-    # run_mask()
-    # run_floatingpoint()
-    # run_fixpoint()
-    # run_permute()
-    # run_loadstore()
+    run_mask()
+    run_fixpoint()
+    run_permute()
+    run_loadstore()
 
 
 if __name__ == "__main__":
