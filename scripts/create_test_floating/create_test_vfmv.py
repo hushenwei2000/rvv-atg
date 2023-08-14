@@ -90,14 +90,14 @@ def generate_tests(f, lmul):
     print("  # vfmv.f.s / vfmv.v.f Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-    for i in range(len(rs1_val)):
+    for i in range(len(rs1_val) - 1):
         print("  TEST_VFMVF_OP( " + str(n) + ",  fdat_rs1_" + str(i) + " );", file=f)
         n += 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # vfmv.f.s / vfmv.s.f Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-    for i in range(len(rs1_val)):
+    for i in range(len(rs1_val) - 1):
         print("  TEST_VFMVS_OP( " + str(n) + ",  fdat_rs2_" + str(i) + " );", file=f)
         n += 1
 

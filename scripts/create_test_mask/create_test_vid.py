@@ -75,9 +75,8 @@ def generate_macros_vid(f, vsew, lmul):
             la  x7, result_addr; \\\n\
             vle%d.v v8, (x1); \\\n\
             vmseq.vi v0, v8, 1; \\\n\
-            vmv.v.i v%d, 2;\\\n\
             inst v%d, v0.t; \\\n\
-        )" % (n, n, vsew, n ,n), file=f)
+        )" % (n, n, vsew, n), file=f)
 
 
 def generate_tests_vid(instr, f, vlen, vsew, lmul):

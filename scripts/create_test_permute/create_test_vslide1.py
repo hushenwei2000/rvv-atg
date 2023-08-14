@@ -7,7 +7,7 @@ from scripts.test_common_info import *
 from scripts.create_test_permute.const_data import *
 import re
 
-instr = 'vslide'
+instr = 'vslide1'
 walking_val = []
 rd_val = [3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17,
           18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,

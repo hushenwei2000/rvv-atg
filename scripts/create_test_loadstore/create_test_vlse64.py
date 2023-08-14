@@ -66,25 +66,25 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     for i in range(2):
         n += 1
         print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+"8"+" , "+"0 + tdat"+" );", file=f)
+              instr+" 64 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+"8"+" , "+"0 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+"4104"+" , "+"0 + tdat"+" );", file=f)
+              instr+" 64 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+"4104"+" , "+"0 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0xf00ff00f0ff00ff0"+", "+"0x0000000000000000"+" , "+"-4104"+" , "+"0 + tsdat8"+" );", file=f)
+              instr+" 64 "+", "+"0xf00ff00f0ff00ff0"+", "+"0x0000000000000000"+" , "+"-4104"+" , "+"0 + tsdat8"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1
         n+=1
         if( k % lmul == 0 and k % emul == 0):
-            print("  TEST_VLSE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+" 8 "+" , "+"0 + tdat"+");",file=f)
+            print("  TEST_VLSE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 64 "+", "+"0xff00ff0000ff00ff"+", "+"0xf00ff00f0ff00ff0"+" , "+" 8 "+" , "+"0 + tdat"+");",file=f)
         
         k = i%30+2
         if(k == 31):
             continue;
         n +=1
-        print("  TEST_VLSE_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xf00ff00f0ff00ff0"+", "+"0xff00ff0000ff00ff"+" , "+" 8 "+" , "+"-4 + tdat4"+");",file=f)
+        print("  TEST_VLSE_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 64 "+", "+"0xf00ff00f0ff00ff0"+", "+"0xff00ff0000ff00ff"+" , "+" 8 "+" , "+"-4 + tdat4"+");",file=f)
     
 
 

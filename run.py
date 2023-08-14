@@ -28,7 +28,7 @@ def parse_args(cwd):
                         32, 64, 128(default), 256, 512, 1024")
     parser.add_argument("--elen", type=int, default="-1",
                         help="The maximum size of a vector element that any operation can produce or consume in bits: \
-                        default = vlen")
+                        default = 64")
     parser.add_argument("--vsew", type=int, default="32",
                         help="Selected Element Width: \
                         8, 16, 32(default), 64")
@@ -114,8 +114,11 @@ def run_vf(cwd, args, cgf, output_dir):
         des_path = replace_results(search_ins, first_test, spike_first_log, 'spike', original_ins)
 
     # 6. Run final riscof coverage
-    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+    # (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+
+    spike_final_log = run_spike(args.i, cwd, 
+            output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     check_spikelog(output_dir, args.i)
 
@@ -153,8 +156,11 @@ def run_integer(cwd, args, cgf, output_dir):
         des_path = replace_results(search_ins, first_test, spike_first_log, 'spike')
 
     # 6. Run final riscof coverage
-    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+    # (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+
+    spike_final_log = run_spike(args.i, cwd, 
+            output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     check_spikelog(output_dir, args.i)
 
@@ -185,9 +191,12 @@ def run_mask(cwd, args, cgf, output_dir):
         des_path = replace_results(search_ins, empty_test, spike_first_log, 'spike')
  
     # 4. Run final riscof coverage
-    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+    # (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
 
+    spike_final_log = run_spike(args.i, cwd, 
+            output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
+    
     check_spikelog(output_dir, args.i)
 
 def run_loadstore(cwd, args, cgf, output_dir):
@@ -220,8 +229,11 @@ def run_loadstore(cwd, args, cgf, output_dir):
         des_path = replace_results(args.i, first_test, spike_first_log, 'spike')
 
     # 6. Run final riscof coverage
-    (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
-                                                      output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+    # (rpt_final, isac_log_final) = run_riscof_coverage(args.i, cwd, cgf,
+    #                                                   output_dir, first_test, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True, tool='spike')
+
+    spike_final_log = run_spike(args.i, cwd, 
+            output_dir, des_path, 'final', args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, use_fail_macro=True)
 
     check_spikelog(output_dir, args.i)
 

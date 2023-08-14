@@ -431,6 +431,7 @@ def print_loadls_ending(f):
     \n\
     .type tdat, @object\n\
     .size tdat, 4128\n\
+    .align 8 \n\
     tdat:\n\
     tdat1:  .word 0x00ff00ff\n\
     tdat2:  .word 0xff00ff00\n\

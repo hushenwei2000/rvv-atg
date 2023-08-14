@@ -30,156 +30,44 @@ fixpoint = ['vaadd', 'vaaddu', 'vasub', 'vasubu', 'vnclip', 'vnclipu', 'vsmul', 
 # For fast tests
 fixpoint_short = ['vaadd', 'vnclip', 'vsmul', 'vssra']
 
-loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
+loadstore = ['vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
 
 
 all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=permute, fixpoint=fixpoint, loadstore=loadstore)
 
-# Modify here if you want to test different VSEW, VLEN, LMUL ect..
 def runcommand_integer(ins):
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 1' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 0.5' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 0.25' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 0.125' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 2' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 4' % ins)
-    os.system('python run.py -t i -i %s --vsew 8 --lmul 8' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 1' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 0.5' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 0.25' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 0.125' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 2' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 4' % ins)
-    os.system('python run.py -t i -i %s --vsew 16 --lmul 8' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 1' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 0.5' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 0.25' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 0.125' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 2' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 4' % ins)
-    os.system('python run.py -t i -i %s --vsew 32 --lmul 8' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 1' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 0.5' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 0.25' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 0.125' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 2' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 4' % ins)
-    os.system('python run.py -t i -i %s --vsew 64 --lmul 8' % ins)
-
+    if (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8") and (ins.startswith('vw') or ins.startswith('vn')):
+        return
+    os.system('python run.py -t i -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_fixpoint(ins):
-    os.system('python run.py -t x -i %s --vsew 64 --lmul 0.5' % ins)
-    os.system('python run.py -t x -i %s --vsew 64 --lmul 2' % ins)
-    # os.system('python run.py -t x -i %s --vsew 32 --lmul 0.5' % ins)
-    # os.system('python run.py -t x -i %s --vsew 32 --lmul 2' % ins)
-    # os.system('python run.py -t x -i %s --vsew 16 --lmul 0.5' % ins)
-    # os.system('python run.py -t x -i %s --vsew 16 --lmul 2' % ins)
-    # os.system('python run.py -t x -i %s --vsew 8 --lmul 0.5' % ins)
-    # os.system('python run.py -t x -i %s --vsew 8 --lmul 2' % ins)
+    if (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8") and ins.startswith('vn'):
+        return
+    os.system('python run.py -t x -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_permute(ins):
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 1' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 0.5' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 0.25' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 0.125' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 2' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 4' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 8 --lmul 8' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 1' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 0.5' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 0.25' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 0.125' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 2' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 4' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 16 --lmul 8' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 0.5' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 0.25' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 0.125' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 2' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 32 --lmul 8' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 1' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 0.5' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 0.25' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 0.125' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 2' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 4' % ins)
-    os.system('python run.py -t p -i %s --vlen 512 --vsew 64 --lmul 8' % ins)
-
+    if ins == "vfslide" and (vsew == 8 or vsew == 16):
+        return
+    if ins == "vrgatherei16" and ((vsew == 8 and lmul_str == "8") or (vsew == 32 and lmul_str == "0.125") or (vsew == 64 and lmul_str == "0.125") or (vsew == 64 and lmul_str == "0.25")):
+        return
+    os.system('python run.py -t p -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_floatingpoint(ins):
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 0.5' % ins)
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 0.25' % ins)
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 0.125' % ins)
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 2' % ins)
-    os.system('python run.py -t f -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
+    if (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8") and (ins.startswith('vfw') or ins.startswith('vfn')):
+        return
+    if (vsew == 8 or vsew == 16):
+        return
+    os.system('python run.py -t f -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_loadstore(ins):
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 1' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 0.5' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 0.25' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 0.125' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 2' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 4' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 8 --lmul 8' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 1' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 0.5' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 0.25' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 0.125' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 2' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 4' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 16 --lmul 8' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 0.5' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 0.25' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 0.125' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 2' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 32 --lmul 8' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 1' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 0.5' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 0.25' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 0.125' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 2' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 4' % ins)
-    os.system('python run.py -t l -i %s --vlen 512 --vsew 64 --lmul 8' % ins)
+    os.system('python run.py -t l -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_mask(ins):
-    # passed 32
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 8 --lmul 8' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 16 --lmul 8' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 32 --lmul 8' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 1' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.5' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.25' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 0.125' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 2' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 4' % ins)
-    os.system('python run.py -t m -i %s --vlen 512 --vsew 64 --lmul 8' % ins)
+    os.system('python run.py -t m -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
     
 
 def run_integer():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_integer, integer)
     dirs = os.listdir('.')
     for d in dirs:
@@ -195,7 +83,7 @@ def run_integer():
             os.system('cp %s ./generate_all/%s.elf'%(elf, full_instr))
 
 def run_fixpoint():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_fixpoint, fixpoint)
     dirs = os.listdir('.')
     for d in dirs:
@@ -209,7 +97,7 @@ def run_fixpoint():
             os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
 
 def run_permute():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_permute, permute)
     dirs = os.listdir('.')
     for d in dirs:
@@ -223,7 +111,7 @@ def run_permute():
             os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
 
 def run_floatingpoint():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_floatingpoint, floatingpoint)
     dirs = os.listdir('.')
     for d in dirs:
@@ -237,7 +125,7 @@ def run_floatingpoint():
             os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
 
 def run_mask():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_mask, mask)
     dirs = os.listdir('.')
     for d in dirs:
@@ -253,7 +141,7 @@ def run_mask():
             os.system('cp %s ./generate_all/%s.elf'%(elf, full_instr))
 
 def run_loadstore():
-    pool = multiprocessing.Pool(30)
+    pool = multiprocessing.Pool(1)
     pool.map(runcommand_loadstore, loadstore)
     dirs = os.listdir('.')
     for d in dirs:
@@ -266,17 +154,23 @@ def run_loadstore():
             elf = "%s/%s"%(d, 'ref_final.elf')
             os.system('cp %s ./generate_all/%s.elf'%(elf, instr))
 
+# Modify here to config
+vlen = 512
+vsew = 64
+lmul_str = "0.5"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
+elen = 64
+
 # Generate all and Put final ELF to a directory
 def main():
     subprocess.run(["mkdir", "-p", 'generate_all'])
     setup_logging(True)
     # Modify here to choose which categories you want to generate
-    # run_integer()
-    # run_mask()
-    # run_floatingpoint()
-    # run_fixpoint()
-    # run_permute()
-    # run_loadstore()
+    run_integer()
+    run_mask()
+    run_floatingpoint()
+    run_fixpoint()
+    run_permute()
+    run_loadstore()
 
 
 if __name__ == "__main__":
