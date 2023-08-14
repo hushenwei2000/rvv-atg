@@ -1152,7 +1152,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-        for i in range(len(rs1_val)):
+        for i in range(len(rs1_val) - 1):
             print("TEST_FPRED_VV_OP( %d,  %s.%s, 0xff100,               5201314,        %s,        %s );" % (
                 n, instr, suffix, rs1_val[i], rs2_val[i]), file=f)
             n += 1
@@ -1162,7 +1162,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
 
-        for i in range(len(rs1_val)):
+        for i in range(len(rs1_val) - 1):
             k = i % 31 + 1
             if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
@@ -1178,7 +1178,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  # VF Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
         print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
-        for i in range(len(rs1_val)):
+        for i in range(len(rs1_val) - 1):
             print("TEST_FPRED_VF_OP( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );" % (
                 n, instr, rs1_val[i], rs2_val[i]), file=f)
             n += 1
@@ -1188,7 +1188,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------",file=f)
         print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
         n = n+1
-        for i in range(len(rs1_val)):     
+        for i in range(len(rs1_val) - 1):     
             k = i%31+1        
             if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue  

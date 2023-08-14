@@ -36,7 +36,6 @@ loadstore = ['vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16',
 
 all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=permute, fixpoint=fixpoint, loadstore=loadstore)
 
-# Modify here if you want to test different VSEW, VLEN, LMUL ect..
 def runcommand_integer(ins):
     if (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8") and (ins.startswith('vw') or ins.startswith('vn')):
         return
