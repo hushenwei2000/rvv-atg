@@ -11,7 +11,7 @@
    
    If the terminal can find `spike` command then it's successful
 
-3. RISCV-ISAC RVV Support (ONLY if you need use `riscof coverage` command)
+3. RISCV-ISAC RVV Support
    1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
    2. `cd riscv-isac-rvv`
    3. `git checkout vetcor`  # IMPORTANT!!!
