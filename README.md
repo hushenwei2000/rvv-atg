@@ -14,11 +14,22 @@
 3. RISCV-ISAC RVV Support
    1. `git clone https://github.com/hushenwei2000/riscv-isac-rvv`
    2. `cd riscv-isac-rvv`
-   3. `git checkout vetcor`  # IMPORTANT!!!
+   3. `git checkout vetcor`  **!!!IMPORTANT!!!**
    4. `pip install . --prefix=~/.local`  # Anywhere you want  
    5. Add `~/.local` to your PATH   
    
    If the terminal can find `riscv_isac` command then it's successful
+
+4. Sail Reference Model (If you want to run RISCOF to test)
+   1. Intall sail-riscv with vector support `https://github.com/riscv/sail-riscv/tree/vector-dev`.
+      1. sail version should be `0.15`
+      1. Note that you should modify `vlen` and `elen` in `riscv_sys_control.sail` after `init_pmp()` before building. Add these two lines for example:
+      ```
+      vlen = 0b0011;
+      elen = 0b1;
+      ```
+         vlen and elen encoding can be found in `riscv_vlen.sail`.
+
 
 ## Usage
 
