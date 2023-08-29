@@ -98,17 +98,3 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 
 - If there are failure tests, most probably is because that configuration can not be tested on that instruction. For example test widen instruction when vsew=64, or test floating point when vsew=8/16, or the elen related restriction above.
 
-## Current Support
-
-- Integer Type: 
-   - vsew32: lmul1, 2, 4, 8
-- Floating-Point Type: 
-   - vsew32: lmul1, 2, 4, 8
-- Fix-Point Type: 
-   - vsew32: lmul1, 2, 4, 8
-- Mask Type: 
-   - vsew32: lmul1, 2, 4, 8
-- Permute Type: 
-   - vsew32: lmul1, 2, 4, 8
-- Load Store Type: 
-   - vsew32: lmul1, 2, 4, 8
