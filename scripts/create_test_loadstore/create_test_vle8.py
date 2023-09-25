@@ -75,6 +75,12 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
         n += 1
         print("  TEST_VLE_OP( "+str(n)+",  %sff.v, " %
               instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"0 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VLE_OP( "+str(n)+",  %s.v, " %
+              instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"4100 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VLE_OP( "+str(n)+",  %s.v, " %
+              instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"-4100 + tdat10"+" );", file=f)     
         
     for i in range(100):     
         k = i%31+1

@@ -109,7 +109,8 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
         print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+" 16 "+", "+fill[0]+", "+fill[1]+",  "+"-12 + tdat4"+" );", file=f)
         n += 1
         print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+fill[2]+", "+fill[3]+",  "+"-4 + tdat4"+" );", file=f)
-        
+
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+fill[2]+", "+fill[3]+",  "+"4100 + tdat4"+" );", file=f)        
 
     for i in range(100):     
         k = i%31+1

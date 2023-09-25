@@ -617,6 +617,7 @@ def print_loadlr_ending(f):
     tdat6:  .word 0xff00ff00\n\
     tdat7:  .word 0x0ff00ff0\n\
     tdat8:  .word 0xf00ff00f\n\
+    tdta28:  .zero 7584\n\
     tdat9:  .zero 32\n\
     tdat10:  .word 0x00ff00ff\n\
     tdat11:  .word 0xff00ff00\n\
@@ -636,7 +637,6 @@ def print_loadlr_ending(f):
     tdat25:  .word 0x0ff00ff0\n\
     tdat26:  .word 0xf00ff00f\n\
     tdta27:  .zero 32\n\
-    tdta28:  .zero 7584\n\
     \n\
     RVTEST_DATA_END\n\
     \n\

@@ -60,6 +60,8 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         print("  TEST_VSRE2_OP( "+str(n)+",  %s.v, %s.v, "%(instr2,instr)+" 16 "+", "+"0xff00"+", "+"0xff00"+",  "+"0 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VSRE2_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+", "+"0xff0000ff"+",  "+"0 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VSRE2_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+", "+"0xff0000ff"+",  "+"4100 + tdat"+" );", file=f)
         # n += 1
         # print("  TEST_VSRE2_OP( "+str(n)+",  %s.v, %s.v, "%(instr4,instr)+" 64 "+", "+"0x00ff000000ff0000"+",  "+"0 + tdat"+" );", file=f)
        

@@ -37,7 +37,8 @@ def generate_macros(f):
             store_inst v%d, (x1); "%n + " \\\n\
             load_inst v16, (x1); \\\n\
         )",file=f)
-
+        n += 1
+        print("  TEST_VSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+" 8 "+", "+"0xff"+",  "+"4100 + tdat"+" );", file=f)
     print("#define TEST_VSRE1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x30, base;  \\\n\
@@ -76,6 +77,8 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr2,instr)+" 16 "+", "+"0xff00"+",  "+"0 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+",  "+"0 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+",  "+"4100 + tdat"+" );", file=f)
         # n += 1
         # print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr4,instr)+" 64 "+", "+"0x00ff000000ff0000"+",  "+"0 + tdat"+" );", file=f)
        

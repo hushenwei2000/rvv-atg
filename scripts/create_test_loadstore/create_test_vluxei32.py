@@ -24,7 +24,12 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
               instr+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
-       
+        n += 1
+        print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
+              instr+" 32 "+", "+"0x0"+", "+"0x0"+", "+"4100 + tdat"+", "+"idx32dat"+" );", file=f)
+        n += 1
+        print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
+              instr+" 32 "+", "+"0x0"+", "+"0x0"+", "+"-4100 + tdat10"+", "+"idx32dat"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1

@@ -21,7 +21,8 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     for i in range(2):
         n += 1
         print("  TEST_VSXEI_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x00ff00ff"+",  "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
-        
+        n += 1
+        print("  TEST_VSXEI_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0x0"+",  "+"4100 + tdat"+", "+"idx16dat"+" );", file=f)
     for i in range(100):     
         k = i%30+1
         if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16, 24] and not is_overlap(k, lmul, 8, emul) and k!= 12 and k != 20 and k !=24:

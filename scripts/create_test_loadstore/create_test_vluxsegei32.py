@@ -57,6 +57,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         if 8 * lmul <= 8 and 8 + 8 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"4100 + tdat"+", "+"idx32dat"+" );", file=f)
         
 
     if 2 * lmul <= 8 and 2 + 2 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
