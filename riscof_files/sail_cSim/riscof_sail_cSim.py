@@ -119,7 +119,7 @@ class sail_cSim(pluginTemplate):
                         --sig-label begin_signature  end_signature \
                         --test-label _start _end \
                         -e ref.elf -c {4} -c {1} -x{2} -v128 {3};'.format(\
-                        test_name, ' -c '.join(cgf_file), self.xlen, cov_str, "/work/stu/swhu/projects/riscof-sample/dataset.yaml")
+                        test_name, ' -c '.join(cgf_file), self.xlen, cov_str)
             else:
                 coverage_cmd = ''
 
