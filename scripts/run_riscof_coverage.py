@@ -18,8 +18,15 @@ def run_riscof_coverage(instr, rvv_atg_root, cgf_path, output_dir, test_path, su
         lmul = str(int(lmul))
         lmul_num = int(lmul_num)
     logging.info("Running riscof coverage: {}.{}, stage: Compiling...".format(instr, suffix))
-
-    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         -T /work/stu/swhu/projects/riscof-sample/spike/env/link.ld         -I %s/env/macros/vsew%d_lmul%s        -I %s/env/p         -I %s/env         -I %s/env/sail_cSim -mabi=lp64 -I /work/stu/swhu/projects/riscof-sample/spike/env %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, vsew, lmul,  rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
+    
+    gcc_string = "%s -march=rv64gv    -w     -static -mcmodel=medany -fvisibility=hidden -nostdlib -nostartfiles         \
+        -T %s/riscof_files/spike/env/link.ld         \
+        -I %s/env/macros/vsew%d_lmul%s         \
+        -I %s/env/p         \
+        -I %s/env         \
+        -I %s/env/spike         \
+        -I %s/env/sail_cSim -mabi=lp64  \
+        %s -o ref_%s.elf -DTEST_CASE_1=True -DXLEN=%d -DFLEN=%d;" %(gcc, rvv_atg_root, rvv_atg_root, vsew, lmul, rvv_atg_root, rvv_atg_root, rvv_atg_root, rvv_atg_root, test_path, suffix, xlen, flen)
     
     print(gcc_string)
     os.system(gcc_string)
