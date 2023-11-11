@@ -885,6 +885,19 @@ def generate_macros_vwred(f, lmul):
         lmul = 1
     else:
         lmul = int(lmul)
+    print("#define TEST_W_VV_OP_WITH_INIT( testnum, inst, result, val1, val2 )  \\\n\
+        TEST_CASE_W( testnum, v24, result,  \\\n\
+        li x7, 0; \\\n\
+        VSET_DOUBLE_VSEW \\\n\
+        vmv.v.x v24, x7; \\\n\
+        VSET_VSEW \\\n\
+        li x7, MASK_VSEW(val1); \\\n\
+        vmv.v.x v8, x7; \\\n\
+        li x7, MASK_VSEW(val2); \\\n\
+        vmv.v.x v16, x7;  \\\n\
+        inst v24, v8, v16;  \\\n\
+        VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
+        )",file=f)    
     for n in range(2, 32):
         if n != 8 and n != 16 and n != 24 and n % lmul == 0:
             print("#define TEST_W_VV_OP_WITH_INIT_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\

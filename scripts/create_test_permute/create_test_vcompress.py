@@ -112,6 +112,19 @@ def generate_dat_seg_vcompress(f, vsew):
 
 def generate_macros_vcompress(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
+    print("#define TEST_VCOMPRESS_OP( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+            VSET_VSEW_4AVL \\\n\
+            la  x1, src_addr; \\\n\
+            la  x2, rd_addr; \\\n\
+            la  x3, vm_addr; \\\n\
+            vle%d.v v8, (x3); \\\n\
+            vmseq.vi v0, v8, 1; \\\n\
+            vle%d.v v8, (x1); \\\n\
+            vle%d.v v16, (x2); \\\n\
+            inst v16, v8, v0; \\\n\
+        )" % ( vsew, vsew, vsew), file=f)
+    
     for i in range(32):
         # no overlap: (v0 < rd) or (rd + lmul - 1 < v0)
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0 or (0 >= i and i + lmul - 1 >= 0):  # 15 is used for TEST_CASE_LOOP

@@ -38,7 +38,6 @@ def generate_macros(f):
             load_inst v16, (x1); \\\n\
         )",file=f)
         n += 1
-        print("  TEST_VSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+" 8 "+", "+"0xff"+",  "+"4100 + tdat"+" );", file=f)
     print("#define TEST_VSRE1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x30, base;  \\\n\
