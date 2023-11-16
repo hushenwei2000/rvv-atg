@@ -47,12 +47,12 @@ python generate_all.py
 ```
 
 - This will use default parameter configuration to generate all integer instructions tests.
-- **Modify `runcommand_<type>` function to run different parameter.**
+- **Modify parameter before main function.**
 - **Modyfy `main` function to run different type of instructions.**
 - Test file will generate in `generate_all` folder.
 - ⚠️ Because we still have bugs, those tests are not correct (i.e. **CAN'T** be used as test file) will generate `spike.log` in `generate_all` folder. You can see FAIL in the ending of these logs.
 
-### Check All Generated Tests
+After generate all,  check All Generated Tests
 
 ```
 python check_all.py
@@ -60,6 +60,14 @@ python check_all.py
 
 - Check all generated folders. Find out if test file FAIL and the statistics of COVERAGE.
 - Output will in 'check_all.out'.
+
+After check all, 
+
+```
+python move_generate_all_elf.py
+```
+
+move all .S to generate_all dir
 
 ## Known Bugs
 - Lack of vmerge tests
