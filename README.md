@@ -21,8 +21,8 @@
    If the terminal can find `riscv_isac` command then it's successful
 
 4. Sail Reference Model (If you want to run RISCOF to test)
-   1. Intall sail-riscv with vector support `https://github.com/riscv/sail-riscv/tree/vector-dev`.
-      1. sail version should be `0.15`
+   1. Intall sail-riscv with vector support `https://github.com/riscv/sail-riscv`. master branch
+      1. sail version should be `0.16`
       1. Note that you should modify `vlen` and `elen` in `riscv_sys_control.sail` after `init_pmp()` before building. Add these two lines for example:
       ```
       vlen = 0b0011;
@@ -72,7 +72,9 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 
 5. copy the `.S` test files to `test_suite`
 
-6. run `riscof run --config=config.ini --suite=test_suite --env=env`
+6. Modify VLEN and ELEN argument in `riscof_files/spike/riscof_spike.py` line 166: `-varch=vlen:512,elen:64`
+
+7. run `riscof run --config=config.ini --suite=test_suite --env=env`
 
 ## Known Bugs
 - Not support floating-point vsew=16
