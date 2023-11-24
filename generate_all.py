@@ -42,6 +42,8 @@ def runcommand_integer(ins):
     os.system('python run.py -t i -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_fixpoint(ins):
+    if (ins == "vnclip" or ins == "vnclipu") and (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8"):
+        return
     os.system('python run.py -t x -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_permute(ins):
