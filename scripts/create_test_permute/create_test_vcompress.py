@@ -198,7 +198,7 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s Tests (different register)" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     for i in range(32):
         if i == 0 or i == 8 or i == 16 or i == 15 or (0 >= i and i + lmul - 1 >= 0 or i == 12 or i == 20 or i == 24):  # 15 is used for TEST_CASE_LOOP
@@ -222,13 +222,13 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
         print("TEST_VCOMPRESS_OP_rs2_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
             i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
         no = no + 1
+        
+    return no
 
 
-def print_ending_vcompress(vlen, vsew, lmul, f):
+def print_ending_vcompress(vlen, vsew, lmul, f, n):
     # generate const information
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -244,54 +244,9 @@ def print_ending_vcompress(vlen, vsew, lmul, f):
     generate_dat_seg_vcompress(f, vsew)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_load(n)
+    print_rvmodel_data(arr, f)
 
 
 def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -328,10 +283,10 @@ def create_empty_test_vcompress(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vcompress(f, vlen, vsew, lmul)
+    n = generate_tests_vcompress(f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_vcompress(vlen, vsew, lmul, f)
+    print_ending_vcompress(vlen, vsew, lmul, f, n)
 
     f.close()
 

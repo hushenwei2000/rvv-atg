@@ -1,0 +1,1 @@
+python move_generate_all_elf.py && cp generate_all/* riscof_files/test_suite/ && cd riscof_files && riscof run --config=config.ini --suite=test_suite --env=env

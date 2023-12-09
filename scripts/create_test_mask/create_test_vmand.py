@@ -18,10 +18,10 @@ def create_empty_test_vmand(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_common(instr, f, vlen, vsew, lmul)
+    n = generate_tests_common(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_common(vlen, vsew, lmul, f)
+    print_ending_common(vlen, vsew, lmul, f, n)
 
     f.close()
 

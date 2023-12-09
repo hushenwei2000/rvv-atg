@@ -182,7 +182,7 @@ def generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = False):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         for vxrm in range(4):
             n += 1
@@ -204,7 +204,7 @@ def generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = False):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         for vxrm in range(4):
             n += 1
@@ -217,7 +217,7 @@ def generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = False):
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             for vxrm in range(4):
                 n += 1
@@ -240,7 +240,7 @@ def generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # WV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         for vxrm in range(4):
             n += 1
@@ -261,7 +261,7 @@ def generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # WX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         for vxrm in range(4):
             n += 1
@@ -271,7 +271,7 @@ def generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # WI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         for vxrm in range(4):
             n += 1

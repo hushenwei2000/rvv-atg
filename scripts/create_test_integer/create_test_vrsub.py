@@ -89,7 +89,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
@@ -108,7 +108,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %

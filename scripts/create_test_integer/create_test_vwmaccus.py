@@ -89,7 +89,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
@@ -120,9 +120,7 @@ def print_ending_vwmaccus(f, num_test, rs1_val, rs2_val):
     lmul_1 = 1 if lmul < 1 else int(lmul)
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -167,54 +165,8 @@ def print_ending_vwmaccus(f, num_test, rs1_val, rs2_val):
     print_mask_origin_data_ending(f)
     
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    print_rvmodel_data([0,num_test,0], f)
 
 
 def create_empty_test_vwmaccus(xlen, vlen, vsew, lmul, vta, vma, output_dir):

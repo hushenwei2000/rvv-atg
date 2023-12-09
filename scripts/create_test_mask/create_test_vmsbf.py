@@ -83,7 +83,7 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s Tests (different register)" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     for i in range(1, 32):
         # Ensure is_aligned(insn.rd(), vemul), vemul = veew / (vsew * vflmul); ,veew always = sew in this test generation
@@ -113,7 +113,7 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vmsif Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
@@ -140,7 +140,7 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vmsof Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     for i in range(1, 32):
         print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
@@ -151,6 +151,8 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
             print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
                 i, num_test, "vmsof", i % num_elem_plus), file=f)
             num_test = num_test + 1
+            
+    return num_test
 
 
 def create_empty_test_vmsbf(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -164,10 +166,10 @@ def create_empty_test_vmsbf(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vmsbf(instr, f, vlen, vsew, lmul)
+    n = generate_tests_vmsbf(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_common(vlen, vsew, lmul, f)
+    print_ending_common(vlen, vsew, lmul, f, n)
 
     f.close()
 

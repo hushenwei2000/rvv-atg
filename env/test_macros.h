@@ -191,21 +191,17 @@
  * RVTEST_BASEUPD(base reg) - updates the base register the last signature address + REGWIDTH
  * RVTEST_BASEUPD(base reg, new reg) - moves value of the next signature region to update into new reg
  * The hidden variable offset is reset always
-*/
+*/			
 
-#define RVTEST_BASEUPD(_BR,...)				;\
- /* deal with case where offset>=2047 */		;\
-       .set corr 2048-REGWIDTH				;\
-    .if offset <2048 					;\
-       .set corr offset					;\
-    .endif						;\
-    .set offset, offset-corr				;\
-							;\
-    .if NARG(__VA_ARGS__) == 0				;\
-	addi _BR,		    _BR, corr		;\
-    .else						;\
-	addi _ARG1(__VA_ARGS__,x0) ,_BR, corr		;\
-    .endif				
+#define RVTEST_BASEUPD(_BR,...)\
+    .if NARG(__VA_ARGS__) == 0;\
+        addi _BR,_BR,offset;\
+    .endif;\
+    .if NARG(__VA_ARGS__) == 1;\
+        addi _ARG1(__VA_ARGS__,x0),_BR,offset;\
+    .endif;\
+    .set offset,0;
+
 
 //==============================================================================
 // This section borrows from Andrew's from Andrew Waterman's risc-v test macros

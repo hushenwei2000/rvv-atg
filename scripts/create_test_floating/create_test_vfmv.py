@@ -78,14 +78,14 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vfmv.f.s / vfmv.v.f Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(len(rs1_val) - 1):
         print("  TEST_VFMVF_OP( " + str(n) + ",  fdat_rs1_" + str(i) + " );", file=f)
         n += 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # vfmv.f.s / vfmv.s.f Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(len(rs1_val) - 1):
         print("  TEST_VFMVS_OP( " + str(n) + ",  fdat_rs2_" + str(i) + " );", file=f)
         n += 1
@@ -93,7 +93,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vfmv.f.s / vfmv.v.f Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(1, 32):
         print("  TEST_VFMVF_OP_rs_%d( " % i + str(n) +
               ",  fdat_rs1_" + str(i) + " );", file=f)
@@ -108,7 +108,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vfmv.f.s / vfmv.s.f Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(1, 32):
         print("  TEST_VFMVS_OP_rs_%d( " % i + str(n) +
               ",  fdat_rs1_" + str(i) + " );", file=f)
@@ -120,12 +120,11 @@ def generate_tests(f, lmul):
         print("  TEST_VFMVS_OP_rd_%d( " % i + str(n) +
               ",  fdat_rs1_" + str(i) + " );", file=f)
         n += 1
+    return n
 
 
-def print_ending(f, vsew):
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-    \n\
-    #endif\n\
+def print_ending_vfmv(f, vsew, num_tests):
+    print("  #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -140,54 +139,8 @@ def print_ending(f, vsew):
     generate_fdat_seg(f, vsew)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    print_rvmodel_data([0, num_tests, 0], f)
 
 
 def create_empty_test_vfmv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -201,7 +154,7 @@ def create_empty_test_vfmv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    print_ending(f, vsew)
+    print_ending_vfmv(f, vsew, 0)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -225,10 +178,10 @@ def create_first_test_vfmv(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     generate_macros(f, vsew)
 
     # Generate tests
-    generate_tests(f, lmul)
+    n = generate_tests(f, lmul)
 
     # Common const information
-    print_ending(f, vsew)
+    print_ending_vfmv(f, vsew, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

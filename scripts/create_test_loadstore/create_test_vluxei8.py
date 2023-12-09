@@ -16,7 +16,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
@@ -42,6 +42,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             n +=1
             print("  TEST_VLXEI_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+" , "+"0 + tdat"+", "+"idx8dat"+" );",file=f)
     
+    return n
 
 
 def create_empty_test_vluxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -55,7 +56,7 @@ def create_empty_test_vluxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -84,12 +85,12 @@ def create_first_test_vluxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros_vlxei(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_loaddword_ending(f)
+    print_loaddword_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

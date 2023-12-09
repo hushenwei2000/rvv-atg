@@ -1,6 +1,6 @@
 from random import randint
 import random
-from scripts.test_common_info import print_data_width_prefix
+from scripts.test_common_info import print_data_width_prefix, gen_arr_load, print_rvmodel_data
 
 
 def generate_walking_data_seg_common(element_num, vlen, vsew, f):
@@ -149,9 +149,9 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
 
     # generate cover different registers
     print("  #-------------------------------------------------------------", file=f)
-    print("  # vmandnot Tests (different register)", file=f)
+    print("  # %s Tests (different register)" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     num_test = num_elem_plus_square + num_elem_plus_square
     for i in range(1, 32):
@@ -164,13 +164,13 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
         print("TEST_VMRL_OP_rs1_%d( %d,  %s.mm,  %d,  5201314, walking_zeros_dat0, walking_ones_dat1 );" % (
             i, num_test, instr, (vsew if vsew <= 64 else 64),), file=f)
         num_test = num_test + 1
+        
+    return num_test
 
 
-def print_ending_common(vlen, vsew, lmul, f):
+def print_ending_common(vlen, vsew, lmul, f, n):
     # generate const information
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -184,51 +184,6 @@ def print_ending_common(vlen, vsew, lmul, f):
     generate_walking_data_seg_common(int(vlen * lmul/vsew), int(vlen), int(vsew), f)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_load(n)
+    print_rvmodel_data(arr, f)

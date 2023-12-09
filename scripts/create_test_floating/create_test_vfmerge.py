@@ -78,7 +78,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfmerge.vfm Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(loop_num):        
         n += 1
         print("TEST_FP_VF_OP_AFTER_VMSEQ( %d,        0xff100,        rd_data_vf+%d, rs2_data+%d, rs1_data+%d, 0xe, 1);"%(n, i*step_bytes, i*step_bytes, i*step_bytes), file=f)
@@ -86,7 +86,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfmerge.vfm Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(min(32,loop_num)):
         k = i%31+1  
         if not (k == 8 or k == 16 or k == 24 or k % lmul != 0):

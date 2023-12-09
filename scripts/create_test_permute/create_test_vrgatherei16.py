@@ -130,7 +130,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = T
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("  TEST_VV_OP( "+str(n)+",  %s.%s, "%(instr, instr_suffix) + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes), file=f)
@@ -150,7 +150,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = T
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
@@ -160,7 +160,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = T
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %

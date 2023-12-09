@@ -17,7 +17,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VV Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_FP_VV_OP( "+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
@@ -25,7 +25,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs1_val)):     
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
@@ -71,10 +71,10 @@ def create_first_test_vfredusum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     generate_macros_vfred(f, vsew, lmul, test_vv = True, test_vf = False)
 
     # Generate tests
-    generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
+    n = generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
 
     # Common const information
-    print_ending(f, generate_data = False)
+    print_ending(f, generate_data = False, test_tuples=(0,n,0))
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

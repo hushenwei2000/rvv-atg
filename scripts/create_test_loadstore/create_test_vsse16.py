@@ -17,7 +17,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"0 + tdat"+");", file=f)
@@ -28,9 +28,9 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"2"+", "+"2 + tdat"+");", file=f)
         n += 1
-        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"4100"+", "+"0 + tdat"+");", file=f)
+        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"4096"+", "+"0 + tdat"+");", file=f)
         n += 1
-        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"-4100"+", "+"0 + tdat15"+");", file=f)
+        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"-4096"+", "+"0 + tdat15"+");", file=f)
    
     for i in range(100):     
         k = i%30+1
@@ -43,6 +43,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             continue
         n +=1
         print("  TEST_VSSE_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"0"+", "+"-8 + tdat8"+" );",file=f)
+    return n
 
 
 
@@ -57,7 +58,7 @@ def create_empty_test_vsse16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -86,12 +87,12 @@ def create_first_test_vsse16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros_vsse(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

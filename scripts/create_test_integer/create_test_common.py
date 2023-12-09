@@ -19,7 +19,6 @@ def generate_macros_vvvxvi(f, lmul):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v16, v8%s;"%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
     print("#define TEST_VX_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
@@ -31,7 +30,6 @@ def generate_macros_vvvxvi(f, lmul):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1); \\\n\
             inst v16, v8, x1%s;"%(", v0.t" if masked else "") + " ; \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v16) \\\n\
         )", file=f)
     print("#define TEST_VI_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE_LOOP( testnum, v16, result, \\\n\
@@ -42,7 +40,6 @@ def generate_macros_vvvxvi(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v16, v8, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + " ; \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v16) \\\n\
         )", file=f)
     for n in range(2, 32):
         if n % lmul != 0 or n == 8 or n == 16 or n == 24:
@@ -117,7 +114,6 @@ def generate_macros_vw(f, lmul):
         la x7, val2; \\\n\
         vle%d.v v16, (x7);"%vsew + " \\\n\
         inst v24, v8, v16%s;"%(", v0.t" if masked else "") + " ; ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
     )", file=f)
 
     print("#undef TEST_W_WX_OP \n\
@@ -131,7 +127,6 @@ def generate_macros_vw(f, lmul):
         vle%d.v v8, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
         li x1, MASK_XLEN(val2); \\\n\
         inst v24, v8, x1%s;"%(", v0.t" if masked else "") + " ; ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
     )", file=f)
 
     print("#undef TEST_W_VV_OP \n\
@@ -146,7 +141,6 @@ def generate_macros_vw(f, lmul):
         la x7, val2; \\\n\
         vle%d.v v16, (x7);"%vsew + " \\\n\
         inst v24, v8, v16%s;"%(", v0.t" if masked else "") + " ; ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
     )", file=f)
 
     print("#undef TEST_W_VX_OP \n\
@@ -160,7 +154,6 @@ def generate_macros_vw(f, lmul):
         vle%d.v v8, (x7);"%vsew + " \\\n\
         li x1, MASK_XLEN(val2); \\\n\
         inst v24, v8, x1%s;"%(", v0.t" if masked else "") + " ; ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
     )", file=f)
 
     for n in range(1, 32):
@@ -208,7 +201,6 @@ def generate_macros_vwmacc(f, lmul):
         vle%d.v v8, (x7);"%vsew + " \\\n\
         li x1, MASK_XLEN(val1); \\\n\
         inst v24, x1, v8%s;"%(", v0.t" if masked else "")+" ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
     )", file=f)
 
     print("#undef TEST_W_VV_OP_WITH_INIT \n\
@@ -224,7 +216,6 @@ def generate_macros_vwmacc(f, lmul):
         la x7, val2; \\\n\
         vle%d.v v16, (x7);"%vsew + " \\\n\
         inst v24, v8, v16%s;"%((", v0.t" if masked else ""))+" ; \\\n\
-        VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
     )", file=f)
 
     for n in range(2, 32):
@@ -276,7 +267,6 @@ def generate_macros_muladd(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v16, v8%s;"%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
         )", file=f)
     for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
@@ -292,7 +282,6 @@ def generate_macros_muladd(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             inst v24, v%d, v16%s; "%(n, ", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
     for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
@@ -345,7 +334,6 @@ def generate_macros_muladd(f, lmul):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val1); \\\n\
             inst v24, x1, v8%s; "%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
 
 def generate_macros_vadc(f, lmul):
@@ -366,7 +354,6 @@ def generate_macros_vadc(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             inst v24, v8, v16, v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
         )", file=f)
     print("#undef TEST_ADC_VX_OP \n\
 #define TEST_ADC_VX_OP( testnum, inst, result, val1, val2 ) \\\n\
@@ -379,7 +366,6 @@ def generate_macros_vadc(f, lmul):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_VSEW(val2); \\\n\
             inst v24, v8, x1, v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
     print("#undef TEST_ADC_VI_OP \n\
 #define TEST_ADC_VI_OP( testnum, inst, result, val1, val2 ) \\\n\
@@ -391,7 +377,6 @@ def generate_macros_vadc(f, lmul):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v8, SEXT_IMM(val2), v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
     for n in range(1, 32):
         if n == 8 or n == 16 or n == 24 or n % lmul != 0:
@@ -435,7 +420,6 @@ def generate_macros_vadc(f, lmul):
         la x7, val2; \\\n\
         vle%d.v v24, (x7);"%vsew + " \\\n\
         inst v8, v16, v24, v0; \\\n\
-        VECTOR_RVTEST_SIGUPD(x12, v8) \\\n\
         )", file = f)
     print("#define TEST_ADC_VV_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
     TEST_CASE_LOOP( testnum, v16, result, \\\n\
@@ -448,7 +432,6 @@ def generate_macros_vadc(f, lmul):
         la x7, val2; \\\n\
         vle%d.v v24, (x7);"%vsew + " \\\n\
         inst v16, v8, v24, v0; \\\n\
-        VECTOR_RVTEST_SIGUPD(x20, v16) \\\n\
         )", file = f)
 
 
@@ -469,7 +452,6 @@ def generate_macros_vmadc(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             inst v24, v8, v16; \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
         )", file=f)
 
     print("#undef TEST_MADC_VX_OP \n\
@@ -483,7 +465,6 @@ def generate_macros_vmadc(f, lmul):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_XLEN(val2); \\\n\
             inst v24, v8, x1; \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
 
     print("#undef TEST_MADC_VI_OP \n\
@@ -496,7 +477,6 @@ def generate_macros_vmadc(f, lmul):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v8, SEXT_IMM(val2); \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
 
     print("#define TEST_MADC_VVM_OP( testnum, inst, result, val1, val2 ) \\\n\
@@ -510,7 +490,6 @@ def generate_macros_vmadc(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%vsew + " \\\n\
             inst v24, v8, v16, v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
         )", file=f)
 
     print("#define TEST_MADC_VXM_OP( testnum, inst, result, val1, val2 ) \\\n\
@@ -523,7 +502,6 @@ def generate_macros_vmadc(f, lmul):
             vle%d.v v8, (x7);"%vsew + " \\\n\
             li x1, MASK_VSEW(val2); \\\n\
             inst v24, v8, x1, v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
 
     print("#define TEST_MADC_VIM_OP( testnum, inst, result, val1, val2 ) \\\n\
@@ -535,7 +513,6 @@ def generate_macros_vmadc(f, lmul):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v8, SEXT_IMM(val2), v0; \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
 
     for n in range(1, 32):
@@ -612,7 +589,6 @@ def generate_macros_vvmvxmvim(f, lmul, generate_vv = True, generate_vx = True):
                 la x7, val2; \\\n\
                 vle%d.v v16, (x7);"%vsew + " \\\n\
                 inst v24, v8, v16%s; "%(", v0.t" if masked else "") + " \\\n\
-                VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
             )", file=f)
         for n in range(1, 32):
             if n == 8 or n == 16 or n == 24 or n % lmul != 0:
@@ -682,7 +658,6 @@ def generate_macros_vvmvxmvim(f, lmul, generate_vv = True, generate_vx = True):
                 vle%d.v v8, (x7);"%vsew + " \\\n\
                 li x1, MASK_XLEN(val2); \\\n\
                 inst v24, v8, x1%s; "%(", v0.t" if masked else "") + " \\\n\
-                VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
             )", file=f)
         for n in range(1, 32):
             print("#define TEST_VXM_OP_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
@@ -742,7 +717,6 @@ def generate_macros_vvmvxmvim(f, lmul, generate_vv = True, generate_vx = True):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v8, SEXT_IMM(val2)%s; "%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
 
 def generate_macros_nvvnvxnvi(f, lmul):
@@ -763,7 +737,6 @@ def generate_macros_nvvnvxnvi(f, lmul):
             la x7, val1; \\\n\
             vle%d.v v8, (x7);"%vsew + " \\\n\
             inst v24, v16, v8%s;"%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
         )", file=f)
 
     print("#undef TEST_N_VX_OP \n\
@@ -777,7 +750,6 @@ def generate_macros_nvvnvxnvi(f, lmul):
             vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
             li x1, MASK_VSEW(val1); \\\n\
             inst v24, v16, x1%s;"%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x20, v24) \\\n\
         )", file=f)
 
     print("#undef TEST_N_VI_OP \n\
@@ -790,7 +762,6 @@ def generate_macros_nvvnvxnvi(f, lmul):
             la x7, val2; \\\n\
             vle%d.v v16, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
             inst v24, v16, SEXT_IMM(val1)%s;"%(", v0.t" if masked else "") + " \\\n\
-            VECTOR_RVTEST_SIGUPD(x24, v24) \\\n\
         )", file=f)
 
     for n in range(1, 32):
@@ -945,7 +916,6 @@ def generate_macros_ext_op(f, lmul):
         la x7, val1; \\\n\
         vle%d.v v8, (x7);"%vsew + " \\\n\
         inst v24, v8%s;"%(", v0.t" if masked else "") + " \\\n\
-        VECTOR_RVTEST_SIGUPD(x12, v24) \\\n\
     )", file=f)
     for n in range(1, 32):
         if n % lmul != 0 or n == 24:
@@ -1019,45 +989,7 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
             if k % lmul != 0 or k == 8 or k == 16 or k == 24:
                 continue
             n +=1
-            # print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
         
-        # if vsew == 8:
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 101, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 10, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 12, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -86);", file=f)
-        # elif vsew == 16:
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 26213, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 180, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 182, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -21846);", file=f)
-        # elif vsew == 32:
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 1717986917, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 46339, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 46341, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -1431655766);", file=f)
-        # elif vsew == 64:
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 7378697629483820645, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3037000498, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3037000500, 3);", file=f)
-        #     n += 1
-        #     print("  TEST_VV_OP( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -6148914691236517206);", file=f)
-
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
     vv_test_num = n
 
@@ -1065,7 +997,6 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
         for i in range(loop_num):
             n += 1
             print("  TEST_VX_OP( "+str(n)+",  %s.vx, " %
@@ -1075,7 +1006,6 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
         for i in range(loop_num):
             n += 1
             print("  TEST_VI_OP( "+str(n)+",  %s.vi, " %
@@ -1101,7 +1031,7 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_W_VV_OP( "+str(n)+",  %s.%s, " %
@@ -1117,49 +1047,13 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
             n +=1
             print("  TEST_W_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
     
-    # if vsew == 8:
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 101, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 10, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 12, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -86);", file=f)
-    # elif vsew == 16:
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 26213, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 180, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 182, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -21846);", file=f)
-    # elif vsew == 32:
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 1717986917, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46339, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46341, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -1431655766);", file=f)
-    # elif vsew == 64:
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000498, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000500, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
-    
+
     vv_test_num = n
     if generate_vx:
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_VX_OP( "+str(n)+",  %s.vx, " %
@@ -1173,7 +1067,7 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
         print("  #-------------------------------------------------------------", file=f)
         print("  # WV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_WV_OP( "+str(n)+",  %s.wv, " %
@@ -1181,7 +1075,7 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
         print("  #-------------------------------------------------------------", file=f)
         print("  # WX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_WX_OP( "+str(n)+",  %s.wx, " %
@@ -1205,7 +1099,7 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s, " %
@@ -1221,55 +1115,19 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
             n +=1
             print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
     
-    # if vsew == 8:
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 101, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 10, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 12, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -86);", file=f)
-    # elif vsew == 16:
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 26213, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 180, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 182, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -21846);", file=f)
-    # elif vsew == 32:
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 1717986917, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 46339, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 46341, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -1431655766);", file=f)
-    # elif vsew == 64:
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 7378697629483820645, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3037000498, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3037000500, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s"%(instr, instr_suffix) + ", 5201314, 3, -6148914691236517206);", file=f)
 
     vv_test_num = n
     if generate_vxrv:
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
                 instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes), file=f)
     vx_test_num = n - vv_test_num
-    return (vv_test_num, vx_test_num)
+    return (vv_test_num, vx_test_num, 0)
 
 
 def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
@@ -1285,7 +1143,7 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv, " %
@@ -1303,74 +1161,6 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
         n +=1
         print("  TEST_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.vv, "%instr + "rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
     
-    # if vsew == 8:
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 101, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 10, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 12, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -86);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 101);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 10);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 12);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, -86, 3);", file=f)
-    # elif vsew == 16:
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 26213, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 180, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 182, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -21846);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 26213);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 180);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 182);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, -21846, 3);", file=f)
-    # elif vsew == 32:
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 1717986917, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 46339, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 46341, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -1431655766);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 1717986917);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 46339);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 46341);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, -1431655766, 3);", file=f)
-    # elif vsew == 64:
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000498, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000500, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 7378697629483820645);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 3037000498);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, 3037000500);", file=f)
-    #     n += 1
-    #     print("  TEST_VV_OP_WITH_INIT( "+str(n)+",  %s.vv"%instr + ", 5201314, -6148914691236517206, 3);", file=f)
 
 
     vv_test_num = n
@@ -1378,7 +1168,7 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_VX_OP_RV( "+str(n)+",  %s.vx, " %
@@ -1401,7 +1191,7 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_MADC_VV_OP( "+str(n)+",  %s.vv, " %
@@ -1419,42 +1209,6 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
         n +=1
     #     print("  TEST_VVM_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
     
-    # if vsew == 8:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 101, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 10, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 12, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -86);", file=f)
-    # elif vsew == 16:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 26213, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 180, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 182, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -21846);", file=f)
-    # elif vsew == 32:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 1717986917, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46339, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 46341, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -1431655766);", file=f)
-    # elif vsew == 64:
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 7378697629483820645, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000498, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3037000500, 3);", file=f)
-    #     n += 1
-    #     print("  TEST_VVM_OP( "+str(n)+",  %s.vv"%instr + ", 5201314, 3, -6148914691236517206);", file=f)
 
 
         print("  TEST_MADC_VV_OP_1%d( "%k+str(n)+",  %s.vv, "%instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
@@ -1462,17 +1216,8 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VVM Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
-        # n +=1
-        # print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-        #       instr+"5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
-        # n +=1
-        # print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-        #       instr+"5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
-        # n +=1
-        # print("  TEST_ADC_VVM_OP( "+str(n)+",  %s.vvm, " %
-        #       instr+"5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
         n += 1
         print("  TEST_MADC_VVM_OP( "+str(n)+",  %s.vvm, " %
               instr+"5201314, rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
@@ -1482,20 +1227,8 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
-        # n += 1
-        # print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-        #       instr+"5201314"+", "+"0x00000000"+", "+"0x00000000"+" );", file=f)
-        # n +=1
-        # print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-        #       instr+"5201314"+", "+"0x00000000"+", "+"0x00000011"+" );", file=f)
-        # n +=1
-        # print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-        #       instr+"5201314"+", "+"0xffffffff"+", "+"0x00000001"+" );", file=f)
-        # n +=1
-        # print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
-        #       instr+"5201314"+", "+"0xffffffff"+", "+"0xffffffff"+" );", file=f)
         n += 1
         print("  TEST_MADC_VX_OP( "+str(n)+",  %s.vx, " %
                instr+"5201314, rs2_data+%d, %s)"%(i*step_bytes, rs1_val[i % len(rs1_val)]), file=f)
@@ -1503,17 +1236,8 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VXM Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
-        # n +=1
-        # print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-        #       instr+"5201314"+", "+"0xffffffee"+", "+"0x00000001"+" );", file=f)
-        # n +=1
-        # print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-        #       instr+"5201314"+", "+"0xfffff000"+", "+"0x00000001"+" );", file=f)
-        # n +=1
-        # print("  TEST_ADC_VXM_OP( "+str(n)+",  %s.vxm, " %
-        #       instr+"5201314"+", "+"0xffffeee0"+", "+"0xffffffff"+" );", file=f)
         n +=1
         print("  TEST_MADC_VXM_OP( "+str(n)+",  %s.vxm, " %
               instr+"5201314, rs2_data+%d, %s)"%(i*step_bytes, rs1_val[i % len(rs1_val)]), file=f)
@@ -1524,17 +1248,8 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
-            # n +=1
-            # print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-            #     instr+"5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
-            # n +=1
-            # print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-            #     instr+"5201314"+", "+"0xfffff000"+", "+"0x0"+" );", file=f)
-            # n +=1
-            # print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
-            #     instr+"5201314"+", "+"0xffffeee0"+", "+"0xe"+" );", file=f)
             n +=1
             print("  TEST_MADC_VI_OP( "+str(n)+",  %s.vi, " %
                 instr+"5201314, rs2_data+%d, 14)"%(i*step_bytes), file=f)
@@ -1542,17 +1257,8 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
         print("  #-------------------------------------------------------------", file=f)
         print("  # VIM Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
-        for i in range(loop_num):
-            # n +=1
-            # print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-            #     instr+"5201314"+", "+"0xffffffee"+", "+"0x1"+" );", file=f)
-            # n +=1
-            # print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-            #     instr+"5201314"+", "+"0xfffff000"+", "+"0x1"+" );", file=f)
-            # n +=1
-            # print("  TEST_ADC_VIM_OP( "+str(n)+",  %s.vim, " %
-            #     instr+"5201314"+", "+"0xffffeee0"+", "+"0xf"+" );", file=f)   
+
+        for i in range(loop_num):  
             n +=1
             print("  TEST_MADC_VIM_OP( "+str(n)+",  %s.vim, " %
                 instr+"5201314, rs2_data+%d, 14)"%(i*step_bytes), file=f)     
@@ -1574,7 +1280,7 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_ADC_VV_OP( "+str(n)+",  %s.vvm, " %
@@ -1597,7 +1303,7 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_ADC_VX_OP( "+str(n)+",  %s.vxm, " %
@@ -1608,7 +1314,7 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("  TEST_ADC_VI_OP( "+str(n)+",  %s.vim, " %
@@ -1631,7 +1337,7 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("  TEST_VVM_OP( "+str(n)+",  %s.vv, " %
@@ -1654,7 +1360,7 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_VXM_OP( "+str(n)+",  %s.vx, " %
@@ -1677,7 +1383,7 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
         print("  #-------------------------------------------------------------", file=f)
         print("  # VI Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_VIM_OP( "+str(n)+",  %s.vi, " %
@@ -1702,7 +1408,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VV_OP( "+str(n)+",  %s.wv, " %
@@ -1723,7 +1429,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VX Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VX_OP( "+str(n)+",  %s.wx, " %
@@ -1734,7 +1440,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VI Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("  TEST_N_VI_OP( "+str(n)+",  %s.wi, " %
@@ -1750,7 +1456,7 @@ def generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', gen
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(len(rs1_val)):
             n += 1
             print("  TEST_VV_OP( "+str(n)+",  %s.%s, " %
@@ -1767,6 +1473,8 @@ def generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', gen
                 continue
             n +=1
             print("  TEST_VV_OP_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+            
+    return n
     
 def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', generate_vxrv=True):
     n = 1
@@ -1777,7 +1485,7 @@ def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', ge
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s, " %
@@ -1796,11 +1504,13 @@ def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', ge
         print("  #-------------------------------------------------------------", file=f)
         print("  # VX Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(len(rs1_val)):
             n += 1
             print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
                 instr+"5201314"+", "+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
+            
+    return n
 
 def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -1817,7 +1527,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(loop_num):
         if int(vsew / 2) >= 8 and lmul / 2 >= 0.125: 
             print("TEST_EXT_OP( %d,  %s.vf2, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
@@ -1836,7 +1546,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  

@@ -18,7 +18,7 @@ def create_empty_test_vredmin(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     
 
     # Common const information
-    print_common_withmask_ending(f)
+    print_common_withmask_ending(0, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
@@ -45,10 +45,10 @@ def create_first_test_vredmin(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros_vred(f, lmul)
 
     # Generate tests
-    generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
+    n = generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vs', generate_vx=False, generate_vi=False)
 
     # Common const information
-    print_common_withmask_ending(f)
+    print_common_withmask_ending(n, f)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

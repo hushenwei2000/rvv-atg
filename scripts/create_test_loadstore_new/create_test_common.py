@@ -182,9 +182,7 @@ def generate_results_load_vlsseg_Nregs(f, rs2, eew, rd_base, is_vx = False, is_v
 
 def print_load_ending_new(f, eew, rs2, is_vx = False, is_vv = False):
     vsew = int(os.environ['RVV_ATG_VSEW'])
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    vsetvli x31,x0,e8,m1;\n\
+    print("  vsetvli x31,x0,e8,m1;\n\
     #endif\n\
     \n\
     RVTEST_CODE_END\n\
@@ -206,51 +204,5 @@ mem:", file=f)
     generate_results_load_vlsseg_Nregs(f, rs2, eew, 40, is_vx = is_vx, is_vv = is_vv);#for vle8
     print_mask_origin_data_ending(f)
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    print_rvmodel_data(f)

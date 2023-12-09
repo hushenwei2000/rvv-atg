@@ -51,7 +51,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs1_val)):
         n += 1
         print("  TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
@@ -60,7 +60,7 @@ def generate_tests(f, lmul):
     # print("  # vfwredusum Tests",file=f)
     # print("  # Raise opcode `vfwredusum.vs v14,v2,v1'",file=f)
     # print("  #-------------------------------------------------------------",file=f)
-    # print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
+    # 
     # for i in range(len(rs1_val)):
     #     n += 1
     #     print("  #TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredusum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
@@ -68,7 +68,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs1_val)):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
@@ -78,6 +78,8 @@ def generate_tests(f, lmul):
         if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
         print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        
+    return n
 
 
 def create_empty_test_vfwredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -115,10 +117,10 @@ def create_first_test_vfwredsum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     generate_macros(f, lmul)
 
     # Generate tests
-    generate_tests(f, lmul)
+    n = generate_tests(f, lmul)
 
     # Common const information
-    print_ending(f)
+    print_ending(f, test_tuples=(0,n,0))
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

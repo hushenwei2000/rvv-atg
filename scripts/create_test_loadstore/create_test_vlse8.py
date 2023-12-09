@@ -12,7 +12,7 @@ def generate_macros(f):
             if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
                   continue
             print("#define TEST_VLSE_OP_1%d( testnum, inst, eew, result1, result2, stride, base )"%n + " \\\n\
-                  TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
+                  TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
                   la  x%d, base; "%n + "\\\n\
                   li  x30, stride; \\\n\
                   vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
@@ -22,7 +22,7 @@ def generate_macros(f):
       for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
             print("#define TEST_VLSE_OP_rd%d( testnum, inst, eew, result1, result2, stride, base )"%n + " \\\n\
-            TEST_CASE_LOAD( testnum, v%d, eew, result1, result2, "%n + "\\\n\
+            TEST_CASE_LOOP( testnum, v%d, x0, "%n + "\\\n\
                 la  x1, base; \\\n\
                 li  x2, stride; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
@@ -30,7 +30,7 @@ def generate_macros(f):
                 VSET_VSEW \\\n\
         ) ", file=f)
       print("#define TEST_VLSE_OP_130( testnum, inst, eew, result1, result2, stride, base ) \\\n\
-            TEST_CASE_LOAD( testnum, v16, eew, result1, result2, \\\n\
+            TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
                 la  x30, base; \\\n\
                 li  x2, stride; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
@@ -65,7 +65,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
       print("  #-------------------------------------------------------------", file=f)
       print("  # VV Tests", file=f)
       print("  #-------------------------------------------------------------", file=f)
-      print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+  
       for i in range(2):
             n += 1
             print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
@@ -117,10 +117,10 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
                   instr+" 8 "+", "+"0x00"+", "+"0x00"+" , "+"3"+" , "+"3 + tdat"+" );", file=f)
             n += 1
             print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-                  instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"4100"+" , "+"0 + tdat"+" );", file=f)
+                  instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"4096"+" , "+"0 + tdat"+" );", file=f)
             n += 1
             print("  TEST_VLSE_OP( "+str(n)+",  %s.v, " %
-                  instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"-4100"+" , "+"0 + tsdat6"+" );", file=f)     
+                  instr+" 8 "+", "+"0xff"+", "+"0x00"+" , "+"-4096"+" , "+"0 + tsdat6"+" );", file=f)     
         
 
       for i in range(100):     
@@ -134,7 +134,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
                   continue;
             n +=1
             print("  TEST_VLSE_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0xff"+", "+"0xff"+" , "+" 0 "+" , "+"0 + tdat"+");",file=f)
-    
+      return n
 
 
 def create_empty_test_vlse8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -148,7 +148,7 @@ def create_empty_test_vlse8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
       # Common const information
-      #print_common_ending(f)
+  
       # Load const information
       print_loadls_ending(f)
 
@@ -177,12 +177,12 @@ def create_first_test_vlse8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pa
       generate_macros(f)
 
       # Generate tests
-      generate_tests(f, rs1_val, rs2_val, lmul, vsew)
+      n = generate_tests(f, rs1_val, rs2_val, lmul, vsew)
 
       # Common const information
-      # print_common_ending(f)
+  
       # Load const information
-      print_loadls_ending(f)
+      print_loadls_ending(f, n)
 
       f.close()
       os.system("cp %s %s" % (path, output_dir))

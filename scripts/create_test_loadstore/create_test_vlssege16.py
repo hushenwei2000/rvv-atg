@@ -23,39 +23,39 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         if 2 * emul <= 8 and 2 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" 0 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" 0 "+", "+"0 + tdat"+" );", file=f)
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" 2 "+", "+"2 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" 2 "+", "+"2 + tdat"+" );", file=f)
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" 0 "+", "+"2 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" 0 "+", "+"2 + tdat"+" );", file=f)
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" 4100 "+", "+"2 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" 8 "+", "+"0 + tdat14"+" );", file=f)
             n += 1
-            print("  TEST_VLSSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0x00ff"+", "+" -4100 "+", "+"2 + tdat14"+" );", file=f)
+            print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+" -8 "+", "+"0 + tdat14"+" );", file=f)
         if 3 * emul <= 8 and 8 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 16 "+", "+"0x00ff"+", "+"0x00ff"+", "+"0xff00"+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
         if 4 * emul <= 8 and 8 + 4 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr2+" 16 "+", "+"0x0ff0"+", "+"0x0ff0"+", "+"0xf00f"+", "+" 2 "+", "+"8 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG4_OP( "+str(n)+",  %s.v, " %instr2+" 16 "+", "+" 2 "+", "+"8 + tdat"+" );", file=f)
         if 5 * emul <= 8 and 8 + 5 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+"0x00ff"+", "+"0x00ff"+", "+"0xff00"+", "+" 2 "+", "+"-12 + tdat4"+" );", file=f)
+            print("  TEST_VLSSEG5_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+" 2 "+", "+"-12 + tdat4"+" );", file=f)
         if 6 * emul <= 8 and 8 + 6 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr4+" 16 "+", "+"0x00ff"+", "+"0x00ff"+", "+"0xff00"+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG6_OP( "+str(n)+",  %s.v, " %instr4+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
         if 7 * emul <= 8 and 8 + 7 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr5+" 16 "+", "+"0x00ff"+", "+"0x00ff"+", "+"0xff00"+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG7_OP( "+str(n)+",  %s.v, " %instr5+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
         if 8 * emul <= 8 and 8 + 8 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+"0x00ff"+", "+"0x00ff"+", "+"0xff00"+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
+            print("  TEST_VLSSEG8_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );", file=f)
         
 
     if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
@@ -63,13 +63,14 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             k = i%30+1
             if k != 8 and k != 16 and k % emul == 0 and k + 2 * emul <= 32 and k!= 12 and k != 20 and k !=24: # (insn.rd() + nf * emul) <= NVPR
                 n+=1
-                print("  TEST_VLSSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff"+", "+" 2 "+", "+"0 + tdat"+" );",file=f)
+                print("  TEST_VLSSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+" 2 "+", "+"0 + tdat"+" );",file=f)
             
             k = i%30+2
             if(k == 31 or k == 12 or k == 20 or k == 24):
                 continue;
             n +=1
-            print("   TEST_VLSSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0xff00"+", "+" 2 "+", "+"4 + tdat"+" );",file=f)
+            print("   TEST_VLSSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+" 2 "+", "+"4 + tdat"+" );",file=f)
+    return n
     
 
 
@@ -84,7 +85,7 @@ def create_empty_test_vlssege16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -113,12 +114,12 @@ def create_first_test_vlssege16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     generate_macros_vlsseg(f, lmul, vsew, 16)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

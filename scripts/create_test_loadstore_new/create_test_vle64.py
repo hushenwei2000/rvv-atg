@@ -14,7 +14,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(1):
 
         for n in range(1,32):

@@ -35,7 +35,7 @@ def generate_tests(f, rs1_val, rs2_val):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VMV Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(len(rs2_val)):
         n += 1
         print("  TEST_VMV_OP( "+str(n)+",  "+str(rs2_val[i])+" );", file=f)
@@ -47,11 +47,12 @@ def generate_tests(f, rs1_val, rs2_val):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VMV Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs2_val)):     
         k = i % 31 + 1
         n += 1
         print("  TEST_VMV_OP_rs2_%d( "%k+str(n)+", "+str(rs2_val[i])+" );",file=f)
+    return n
 
 
 def create_empty_test_vmv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -70,11 +71,11 @@ def create_empty_test_vmv(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val)
+    n = generate_tests(f, rs1_val, rs2_val)
 
     # Common const information
-    print_common_ending(f)
-
+    print_common_ending(f, arr=[0,n,0])
+    
     f.close()
     os.system("cp %s %s" % (path, output_dir))
 

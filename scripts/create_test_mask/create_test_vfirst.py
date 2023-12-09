@@ -106,7 +106,7 @@ def generate_tests_vfirst(f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfirst Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
 
     for i in range(1, 32):
         # 7, 14 used in macro, 3 is TESTNUM, 31 is rd of vsetivli, 20 is signature base 
@@ -126,14 +126,14 @@ def generate_tests_vfirst(f, vlen, vsew, lmul):
             continue
         print("TEST_VPOPC_OP_rs2_%d( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
         num_test = num_test + 1
+        
+    return num_test
 
 
 
-def print_ending_vfirst(vlen, vsew, f):
+def print_ending_vfirst(vlen, vsew, f, n):
     # generate const information
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -148,54 +148,9 @@ def print_ending_vfirst(vlen, vsew, f):
     print_mask_origin_data_ending(f)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_load(n)
+    print_rvmodel_data(arr, f)
 
 
 def create_empty_test_vfirst(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -211,10 +166,10 @@ def create_empty_test_vfirst(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vfirst(f, vlen, vsew, lmul)
+    n = generate_tests_vfirst(f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_vfirst(vlen, vsew, f)
+    print_ending_vfirst(vlen, vsew, f, n)
 
     f.close()
 

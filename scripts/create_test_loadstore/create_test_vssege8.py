@@ -32,50 +32,50 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
             n += 1
-            print("   TEST_VSSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"1 + tdat"+");", file=f)
+            print("   TEST_VSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"1 + tdat"+", rd_origin_data);", file=f)
             n += 1
-            print("   TEST_VSSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"2 + tdat"+");", file=f)
+            print("   TEST_VSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"2 + tdat"+", rd_origin_data);", file=f)
             n += 1
-            print("   TEST_VSSEG1_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"3 + tdat"+");", file=f)
+            print("   TEST_VSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"3 + tdat"+", rd_origin_data);", file=f)
         if 3 * emul <= 8 and 8 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr2l,instr2)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr2l,instr2)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         if 4 * emul <= 8 and 8 + 4 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr3l,instr3)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG4_OP( "+str(n)+", %s.v, %s.v, "%(instr3l,instr3)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         if 5 * emul <= 8 and 8 + 5 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr4l,instr4)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG5_OP( "+str(n)+", %s.v, %s.v, "%(instr4l,instr4)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         if 6 * emul <= 8 and 8 + 6 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr5l,instr5)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG6_OP( "+str(n)+", %s.v, %s.v, "%(instr5l,instr5)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         if 7 * emul <= 8 and 8 + 7 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr6l,instr6)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG7_OP( "+str(n)+", %s.v, %s.v, "%(instr6l,instr6)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         if 8 * emul <= 8 and 8 + 8 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0xa0"+",  "+"0xa0"+",  "+"0xa0"+",  "+"0 + tdat"+");", file=f)
+            print("   TEST_VSSEG8_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0 + tdat"+", rd_origin_data);", file=f)
         
         
     if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
         for i in range(100):     
             k = i%30+1
-            if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul) and k + 2 * emul <= 32 and k!= 12 and k != 20 and k !=24: # (insn.rd() + nf * emul) <= NVPR
+            if k == 8 or k == 16 or k == 24: # (insn.rd() + nf * emul) <= NVPR
                 n+=1
-                print("  TEST_VSSEG1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+",  "+"0 + tdat"+" );",file=f)
+                print("  TEST_VSSEG1_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0 + tdat"+" , rd_origin_data);",file=f)
         
             k = i%30+2
             if(k == 31 or k == 12 or k == 20 or k == 24):
                 continue;
             n +=1
-            print("   TEST_VSSEG1_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xa0"+", "+"-8 + tdat8"+" );",file=f)
-
+            print("   TEST_VSSEG1_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"-8 + tdat8"+" , rd_origin_data);",file=f)
+    return n
 
 
 def create_empty_test_vssege8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -89,7 +89,7 @@ def create_empty_test_vssege8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -118,12 +118,12 @@ def create_first_test_vssege8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros_vsseg(f, lmul, vsew, 8)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

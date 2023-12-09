@@ -1,4 +1,6 @@
 import os
+from scripts.test_common_info import print_rvmodel_data, gen_arr_compute
+
 rs1_val = ["0x00000000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0xBF800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0x3F800000", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0xFF7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x7F7FFFFF", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x80855555", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x00800001", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x80800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000", "0x00800000",
            "0x00800000", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x807FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x007FFFFF", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x807FFFFE", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x00000002", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x80000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x00000001", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x80000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", "0x00000000", 
            '0x16b77bce', '0x85a8a33c', '0xbe82002a', '0x6b4eed81', '0xfcf2b7b2', '0xb1a3f397', '0x81815039', '0x7df4c24f', '0x0827c929', '0xe1f1c6ec', '0x9b111081', '0x08c53c5a', '0x16e35174', '0x20553b83', '0xf4ed3db2', '0x5879b2ca', '0xf80d83b9', '0x7b48384f', '0x89a6c1a0', '0x31fe5439', '0x6ee2f5aa', '0x330f5715', '0x9f46020f', '0xb697e1c3', '0xf518acf6', '0x3958ea56', '0x56a29c95', '0xef286e01', '0xf6cad350', '0xe95400f6', '0x0b2ac811', '0x3ced78db', '0x75809524', '0xc5e59fb2', '0xdd81fa0a', '0xec9fb18d', '0x30e1830a', '0x21d2bbb0', '0x731a1760', '0x19167ebd', '0x7e537a04', '0xcf9dc475', '0x17f847a1', '0x5f4e2f05', '0x11065906', '0xa9663dbb', '0xb6d5707b', '0xef201e7b', '0xb4a84974', '0xc9feb8d1', '0xba38c7b1', '0x1877b042', '0x91778cbb', '0x2e715ec9', '0xebc88fd7', '0x6947de05', '0xaec12b86', '0x6164c29e', '0xba68fa1d', '0x17a54142', '0xbb7b049e', '0x08fab1e5', '0x1af6bb18', '0x74348a1d', '0xf41f5f9b', '0x604f267a', '0x8543a485', '0x17fca002', '0x3777625d', '0xca42df1f', '0xe9591298', '0x655428d1', '0x678995cf', '0x7ea84660', '0x049f1faf', '0x9a6ccdab', '0xf75264e4', '0x5b832e4f', '0x047e6b3b', '0xc18c4e25', '0x6676bf0e', '0x86738089', '0x1ee4a5ed', '0xb9545c29', '0x2c7cb95f', '0x8ab6881d', '0x32dc44c0', '0x7915e449', '0xb68216c7', '0x53c4ffc4', '0xc01a2b07', '0x6d56c00d', '0x231896cb', '0x3a6c685c', '0xe57e27bd', '0x3e6f7cbe', '0x8e74e2da', '0xfcea6243', '0x80eedc35', '0x048d92fb', '0xe8e803f4', '0x12c54b7b', '0x2d633cae', '0xbe8c5af3', '0x379def6c', '0xe298ae9a', '0x626b7cc5', '0x8f61b3a5', '0xe4219193', '0x01b8cfcd', '0x04bfcdf8', '0xd6cbbf81', '0x4bd075af', '0xe291d09b', '0xf0503b64', '0x21124d60', '0x17d5856b', '0x7989bf32', '0x6b84a91f', '0x3019a087', '0x01c79214', '0xea939be7', '0xc375122d', '0x116ec3d2', '0x2d7eeffe', '0xe013be07', '0xb45484fc', '0x2dcda7f1', 
@@ -842,7 +844,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("TEST_FP_VV_OP( %d,  %s.%s, 0xff100, rd_data_vv+%d, rs2_data+%d, rs1_data+%d);" % (
@@ -851,7 +853,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests (different register)", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(min(32, loop_num)):
             k = i % 31 + 1
             if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
@@ -868,7 +870,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------", file=f)
         print("  # VF Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("TEST_FP_VF_OP( %d,  %s.vf, 0xff100, rd_data_vf+%d, rs2_data+%d, rs1_data+%d);" % (
@@ -877,7 +879,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------",file=f)
         print("  # VF Tests (different register)",file=f)
         print("  #-------------------------------------------------------------",file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
+        
         for i in range(min(32, loop_num)):     
             k = i%31+1        
             if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
@@ -896,7 +898,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------", file=f)
         print("  # VF Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(loop_num):
             n += 1
             print("TEST_FP_VF_OP_RV( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );" % (
@@ -905,7 +907,7 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
         print("  #-------------------------------------------------------------",file=f)
         print("  # VF Tests (different register)",file=f)
         print("  #-------------------------------------------------------------",file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+        
         for i in range(min(32, loop_num)):
             k = i%31+1
             if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
@@ -972,7 +974,7 @@ def generate_tests_v_op(instr, f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfclass.v Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(loop_num):        
         print("TEST_FP_V_OP( %d,  %s.v, 0xff100, "%(n, instr) + "rd_data_vv+%d, rs1_data+%d);"%(i*step_bytes, i*step_bytes), file=f)
         n += 1
@@ -980,7 +982,7 @@ def generate_tests_v_op(instr, f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfclass.v Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
@@ -1019,7 +1021,7 @@ def generate_tests_vfmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("TEST_FP_VV_FUSED_OP( %d,  %s.vv, 0xff100,  rd_data_vv+%d, rs2_data+%d, rs1_data+%d);" % (
@@ -1028,7 +1030,7 @@ def generate_tests_vfmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
         if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
@@ -1045,7 +1047,7 @@ def generate_tests_vfmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VF Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("TEST_FP_VF_FUSED_OP_RV( %d,  %s.vf, 0xff100, rd_data_vf+%d, rs2_data+%d, rs1_data+%d);"  % (
@@ -1075,7 +1077,7 @@ def generate_tests_vfwmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(loop_num):
         n += 1
         print("TEST_FP_W_VV_FUSED_OP( %d,  %s.vv, 0xff100,  rd_data_vv+%d, rs2_data+%d, rs1_data+%d);" % (
@@ -1084,7 +1086,7 @@ def generate_tests_vfwmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests (different register)", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(min(32, loop_num)):
         k = i % 31 + 1
         if not (k == 8 or k == 16 or k == 24 or k % (2*lmul) != 0  or k == 12 or k == 20 or k == 24):
@@ -1101,7 +1103,7 @@ def generate_tests_vfwmacc(instr, f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VF Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("TEST_FP_W_VF_FUSED_OP_RV( %d,  %s.vf, 0xff100, rd_data_vf+%d, rs2_data+%d, rs1_data+%d);"  % (
@@ -1151,7 +1153,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(len(rs1_val) - 1):
             print("TEST_FPRED_VV_OP( %d,  %s.%s, 0xff100,               5201314,        %s,        %s );" % (
                 n, instr, suffix, rs1_val[i], rs2_val[i]), file=f)
@@ -1160,7 +1162,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests (different register)", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
         for i in range(len(rs1_val) - 1):
             k = i % 31 + 1
@@ -1177,7 +1179,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------", file=f)
         print("  # VF Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+        
         for i in range(len(rs1_val) - 1):
             print("TEST_FPRED_VF_OP( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );" % (
                 n, instr, rs1_val[i], rs2_val[i]), file=f)
@@ -1186,7 +1188,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------",file=f)
         print("  # VF Tests (different register)",file=f)
         print("  #-------------------------------------------------------------",file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_1)",file=f)
+        
         n = n+1
         for i in range(len(rs1_val) - 1):     
             k = i%31+1        
@@ -1201,7 +1203,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
             print("  TEST_FPRED_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
             n +=1
 
-
+    return n
 
 def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -1224,7 +1226,7 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VV Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_W_FP_VV_OP( "+str(n)+",  %s.vv,  "%instr+"0xff100, "+"rd_data_vv+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
@@ -1232,7 +1234,7 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(min( 32, loop_num)):
         k = i % 31 + 1
         if k % lmul == 0 and k != 12 and k != 20 and k != 24:
@@ -1247,7 +1249,7 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VF Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_W_FP_VF_OP( "+str(n)+",  %s.vf, "%instr+"0xff100, "+"rd_data_vf+%d, rs2_data+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes, i*step_bytes),file=f)
@@ -1259,7 +1261,7 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
         print("  #-------------------------------------------------------------",file=f)
         print("  # WV Tests",file=f)
         print("  #-------------------------------------------------------------",file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_FP_WV_OP( "+str(n)+",  %s.wv, "%instr+"0xff100, "+"rd_data_wv+%d, rs2_data_widen+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes_double, i*step_bytes),file=f)
@@ -1268,7 +1270,7 @@ def generate_tests_widen(instr, f, vsew, lmul,  test_wvwf = False):
         print("  #-------------------------------------------------------------",file=f)
         print("  # WF Tests",file=f)
         print("  #-------------------------------------------------------------",file=f)
-        print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
+        
         for i in range(loop_num):
             n += 1
             print("  TEST_W_FP_WF_OP( "+str(n)+",  %s.wf, "%instr+"0xff100, "+"rd_data_wf+%d, rs2_data_widen+%d, rs1_data+%d)"%(i*step_bytes_double, i*step_bytes_double, i*step_bytes),file=f)
@@ -1296,7 +1298,7 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
         print("  #-------------------------------------------------------------", file=f)
         print("  # VV Tests", file=f)
         print("  #-------------------------------------------------------------", file=f)
-        print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
         for i in range(loop_num):
             n += 1
             print("  TEST_VVM_OP( "+str(n)+",  %s.vv, " %
@@ -1319,7 +1321,7 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VF Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_1)", file=f)
+    
     for i in range(loop_num):
         n += 1
         print("  TEST_VXM_OP( "+str(n)+",  %s.vf, " %
@@ -1341,10 +1343,8 @@ def generate_tests_vvmvfm(instr, f, lmul, test_vv=True):
     
     return (vv_test_num, vx_test_num, 0)
     
-def print_ending(f, generate_data = True):
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-    \n\
-    #endif\n\
+def print_ending(f, generate_data = True, test_tuples = (0,0,0)):
+    print("#endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -1360,51 +1360,6 @@ def print_ending(f, generate_data = True):
         generate_fdat_seg(f)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_compute(test_tuples, 1)
+    print_rvmodel_data(arr, f)

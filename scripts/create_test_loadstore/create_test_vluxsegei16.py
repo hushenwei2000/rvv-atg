@@ -34,30 +34,31 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         if 2 * lmul <= 8 and 2 + 3 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG1_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+" , "+"idx16dat"+");", file=f)
+            print("  TEST_VLXSEG2_OP( "+str(n)+",  %s.v, " %instr+" 16 "+", "+"0 + tdat"+" , "+"idx16dat"+");", file=f)
         if 3 * lmul <= 8 and 8 + 3 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 16 "+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
         if 4 * lmul <= 8 and 8 + 4 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr2+" 16 "+", "+("0x"+tdats[int(-vsew/4)-32:-32])+", "+("0x"+tdats[2*int(-vsew/4)-32:int(-vsew/4)-32])+", "+("0x"+tdats[3*int(-vsew/4)-32:2*int(-vsew/4)-32])+", "+"16 + tdat"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG4_OP( "+str(n)+",  %s.v, " %instr2+" 16 "+", "+"16 + tdat"+", "+"idx16dat"+" );", file=f)
         if 5 * lmul <= 8 and 8 + 5 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+","+"-12 + tdat4"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG5_OP( "+str(n)+",  %s.v, " %instr3+" 16 "+", "+"-12 + tdat4"+", "+"idx16dat"+" );", file=f)
         if 6 * lmul <= 8 and 8 + 6 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr4+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG6_OP( "+str(n)+",  %s.v, " %instr4+" 16 "+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
         if 7 * lmul <= 8 and 8 + 7 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr5+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG7_OP( "+str(n)+",  %s.v, " %instr5+" 16 "+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
         if 8 * lmul <= 8 and 8 + 8 * lmul <= 32:
             n += 1
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
-            print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+("0x"+tdats[3*int(-vsew/4):2*int(-vsew/4)])+", "+"4100 + tdat"+", "+"idx16dat"+" );", file=f)
+            print("  TEST_VLXSEG8_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+"0 + tdat"+", "+"idx16dat"+" );", file=f)
+            n += 1
+            print("  TEST_VLXSEG8_OP( "+str(n)+",  %s.v, " %instr6+" 16 "+", "+"4096 + tdat"+", "+"idx16dat"+" );", file=f)
         
 
     if 2 * lmul <= 8 and 2 + 2 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
@@ -65,14 +66,15 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             k = i%30+1
             if k != 8 and k != 16 and k % lmul == 0 and k % emul == 0 and k + 2 * lmul <= 32 and not is_overlap(k, lmul*2, 8, emul) and k!= 12 and k != 20 and k !=24:
                 n+=1
-                print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+"16"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx16dat"+");",file=f)
+                print("   TEST_VLXSEG1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+"16"+", "+"0 + tdat"+", "+"idx16dat"+");",file=f)
             
             k = i%30+2
             if(  k == 12 or k == 20 or k == 24):
                 continue;
             n +=1
-            print("  TEST_VLXSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+"16"+", "+("0x"+tdats[int(-vsew/4):])+", "+"0 + tdat"+", "+"idx16dat"+" );",file=f)
+            print("  TEST_VLXSEG1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+"16"+", "+"0 + tdat"+", "+"idx16dat"+" );",file=f)
     
+    return n
 
 
 def create_empty_test_vluxsegei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -86,7 +88,7 @@ def create_empty_test_vluxsegei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -115,12 +117,12 @@ def create_first_test_vluxsegei16(xlen, vlen, vsew, lmul, vta, vma, output_dir, 
     generate_macros_vlxeiseg(f, lmul, vsew, 16)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

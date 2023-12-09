@@ -18,12 +18,12 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         n += 1
         print("  TEST_VSXEI_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0x00ff00ff"+",  "+"0 + tdat"+", "+"idx8dat"+" );", file=f)
         n += 1
-        print("  TEST_VSXEI_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0x0"+",  "+"4100 + tdat"+", "+"idx8dat"+" );", file=f)
+        print("  TEST_VSXEI_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0x0"+",  "+"4096 + tdat"+", "+"idx8dat"+" );", file=f)
           
     for i in range(100):     
         k = i%30+1
@@ -36,6 +36,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             continue;
         n +=1
         print("  TEST_VSXEI_OP_1%d( "%k+str(n)+",  %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0x00ff00ff"+", "+"-12 + tdat4"+", "+"idx8dat"+" );",file=f)
+    return n
 
 
 
@@ -50,7 +51,7 @@ def create_empty_test_vsuxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -79,12 +80,12 @@ def create_first_test_vsuxei8(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_
     generate_macros_vsuxei(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

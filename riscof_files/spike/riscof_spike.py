@@ -163,7 +163,7 @@ class spike(pluginTemplate):
 	  # echo statement.
           if self.target_run:
             # set up the simulation command. Template is for spike. Please change.
-            simcmd = self.dut_exe + ' --isa={0} --varch=vlen:256,elen:256 -l --log-commits +signature={1} +signature-granularity=4 {2} > {3} 2>&1'.format(self.isa, sig_file, elf, log_file)
+            simcmd = self.dut_exe + ' --isa={0} --varch=vlen:512,elen:64 -l --log-commits +signature={1} +signature-granularity=4 {2} > {3} 2>&1'.format(self.isa, sig_file, elf, log_file)
           else:
             simcmd = 'echo "NO RUN"'
 

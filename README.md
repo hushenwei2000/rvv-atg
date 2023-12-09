@@ -80,6 +80,7 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 - Not support floating-point vsew=16
 - Lack of vmerge tests
 - Lack of load store eew=64 tests
+- VL1/2/4/8R, VS1/2/4/8R load and store need adapt signature
 
 ## Support Configuration
 
@@ -100,3 +101,8 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 
 - If there are failure tests, most probably is because that configuration can not be tested on that instruction. For example test widen instruction when vsew=64, or test floating point when vsew=8/16, or the elen related restriction above.
 
+## Signature
+
+1. For arithmetic instructions that has vv, vx, vi types, each type tests store signature into x12, x20, x24, respectively.   
+
+2. 

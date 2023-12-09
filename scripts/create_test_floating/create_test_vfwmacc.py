@@ -15,7 +15,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VV Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs2_val)):
         n += 1
         print("  TEST_W_FP_VV_OP( "+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
@@ -23,7 +23,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # VF Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_0)",file=f)
+    
     for i in range(len(rs2_val)):
         n += 1
         print("  TEST_W_FP_VF_OP_RV( "+str(n)+",  %s.vf, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
@@ -31,7 +31,7 @@ def generate_tests(f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     for i in range(len(rs2_val)):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue

@@ -12,7 +12,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     if emul < 0.125 or emul > 8:
         return
     n = 1    

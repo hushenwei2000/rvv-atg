@@ -17,7 +17,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
@@ -27,10 +27,10 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
               instr+" 16 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0 + tdat4"+", "+"idx16dat"+" );", file=f)
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 16 "+", "+"0x0"+", "+"0x0"+", "+"4100 + tdat"+", "+"idx16dat"+" );", file=f)
+              instr+" 16 "+", "+"0x0"+", "+"0x0"+", "+"4096 + tdat"+", "+"idx16dat"+" );", file=f)
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 16 "+", "+"0x0"+", "+"0x0"+", "+"-4100 + tdat10"+", "+"idx16dat"+" );", file=f)
+              instr+" 16 "+", "+"0x0"+", "+"0x0"+", "+"-4096 + tdat10"+", "+"idx16dat"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1
@@ -42,7 +42,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         if k % emul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul) and k!= 12 and k != 20 and k !=24 and k!= 29 and k != 30:
             n +=1
             print("  TEST_VLXEI_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 16 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+" , "+"0 + tdat"+", "+"idx16dat"+" );",file=f)
-    
+    return n    
 
 
 def create_empty_test_vluxei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -56,7 +56,7 @@ def create_empty_test_vluxei16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -85,12 +85,12 @@ def create_first_test_vluxei16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     generate_macros_vlxei(f, vsew, lmul)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_loaddword_ending(f)
+    print_loaddword_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

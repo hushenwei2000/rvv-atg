@@ -76,7 +76,7 @@ def generate_tests_vfwcvt(instr, f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfcvt Tests",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
     # for i in range(loop_num):
     #     print("TEST_FP_W_V_OP( %d,  %s, 0xff100, "%(n, 'vfwcvt.xu.f.v') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes_double, i*step_bytes), file=f)
     #     n += 1
@@ -98,7 +98,7 @@ def generate_tests_vfwcvt(instr, f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfcvt Tests (different register)",file=f)
     print("  #-------------------------------------------------------------",file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)",file=f)
+    
 
     for i in range(min(32, loop_num)):
         k = i % 31 + 1  
@@ -139,7 +139,7 @@ def generate_tests_vfwcvt(instr, f, lmul):
             n += 1
             print("TEST_FP_W_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfwcvt.f.x.v') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes_double, i*step_bytes), file=f)
             n += 1
-    return (n, 0)
+    return (n, 0, 0)
 
 
 def create_empty_test_vfwcvt(xlen, vlen, vsew, lmul, vta, vma, output_dir):

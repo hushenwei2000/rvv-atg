@@ -147,7 +147,7 @@ def generate_tests_viota(instr, f, vlen, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # %s Tests (different register)" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
 
     for i in range(1, 32):
         if i % lmul == 0:
@@ -162,13 +162,12 @@ def generate_tests_viota(instr, f, vlen, vsew, lmul):
             print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
                 i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
             num_test = num_test + 1
+    return num_test
 
 
-def print_ending_viota(vlen, vsew, lmul, f):
+def print_ending_viota(vlen, vsew, lmul, f, n):
     # generate const information
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -184,54 +183,9 @@ def print_ending_viota(vlen, vsew, lmul, f):
     print_mask_origin_data_ending(f)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_load(n)
+    print_rvmodel_data(arr, f)
 
 
 def create_empty_test_viota(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -245,10 +199,10 @@ def create_empty_test_viota(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_viota(instr, f, vlen, vsew, lmul)
+    n = generate_tests_viota(instr, f, vlen, vsew, lmul)
 
     # Common const information
-    print_ending_viota(vlen, vsew, lmul, f)
+    print_ending_viota(vlen, vsew, lmul, f, n)
 
     f.close()
 

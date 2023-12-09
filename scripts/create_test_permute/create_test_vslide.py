@@ -134,7 +134,7 @@ def generate_tests_vslide(f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # vslideup.vx/vi Test    ------------------------------------------", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(num_group_walking):
         for k in range(0, num_elem + 1, 10):
             print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " %
@@ -150,11 +150,10 @@ def generate_tests_vslide(f, vsew, lmul):
                 print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslidedown.vi, walking_data%d_slidedownans_offset_%d, " %
                     (i, k) + "rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
                 n += 1
-
+    vx_test_num = n
     print("  #-------------------------------------------------------------", file=f)
     print("  # vslideup.vx/vi Test  (Different Registers)  ------------------------------------------", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)", file=f)
 
     for i in range(1, 32):
         if i != 8 and i != 16 and i != 24 and i % lmul == 0 and i != 12 and i != 20:
@@ -175,7 +174,8 @@ def generate_tests_vslide(f, vsew, lmul):
             print("  TEST_VSLIDE_VX_OP_rs1_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
                   num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
-
+    vi_test_num = n - vx_test_num
+    return (vx_test_num, vi_test_num, 0)
 
 def generate_dat_seg_vslide(f, vlen, vsew):
     global rd_val
@@ -240,10 +240,8 @@ def generate_dat_seg_vslide(f, vlen, vsew):
                 print("", file=f)
 
 
-def print_ending_vslide(f, vlen, vsew):
-    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
-        \n\
-    #endif\n\
+def print_ending_vslide(f, vlen, vsew, tuples):
+    print(" #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -259,54 +257,9 @@ def print_ending_vslide(f, vlen, vsew):
     print_mask_origin_data_ending(f)
 
     print("\n\
-    RVTEST_DATA_END\n\
-    RVMODEL_DATA_BEGIN\n\
-    signature_x12_0:\n\
-        .fill 0,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x12_1:\n\
-        .fill 32,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x20_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    signature_x24_0:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_1:\n\
-        .fill 512,4,0xdeadbeef\n\
-    \n\
-    \n\
-    signature_x24_2:\n\
-        .fill 376,4,0xdeadbeef\n\
-    \n\
-    #ifdef rvtest_mtrap_routine\n\
-    \n\
-    mtrap_sigptr:\n\
-        .fill 128,4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    #ifdef rvtest_gpr_save\n\
-    \n\
-    gpr_save:\n\
-        .fill 32*(XLEN/32),4,0xdeadbeef\n\
-    \n\
-    #endif\n\
-    \n\
-    RVMODEL_DATA_END\n\
-    ", file=f)
+    RVTEST_DATA_END\n", file=f)
+    arr = gen_arr_compute(tuples, 1)
+    print_rvmodel_data(arr, f)
 
 
 def create_empty_test_vslide(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
@@ -353,10 +306,10 @@ def create_empty_test_vslide(xlen, vlen, vsew, lmul, vta, _vma, output_dir):
     # Common header files
     print_common_header(instr, f)
 
-    generate_tests_vslide(f, vsew, lmul)
+    tuples = generate_tests_vslide(f, vsew, lmul)
 
     # Common const information
-    print_ending_vslide(f, vlen, vsew)
+    print_ending_vslide(f, vlen, vsew, tuples)
 
     f.close()
 

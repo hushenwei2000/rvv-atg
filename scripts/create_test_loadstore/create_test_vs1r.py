@@ -16,7 +16,7 @@ def generate_macros(f):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
         print("#define TEST_VSRE1_OP_1%d(  testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE( testnum, v16, result, \\\n\
+        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x%d, base; "%n + " \\\n\
             li  x30, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -28,7 +28,7 @@ def generate_macros(f):
 
     for n in range(1,31):
         print("#define TEST_VSRE1_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE( testnum, v16, result, " + "\\\n\
+        TEST_CASE_LOOP( testnum, v16, x0,  " + "\\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -39,7 +39,7 @@ def generate_macros(f):
         )",file=f)
         n += 1
     print("#define TEST_VSRE1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE( testnum, v16, result, \\\n\
+        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x30, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -50,7 +50,7 @@ def generate_macros(f):
         )",file=f)
 
     print("#define TEST_VSRE1_OP_rd31( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE( testnum, v16, result, \\\n\
+        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -68,7 +68,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(1):
         n += 1
         print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr1,instr)+" 8 "+", "+"0xff"+", "+"0 + tdat"+" );", file=f)
@@ -77,7 +77,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         n += 1
         print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+",  "+"0 + tdat"+" );", file=f)
         n += 1
-        print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+",  "+"4100 + tdat"+" );", file=f)
+        print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr3,instr)+" 32 "+", "+"0xff0000ff"+",  "+"4096 + tdat"+" );", file=f)
         # n += 1
         # print("  TEST_VSRE1_OP( "+str(n)+",  %s.v, %s.v, "%(instr4,instr)+" 64 "+", "+"0x00ff000000ff0000"+",  "+"0 + tdat"+" );", file=f)
        
@@ -94,6 +94,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             continue;
         n +=1
         print("  TEST_VSRE1_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00fff00"+", "+"-8 + tdat4"+" );",file=f)
+    return n
 
     
 
@@ -109,7 +110,7 @@ def create_empty_test_vs1r(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_load_ending(f)
 
@@ -138,12 +139,12 @@ def create_first_test_vs1r(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_pat
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_load_ending(f)
+    print_load_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

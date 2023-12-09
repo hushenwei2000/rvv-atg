@@ -41,10 +41,10 @@ def create_first_test_vfredmax(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt
     generate_macros_vfred(f, vsew, lmul, test_vv = True, test_vf = False)
 
     # Generate tests
-    generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
+    n = generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
 
     # Common const information
-    print_ending(f)
+    print_ending(f, test_tuples=(0,n,0))
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

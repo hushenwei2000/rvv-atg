@@ -94,7 +94,7 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
     print("  #-------------------------------------------------------------", file=f)
-    print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
+
     for i in range(2):
         n += 1
         print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+fir_fill[0]+", "+"0 + tdat"+" );", file=f)
@@ -104,7 +104,8 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
         print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"-12 + tdat4"+" );", file=f)
         n += 1
         print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"-12 + tdat4"+" );", file=f)
-        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"4100 + tdat4"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+fill[0]+", "+fill[1]+",  "+"4096 + tdat4"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1
@@ -117,7 +118,7 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
             continue;
         n +=1
         print("  TEST_VLRE1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
-    
+    return n
 
 
 def create_empty_test_vlre32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
@@ -131,7 +132,7 @@ def create_empty_test_vlre32(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
 
     # Common const information
-    #print_common_ending(f)
+
     # Load const information
     print_loadlr_ending(f)
 
@@ -160,12 +161,12 @@ def create_first_test_vlre32(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     generate_macros(f)
 
     # Generate tests
-    generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew, lmul)
+    n = generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew, lmul)
 
     # Common const information
-    # print_common_ending(f)
+
     # Load const information
-    print_loadlr_ending(f)
+    print_loadlr_ending(f, n)
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))
