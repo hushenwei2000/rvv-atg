@@ -406,18 +406,22 @@ def generate_macros_vfwmacc(f, vsew, lmul):
 
 def generate_macros_vfred(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=False):
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
-    print("#define TEST_FPRED_VV_OP( testnum, inst, flags, result, val1, val2 ) \\\n\
-        TEST_CASE_FP( testnum, v24, flags, result, val1, val2,    \\\n\
+    print("#define TEST_FPRED_VV_OP( testnum, inst, flags, val1_addr, val2_addr ) \\\n\
+        TEST_CASE_LOOP_FP( testnum, v24, flags, 0, v8,    \\\n\
+            la a0, val1_addr; \\\n\
             fl%s f0, 0(a0); "%('d' if vsew == 64 else 'w') + "\\\n\
+            la a0, val2_addr; \\\n\
             fl%s f1, %d(a0); "%(('d' if vsew == 64 else 'w'), (8 if vsew == 64 else 4)) + "\\\n\
             vfmv.s.f v8, f0; \\\n\
             vfmv.s.f v16, f1; \\\n\
             fl%s f2, %d(a0); "%(('d' if vsew == 64 else 'w'), (16 if vsew == 64 else 8)) + "\\\n\
             inst v24, v8, v16%s;"%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
-    print("#define TEST_FPRED_VF_OP( testnum, inst, flags, result, val1, val2 ) \\\n\
-        TEST_CASE_FP( testnum, v24, flags, result, val1, val2,    \\\n\
+    print("#define TEST_FPRED_VF_OP( testnum, inst, flags, val1_addr, val2_addr ) \\\n\
+        TEST_CASE_LOOP_FP( testnum, v24, flags, 0, v8,    \\\n\
+            la a0, val1_addr; \\\n\
             fl%s f0, 0(a0); "%('d' if vsew == 64 else 'w') + "\\\n\
+            la a0, val2_addr; \\\n\
             fl%s f1, %d(a0); "%(('d' if vsew == 64 else 'w'), (8 if vsew == 64 else 4)) + "\\\n\
             vfmv.s.f v8, f0; \\\n\
             fl%s f2, %d(a0); "%(('d' if vsew == 64 else 'w'), (16 if vsew == 64 else 8)) + " \\\n\
@@ -429,9 +433,11 @@ def generate_macros_vfred(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=Fal
             if n % lmul != 0:
                 continue
             rs2, rd = valid_aligned_regs(n)
-            print("#define TEST_FPRED_VV_OP_1%d( testnum, inst, flags, result, val1, val2 ) \\\n\
-            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+            print("#define TEST_FPRED_VV_OP_1%d( testnum, inst, flags, val1_addr, val2_addr ) \\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d, flags, 0, v8,    \\\n\
+                la a0, val1_addr; \\\n\
                 fl%s f0, 0(a0); \\\n\
+                la a0, val2_addr; \\\n\
                 fl%s f1, %d(a0); \\\n\
                 vfmv.s.f v%d, f0; \\\n\
                 vfmv.s.f v%d, f1; \\\n\
@@ -442,9 +448,11 @@ def generate_macros_vfred(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=Fal
             if n % lmul != 0:
                 continue
             rs1, rs2 = valid_aligned_regs(n)
-            print("#define TEST_FPRED_VV_OP_rd%d( testnum, inst, flags, result, val1, val2 ) \\\n\
-            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2, \\\n\
+            print("#define TEST_FPRED_VV_OP_rd%d( testnum, inst, flags, val1_addr, val2_addr ) \\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d, flags, 0, v8,   \\\n\
+                la a0, val1_addr; \\\n\
                 fl%s f0, 0(a0); \\\n\
+                la a0, val2_addr; \\\n\
                 fl%s f1, %d(a0); \\\n\
                 vfmv.s.f v%d, f0; \\\n\
                 vfmv.s.f v%d, f1; \\\n\
@@ -455,9 +463,11 @@ def generate_macros_vfred(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=Fal
         for n in range(1,32):
             if n == 2 or n % lmul != 0:
                 continue
-            print("#define TEST_FPRED_VF_OP_rs1_%d( testnum, inst, flags, result, val1, val2 )"%n + " \\\n\
-                TEST_CASE_FP( testnum, v24, flags, result, val1, val2,   \\\n\
+            print("#define TEST_FPRED_VF_OP_rs1_%d( testnum, inst, flags, val1_addr, val2_addr )"%n + " \\\n\
+                TEST_CASE_LOOP_FP( testnum, v24, flags, 0, v8,    \\\n\
+                    la a0, val1_addr; \\\n\
                     fl%s f0, 0(a0); "%('d' if vsew == 64 else 'w') + "\\\n\
+                    la a0, val2_addr; \\\n\
                     fl%s f%d, %d(a0);"%(('d' if vsew == 64 else 'w'), (8 if vsew == 64 else 4)) + " \\\n\
                     vfmv.s.f v8, f0; \\\n\
                     fl%s f2, %d(a0); "%(('d' if vsew == 64 else 'w'), (16 if vsew == 64 else 8)) + "\\\n\
@@ -466,9 +476,11 @@ def generate_macros_vfred(f, vsew, lmul, test_vv=True, test_vf=True, test_rv=Fal
         for n in range(1,32):
             if n == 1 or n % lmul != 0:
                 continue
-            print("#define TEST_FPRED_VF_OP_rd_%d( testnum, inst, flags, result, val1, val2 ) "%n + "\\\n\
-            TEST_CASE_FP( testnum, v%d, flags, result, val1, val2,     \\\n\
+            print("#define TEST_FPRED_VF_OP_rd_%d( testnum, inst, flags, val1_addr, val2_addr ) "%n + "\\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d, flags, 0, v8,    \\\n\
+                la a0, val1_addr; \\\n\
                 fl%s f0, 0(a0); "%('d' if vsew == 64 else 'w') + "\\\n\
+                la a0, val2_addr; \\\n\
                 fl%s f1, %d(a0); "%(('d' if vsew == 64 else 'w'), (8 if vsew == 64 else 4)) + "\\\n\
                 vfmv.s.f v8, f0; \\\n\
                 fl%s f2, %d(a0); "%(('d' if vsew == 64 else 'w'), (16 if vsew == 64 else 8)) + "\\\n\
@@ -1113,7 +1125,8 @@ def generate_tests_vfwmacc(instr, f, vsew, lmul):
 
 def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_vf=True, test_rv=False):
     # lmul = 1 if lmul < 1 else int(lmul)
-
+    fdat_rs1 = "fdat_rs1"
+    fdat_rs2 = "fdat_rs2"
     global rs1_val, rs2_val, rs1_val_64, rs2_val_64
     if vsew == 64:
         rs1_val = rs1_val_64
@@ -1155,8 +1168,8 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         print("  #-------------------------------------------------------------", file=f)
 
         for i in range(len(rs1_val) - 1):
-            print("TEST_FPRED_VV_OP( %d,  %s.%s, 0xff100,               5201314,        %s,        %s );" % (
-                n, instr, suffix, rs1_val[i], rs2_val[i]), file=f)
+            print("TEST_FPRED_VV_OP( %d,  %s.%s, 0xff100,                       %s,        %s );" % (
+                n, instr, suffix, fdat_rs1, fdat_rs2), file=f)
             n += 1
 
         print("  #-------------------------------------------------------------", file=f)
@@ -1169,10 +1182,10 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
             if k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue
             print("  TEST_FPRED_VV_OP_rd%d( " % k+str(n)+",  %s.%s, 0xff100, " %
-                  (instr, suffix)+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+                  (instr, suffix)+fdat_rs1+", "+fdat_rs2+" );", file=f)
             n += 1
             print("  TEST_FPRED_VV_OP_1%d( " % k+str(n)+",  %s.%s, 0xff100, " %
-                  (instr, suffix)+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );", file=f)
+                  (instr, suffix)+fdat_rs1+", "+fdat_rs2+" );", file=f)
             n += 1
 
     if test_vf:
@@ -1182,7 +1195,7 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
         
         for i in range(len(rs1_val) - 1):
             print("TEST_FPRED_VF_OP( %d,  %s.vf, 0xff100,               5201314,        %s,        %s );" % (
-                n, instr, rs1_val[i], rs2_val[i]), file=f)
+                n, instr, fdat_rs1, fdat_rs2), file=f)
             n += 1
 
         print("  #-------------------------------------------------------------",file=f)
@@ -1194,13 +1207,13 @@ def generate_tests_vfred(instr, f, vsew, lmul, suffix="vf", test_vv=True, test_v
             k = i%31+1        
             if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue  
-            print("  TEST_FPRED_VF_OP_rd_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+            print("  TEST_FPRED_VF_OP_rd_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+fdat_rs1+", "+fdat_rs2+" );",file=f)
             n+=1
             
             k = i%31+1
             if k == 2 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
                 continue        
-            print("  TEST_FPRED_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+            print("  TEST_FPRED_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, 0xff100, "%instr+"5201314"+", "+fdat_rs1+", "+fdat_rs2+" );",file=f)
             n +=1
 
     return n

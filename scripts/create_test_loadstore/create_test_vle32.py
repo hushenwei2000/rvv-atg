@@ -75,7 +75,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     for i in range(100):     
         k = i%31+1
         n+=1
-        if( k % lmul == 0 and k % emul == 0 and k != 12 and k != 20 and k != 24):
+        if( k % lmul == 0 and k % emul == 0 and k % lmul == 0 and k != 12 and k != 20 and k != 24):
             print("  TEST_VLE_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0xff00ff00"+", "+"0x0ff00ff0"+" , "+"4 + tdat"+");",file=f)
         
         k = i%30+2

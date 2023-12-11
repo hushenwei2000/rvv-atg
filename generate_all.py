@@ -32,6 +32,8 @@ fixpoint = ['vaadd', 'vaaddu', 'vasub', 'vasubu', 'vnclip', 'vnclipu', 'vsmul', 
 fixpoint_short = ['vaadd', 'vnclip', 'vsmul', 'vssra']
 
 loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
+
+
 load = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16']
 store = ['vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
 store_seg = ['vlssege16', 'vlssege32', 'vlssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8']
@@ -97,7 +99,7 @@ def run_loadstore():
 # Modify here to config
 vlen = 512
 vsew = 32
-lmul_str = "0.25"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
+lmul_str = "2"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
 elen = 64
 
 # Generate all and Put final ELF to a directory
@@ -105,11 +107,11 @@ def main():
     subprocess.run(["mkdir", "-p", 'generate_all'])
     setup_logging(True)
     # Modify here to choose which categories you want to generate
-    run_integer()
-    run_floatingpoint()
-    run_mask()
-    run_fixpoint()
-    run_permute()
+    # run_integer()
+    # run_floatingpoint()
+    # run_mask()
+    # run_fixpoint()
+    # run_permute()
     run_loadstore()
 
 

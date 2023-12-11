@@ -26,7 +26,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
         print("  TEST_VSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+" 8 "+", "+"0xff"+",  "+"4096 + tdat"+" );", file=f)
     for i in range(100):     
         k = i%30+1
-        if k != 8 and k != 16 and k % emul == 0 and k!= 12 and k != 20 and k !=24:
+        if k != 8 and k != 16 and k % emul == 0 and k % lmul == 0 and k!= 12 and k != 20 and k !=24:
             n+=1
             print("  TEST_VSE_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"8"+", "+"0xaa"+",  "+"0 + tdat"+" );",file=f)
     

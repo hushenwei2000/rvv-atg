@@ -46,7 +46,10 @@ def generate_macros(f, lmul):
         )"%(n, n, rs1, rs2, n, rs2, rs1),file=f)
 
 
+
 def generate_tests(f, lmul):
+    fdat_rs1 = "fdat_rs1"
+    fdat_rs2 = "fdat_rs2"
     n = 1
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests",file=f)
@@ -54,7 +57,7 @@ def generate_tests(f, lmul):
     
     for i in range(len(rs1_val)):
         n += 1
-        print("  TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
     # print("  #-------------------------------------------------------------",file=f)
     # print("  # vfwredusum Tests",file=f)
@@ -63,7 +66,7 @@ def generate_tests(f, lmul):
     # 
     # for i in range(len(rs1_val)):
     #     n += 1
-    #     print("  #TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredusum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+    #     print("  #TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredusum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests (different register)",file=f)
@@ -73,11 +76,11 @@ def generate_tests(f, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
         if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
         
     return n
 

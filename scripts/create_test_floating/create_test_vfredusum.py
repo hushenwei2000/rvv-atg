@@ -6,6 +6,8 @@ from scripts.create_test_floating.create_test_common import *
 instr = 'vfredusum'
 
 def generate_tests(f, vsew, lmul):
+    fdat_rs1 = "fdat_rs1"
+    fdat_rs2 = "fdat_rs2"
     if vsew == 32:
         rs1_val = rs1_val
         rs2_val = rs2_val
@@ -20,7 +22,7 @@ def generate_tests(f, vsew, lmul):
     
     for i in range(len(rs1_val)):
         n += 1
-        print("  TEST_FP_VV_OP( "+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_FP_VV_OP( "+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
@@ -30,10 +32,10 @@ def generate_tests(f, vsew, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_FP_VV_OP_rd%d( "%k+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_FP_VV_OP_rd%d( "%k+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
         n += 1
-        print("  TEST_FP_VV_OP_1%d( "%k+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
+        print("  TEST_FP_VV_OP_1%d( "%k+str(n)+",  %s.vs, 0xff100, 5201314, "%instr+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
 
 
@@ -74,7 +76,7 @@ def create_first_test_vfredusum(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     n = generate_tests_vfred(instr, f, vsew, lmul, suffix="vs", test_vv = True, test_vf = False)
 
     # Common const information
-    print_ending(f, generate_data = False, test_tuples=(0,n,0))
+    print_ending(f, test_tuples=(0,n,0))
 
     f.close()
     os.system("cp %s %s" % (path, output_dir))

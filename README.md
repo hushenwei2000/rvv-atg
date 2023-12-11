@@ -81,6 +81,7 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 - Lack of vmerge tests
 - Lack of load store eew=64 tests
 - VL1/2/4/8R, VS1/2/4/8R load and store need adapt signature
+- FP instruction not using data segment data as source operands
 
 ## Support Configuration
 

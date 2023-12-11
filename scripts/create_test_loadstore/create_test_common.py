@@ -258,8 +258,9 @@ def generate_vlxeiseg_macro(f, emul):
 def generate_macros_vlseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
+    lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlseg_macro(f, emul)
+    generate_vlseg_macro(f, max(emul, lmul))
     for n in range(1, 32):
         if n == 12 or n == 20 or n == 24: # signature base registers
             continue
@@ -270,7 +271,7 @@ def generate_macros_vlseg(f, lmul, vsew, eew):
         )", file=f)
     for n in range(1, 31):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % emul == 0 and n!= 12 and n != 20 and n != 24:
+        if n % emul == 0 and n % lmul == 0 and n!= 12 and n != 20 and n != 24:
             print("#define TEST_VLSEG1_OP_rd%d( testnum, inst, eew, base )"%n + " \\\n\
                 TEST_CASE_LOOP( testnum, v%d, x0, "%n + "\\\n\
                     la  x2, base; \\\n\
@@ -280,8 +281,9 @@ def generate_macros_vlseg(f, lmul, vsew, eew):
 def generate_macros_vlsseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
+    lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlsseg_macro(f, emul)
+    generate_vlsseg_macro(f, max(emul, lmul))
     for n in range(1, 32):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
@@ -293,7 +295,7 @@ def generate_macros_vlsseg(f, lmul, vsew, eew):
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        if n % emul == 0 and n!= 12 and n != 20 and n != 24:
+        if n % emul == 0 and n % lmul == 0 and n!= 12 and n != 20 and n != 24:
             print("#define TEST_VLSSEG1_OP_rd%d(  testnum, inst, eew, stride, base )"%n + " \\\n\
                 TEST_CASE_LOOP( testnum, v%d, x0,  "%n + "\\\n\
                     la  x1, base; \\\n\
@@ -376,7 +378,7 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlxeiseg_macro(f, lmul)
+    generate_vlxeiseg_macro(f, max(emul, lmul))
     for n in range(1,31):
         if n == 12 or n == 20 or n == 24 or n == 31: # signature base registers
             continue
@@ -389,7 +391,7 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
         )",file=f)
 
     for n in range(1,30):
-        if n == 8 or n == 16 or n % emul != 0 or n == 12 or n == 20 or n == 24 or n == 30 :
+        if n == 8 or n == 16 or n % emul != 0 or n % lmul != 0 or n == 12 or n == 20 or n == 24 or n == 30 :
             continue
         print("#define TEST_VLXSEG1_OP_rd%d( testnum, inst, index_eew, base_data, base_index )"%n + " \\\n\
         TEST_CASE_LOOP( testnum, v%d, x0, "%n + "\\\n\
@@ -900,7 +902,7 @@ def generate_macros_vsseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vsseg_macro(f,emul)
+    generate_vsseg_macro(f,max(emul, lmul))
     for n in range(1,30):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
@@ -938,7 +940,7 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vsuxseg_macro(f,emul)
+    generate_vsuxseg_macro(f,max(emul, lmul))
     for n in range(1,30):
         if n == 12 or n == 20 or n == 24 or n == 30 or n == 31: # signature base registers
             continue
@@ -983,7 +985,7 @@ def generate_macros_vssseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vssseg_macro(f, emul)
+    generate_vssseg_macro(f, max(emul, lmul))
     for n in range(1,29):
         if n == 12 or n == 20 or n == 24 or n == 29 or n == 30: # signature base registers
             continue

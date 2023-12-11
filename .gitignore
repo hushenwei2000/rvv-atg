@@ -11,3 +11,4 @@ log*
 .DS_Store
 sanity_test/
 riscof_work
+riscof_files/test_suite

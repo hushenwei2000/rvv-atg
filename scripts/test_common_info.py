@@ -202,36 +202,36 @@ def print_load_ending(f, n = 0):
     \n\
     idx8dat:\n\
     idx8dat1:  .byte 0\n\
-    idx8dat2:  .byte 4\n\
-    idx8dat3:  .byte 8\n\
-    idx8dat4:  .byte 12\n\
+    idx8dat2:  .byte 8\n\
+    idx8dat3:  .byte 16\n\
+    idx8dat4:  .byte 24\n\
     idx8dat5:  .word 0x00000000\n\
     idx8dat6:  .word 0x00000000\n\
     idx8dat7:  .word 0x00000000\n\
     idx8dat8:  .zero 5201314\n\
     \n\
     idx16dat:\n\
-    idx16dat1:  .word 0x00040000\n\
-    idx16dat2:  .word 0x000c0008\n\
-    idx16dat3:  .word 0x00140010\n\
-    idx16dat4:  .word 0x001c0018\n\
+    idx16dat1:  .word 0x00080000\n\
+    idx16dat2:  .word 0x00180010\n\
+    idx16dat3:  .word 0x00280020\n\
+    idx16dat4:  .word 0x00380030\n\
     idx16dat5:  .zero 5201314\n\
     \n\
     idx32dat:\n\
     idx32dat1:  .word 0x00000000\n\
-    idx32dat2:  .word 0x00000004\n\
-    idx32dat3:  .word 0x00000008\n\
-    idx32dat4:  .word 0x0000000c\n\
+    idx32dat2:  .word 0x00000008\n\
+    idx32dat3:  .word 0x00000010\n\
+    idx32dat4:  .word 0x00000018\n\
     idx32dat5:  .zero 5201314\n\
     \n\
     idx64dat:\n\
     idx64dat1:  .word 0x00000000\n\
     idx64dat2:  .word 0x00000000\n\
-    idx64dat3:  .word 0x00000004\n\
+    idx64dat3:  .word 0x00000008\n\
     idx64dat4:  .word 0x00000000\n\
-    idx64dat5:  .word 0x00000008\n\
+    idx64dat5:  .word 0x00000010\n\
     idx64dat6:  .word 0x00000000\n\
-    idx64dat7:  .word 0x0000000c\n\
+    idx64dat7:  .word 0x00000018\n\
     idx64dat8:  .word 0x00000000\n\
     idx64dat9:  .zero 5201314\n", file=f)
     print_mask_origin_data_ending(f)
