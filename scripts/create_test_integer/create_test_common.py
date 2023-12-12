@@ -1,7 +1,7 @@
 import os
 import re
 
-from scripts.test_common_info import is_overlap
+from scripts.test_common_info import is_overlap, extract_operands
 
 def generate_macros_vvvxvi(f, lmul):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -945,21 +945,6 @@ def generate_macros_ext_op(f, lmul):
                 inst v%d, v8%s; "%(n, ", v0.t" if masked else "") + " \\\n\
             )", file = f)
 
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
 
 def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', generate_vi = True, generate_vx = True, generate_vv = True):
     lmul_1 = 1 if lmul < 1 else int(lmul)

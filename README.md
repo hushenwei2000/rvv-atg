@@ -5,6 +5,9 @@
 1. RVV Compiler
    1. Set `gcc`,`objdump`, and `riscof` directory's path variables in file: `scripts/constants.py`
 
+1. VLEN config
+    1. `scripts/create_test_floating/create_test_common.py` `_vlen =` change  it to your vlen
+
 2. Spike
    1. Install Latest [https://github.com/riscv-software-src/riscv-isa-sim](https://github.com/riscv-software-src/riscv-isa-sim).
    2. Add `<spike_path>/build` to your PATH
@@ -82,6 +85,9 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 - Lack of load store eew=64 tests
 - VL1/2/4/8R, VS1/2/4/8R load and store need adapt signature
 - FP instruction not using data segment data as source operands
+- SEGMENT load and store signature problem: if eew > sew, only the first register will be signatured
+- vfirst/vpopc use `vle32` to load data, error when vsew=16 lmul = 8 (i.e. emul > 8); need to dynamicly use vleXX to load source data
+- mask instructions lack of test different registers tests
 
 ## Support Configuration
 

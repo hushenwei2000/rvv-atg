@@ -39,27 +39,12 @@ def generate_macros(f):
         )", file=f)
 
 
-def extract_operands(f, rpt_path):
-      rs1_val = []
-      rs2_val = []
-      f = open(rpt_path)
-      line = f.read()
-      matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-      rs1_val_10 = matchObj.findall(line)
-      rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-            for x in rs1_val_10]
-      matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-      rs2_val_10 = matchObj.findall(line)
-      rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-            for x in rs2_val_10]
-      f.close()
-      return rs1_val, rs2_val
 
 
 def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
       emul = 8 / vsew * lmul
       if emul < 0.125 or emul > 8:
-            return
+            return 0
       emul = 1 if emul < 1 else int(emul)
       n = 1
       print("  #-------------------------------------------------------------", file=f)

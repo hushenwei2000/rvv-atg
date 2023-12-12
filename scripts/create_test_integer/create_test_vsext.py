@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_ext_op, generate_tests_ext_op
+from scripts.create_test_integer.create_test_common import  generate_macros_ext_op, generate_tests_ext_op
 
 instr = 'vsext'
 

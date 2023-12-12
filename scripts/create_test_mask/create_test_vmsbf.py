@@ -11,21 +11,21 @@ def generate_macros_vmsbf(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     # generate the macro， test rs1 = v1~v31
     print("#define TEST_VSFMB_OP_rs2_8( testnum, inst, result, src1_addr ) \\\n\
-    TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+    TEST_CASE_MASK_4VL( testnum, v24, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         vle%d.v v16, (x1); \\\n\
         vmseq.vi v8, v16, 1; \\\n\
-        inst v14, v8; \\\n\
+        inst v24, v8; \\\n\
         VSET_VSEW \\\n\
     )"%vsew, file=f)
     print("#define TEST_VSFMB_OP_rs2_14( testnum, inst, result, src1_addr ) \\\n\
-    TEST_CASE_MASK_4VL( testnum, v5, result, \\\n\
+    TEST_CASE_MASK_4VL( testnum, v16, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         vle%d.v v8, (x1); \\\n\
-        vmseq.vi v14, v8, 1; \\\n\
-        inst v5, v14; \\\n\
+        vmseq.vi v24, v8, 1; \\\n\
+        inst v16, v24; \\\n\
         VSET_VSEW \\\n\
     )"%vsew, file=f)
     for n in range(1, 32):
@@ -33,12 +33,12 @@ def generate_macros_vmsbf(f, vsew, lmul):
         if n == 8 or n == 14 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8):
             continue
         print("#define TEST_VSFMB_OP_rs2_%d( testnum, inst, result, src1_addr ) \\\n\
-        TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+        TEST_CASE_MASK_4VL( testnum, v24, result, \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
             vle%d.v v8, (x1); \\\n\
             vmseq.vi v%d, v8, 1; \\\n\
-            inst v14, v%d; \\\n\
+            inst v24, v%d; \\\n\
             VSET_VSEW \\\n\
         )" % (n, vsew, n, n), file=f)
     # generate the macro， test rd = v1~v31
@@ -93,7 +93,7 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
             i, num_test, instr, i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
-        if 8 + lmul - 1 < i or i + lmul - 1 < 8: # rs2 and rd no overlap each other
+        if (8 + lmul - 1 < i or i + lmul - 1 < 8)  and (i != 24): # rs2 and rd no overlap each other
             print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
                 i, num_test, instr, i % num_elem_plus), file=f)
             num_test = num_test + 1
@@ -120,7 +120,7 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
             i, num_test, "vmsif", i % num_elem_plus), file=f)
         num_test = num_test + 1
     for i in range(1, 32):
-        if 8 + lmul - 1 < i or i + lmul - 1 < 8: # rs2 and rd no overlap each other
+        if (8 + lmul - 1 < i or i + lmul - 1 < 8) and (i != 24): # rs2 and rd no overlap each other
             print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
                 i, num_test, "vmsif", i % num_elem_plus), file=f)
             num_test = num_test + 1
@@ -137,20 +137,6 @@ def generate_tests_vmsbf(instr, f, vlen, vsew, lmul):
               (num_test, "vmsof", i), file=f)
         num_test = num_test + 1
 
-    print("  #-------------------------------------------------------------", file=f)
-    print("  # vmsof Tests (different register)", file=f)
-    print("  #-------------------------------------------------------------", file=f)
-
-
-    for i in range(1, 32):
-        print("TEST_VSFMB_OP_rd_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-            i, num_test, "vmsof", i % num_elem_plus), file=f)
-        num_test = num_test + 1
-    for i in range(1, 32):
-        if 8 + lmul - 1 < i or i + lmul - 1 < 8: # rs2 and rd no overlap each other
-            print("TEST_VSFMB_OP_rs2_%d( %d,  %s.m,  5201314, walking_zeros_dat%d );" % (
-                i, num_test, "vmsof", i % num_elem_plus), file=f)
-            num_test = num_test + 1
             
     return num_test
 

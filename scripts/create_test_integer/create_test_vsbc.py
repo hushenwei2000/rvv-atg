@@ -1,7 +1,7 @@
 import logging
 import os
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vadc, generate_tests_vadc
+from scripts.create_test_integer.create_test_common import  generate_macros_vadc, generate_tests_vadc
 import re
 
 instr = 'vsbc'

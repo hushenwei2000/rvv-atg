@@ -84,7 +84,7 @@ def generate_tests_vslide1(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     n=1
     if num_group_walking == 0:
-        return
+        return 0
     print("  #-------------------------------------------------------------",file=f)
     print("  # vslide1up/down.vx/vf Test    ------------------------------------------",file=f)
     print("  #-------------------------------------------------------------",file=f)

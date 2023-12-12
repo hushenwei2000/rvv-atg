@@ -177,7 +177,7 @@ def generate_macros_vcompress(f, vsew, lmul):
 
 def generate_tests_vcompress(f, vlen, vsew, lmul):
     if num_group_walking == 0:
-        return
+        return 0
     lmul = 1 if lmul < 1 else int(lmul)
     global mask_val
     vemul = int(vsew / vsew * lmul)

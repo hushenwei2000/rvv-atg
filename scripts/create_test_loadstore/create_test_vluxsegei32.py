@@ -27,7 +27,7 @@ tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # con
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 32 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     n = 1

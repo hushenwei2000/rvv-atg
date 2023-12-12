@@ -27,7 +27,7 @@ tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # con
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 8 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     n = 1
@@ -39,22 +39,22 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         if 2 * lmul <= 8 and 2 + 3 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG2_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+"0 + tdat"+" , "+"idx8dat"+");", file=f)
-        if 3 * lmul <= 8 and 8 + 3 * lmul <= 32:
+        if 3 * lmul <= 8 and 16 + 3 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 8 "+", "+"0 + tdat"+", "+"idx8dat"+" );", file=f)
-        if 4 * lmul <= 8 and 8 + 4 * lmul <= 32:
+        if 4 * lmul <= 8 and 16 + 4 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG4_OP( "+str(n)+",  %s.v, " %instr2+" 8 "+", "+"16 + tdat"+", "+"idx8dat"+" );", file=f)
-        if 5 * lmul <= 8 and 8 + 5 * lmul <= 32:
+        if 5 * lmul <= 8 and 16 + 5 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG5_OP( "+str(n)+",  %s.v, " %instr3+" 8 "+", "+"-12 + tdat4"+", "+"idx8dat"+" );", file=f)
-        if 6 * lmul <= 8 and 8 + 6 * lmul <= 32:
+        if 6 * lmul <= 8 and 16 + 6 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG6_OP( "+str(n)+",  %s.v, " %instr4+" 8 "+", "+"0 + tdat"+", "+"idx8dat"+" );", file=f)
-        if 7 * lmul <= 8 and 8 + 7 * lmul <= 32:
+        if 7 * lmul <= 8 and 16 + 7 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG7_OP( "+str(n)+",  %s.v, " %instr5+" 8 "+", "+"0 + tdat"+", "+"idx8dat"+" );", file=f)
-        if 8 * lmul <= 8 and 8 + 8 * lmul <= 32:
+        if 8 * lmul <= 8 and 16 + 8 * lmul <= 32:
             n += 1
             print("  TEST_VLXSEG8_OP( "+str(n)+",  %s.v, " %instr6+" 8 "+", "+"0 + tdat"+", "+"idx8dat"+" );", file=f)
             n += 1

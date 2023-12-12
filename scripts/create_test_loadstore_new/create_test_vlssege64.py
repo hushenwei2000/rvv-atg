@@ -9,7 +9,7 @@ name = 'vlssege64'
 def generate_tests(f, vsew, lmul):
     emul = 64 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)

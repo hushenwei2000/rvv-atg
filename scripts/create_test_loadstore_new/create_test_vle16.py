@@ -14,7 +14,7 @@ def generate_tests(f, vsew, lmul):
     print("  #-------------------------------------------------------------", file=f)
 
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     n = 1    
     for i in range(1):
 

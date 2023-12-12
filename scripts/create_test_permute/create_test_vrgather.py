@@ -111,6 +111,16 @@ def extract_operands(f, vsew):
     v = rs1_val + rs2_val
     if vsew == 64:
         v = v + val_64
+        
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    vsew = float(os.environ['RVV_ATG_VSEW'])
+    num_elem = int(vlen * lmul / vsew)
+    loop_num = len(v) / num_elem
+    while loop_num == 0 and len(v) > 0:
+        v = v * 2
+        loop_num = len(v) / num_elem
+    
     return v, v
 
 

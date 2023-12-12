@@ -11,7 +11,7 @@ def generate_tests(f, rs1_val, rs2_val, lmul, vsew):
     n = 1
     emul = 16 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     emul = 1 if emul < 1 else int(emul)
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)

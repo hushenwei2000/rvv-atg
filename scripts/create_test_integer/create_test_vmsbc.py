@@ -2,7 +2,7 @@ import logging
 import os
 from scripts.create_test_fixpoint.create_test_common import generate_macros_vnclip
 from scripts.test_common_info import *
-from scripts.create_test_integer.create_test_common import extract_operands, generate_macros_vmadc, generate_tests_vmadc
+from scripts.create_test_integer.create_test_common import  generate_macros_vmadc, generate_tests_vmadc
 import re
 
 instr = 'vmsbc'

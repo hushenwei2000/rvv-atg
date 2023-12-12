@@ -10,7 +10,7 @@ instr = 'vluxei8'
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 8 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     emul = 1 if emul < 1 else int(emul)
     n = 1
     print("  #-------------------------------------------------------------", file=f)
@@ -26,10 +26,10 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
               instr+" 8 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0 + tdat4"+", "+"idx8dat"+" );", file=f)
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 8 "+", "+"0x0"+", "+"0x0"+", "+"4100 + tdat"+", "+"idx8dat"+" );", file=f)
+              instr+" 8 "+", "+"0x0"+", "+"0x0"+", "+"4096 + tdat"+", "+"idx8dat"+" );", file=f)
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 8 "+", "+"0x0"+", "+"0x0"+", "+"-4100 + tdat10"+", "+"idx8dat"+" );", file=f)
+              instr+" 8 "+", "+"0x0"+", "+"0x0"+", "+"-4096 + tdat10"+", "+"idx8dat"+" );", file=f)
 
     for i in range(100):     
         k = i%31+1

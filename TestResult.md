@@ -9,16 +9,30 @@ vsew should <= elen * lmul
 Pass
 
 
+
+## VSEW64 LMUL8
+Pass
 ## VSEW64 LMUL1
 Pass
 ## VSEW64 LMUL0.5
 vsew should <= elen * lmul
 
+
+## VSEW16 LMUL8
+Pass
 ## VSEW16 LMUL1
 Pass
 ## VSEW16 LMUL0.5
 Pass
-## VSEW16 LMUL0.25
 
+
+
+
+## VSEW8 LMUL1
+Pass
+## VSEW8 LMUL8
+Pass
+## VSEW8 LMUL0.125
+Pass
 
 

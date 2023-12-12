@@ -1,24 +1,9 @@
 import re
 
-def extract_operands(f, rpt_path):
-    rs1_val = []
-    rs2_val = []
-    f = open(rpt_path)
-    line = f.read()
-    matchObj = re.compile('rs1_val ?== ?(-?\d+)')
-    rs1_val_10 = matchObj.findall(line)
-    rs1_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs1_val_10]
-    matchObj = re.compile('rs2_val ?== ?(-?\d+)')
-    rs2_val_10 = matchObj.findall(line)
-    rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
-               for x in rs2_val_10]
-    f.close()
-    return rs1_val, rs2_val
 
 
 
-def generate_vlseg_macro(f, emul):
+def generate_vlseg_macro(f, lmul):
     print("\
     #define TEST_VLSEG1_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
@@ -30,66 +15,78 @@ def generate_vlseg_macro(f, emul):
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+emul) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+lmul) + " \n\
     #define TEST_VLSEG3_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \n\
-    #define TEST_VLSEG4_OP( testnum, inst, eew, base ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \n", file=f)
+    
+    if 8+lmul*4 < 32:
+        print("#define TEST_VLSEG4_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + "  \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \n", file=f)
+    
+    if 8+lmul*5 < 32:
+        print("\
     #define TEST_VLSEG5_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + "\n", file=f)
+    
+    if 8+lmul*6 < 32:
+        print("\
     #define TEST_VLSEG6_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \n\
-    #define TEST_VLSEG7_OP( testnum, inst, eew, base ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + "\n", file=f)
+    
+    if 8+lmul*7 < 32:
+        print("#define TEST_VLSEG7_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \n\
-    #define TEST_VLSEG8_OP( testnum, inst, eew, base ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + "\n", file=f)
+    
+    if 8+lmul*8 < 32:
+        print("#define TEST_VLSEG8_OP( testnum, inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             inst v8, (x1); \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*7) + " \n", file=f)
 
-def generate_vlsseg_macro(f, emul):
+def generate_vlsseg_macro(f, lmul):
     print("\
     #define TEST_VLSSEG1_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
@@ -103,72 +100,82 @@ def generate_vlsseg_macro(f, emul):
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+emul) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+lmul) + " \n\
     #define TEST_VLSSEG3_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \n\
-    #define TEST_VLSSEG4_OP(  testnum, inst, eew, stride, base  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "\n", file=f)
+    
+    if 8+lmul*4 < 32:
+        print("#define TEST_VLSSEG4_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + "  \n\
-    #define TEST_VLSSEG5_OP(  testnum, inst, eew, stride, base  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \n", file=f)
+    
+    if 8+lmul*5 < 32:
+        print("#define TEST_VLSSEG5_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \n\
-    #define TEST_VLSSEG6_OP(  testnum, inst, eew, stride, base  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + "\n", file=f)
+    
+    if 8+lmul*6 < 32:
+        print("#define TEST_VLSSEG6_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \n\
-    #define TEST_VLSSEG7_OP(  testnum, inst, eew, stride, base  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + "\n", file=f)
+    
+    if 8+lmul*7 < 32:
+        print("#define TEST_VLSSEG7_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \n\
-    #define TEST_VLSSEG8_OP(  testnum, inst, eew, stride, base  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + "\n", file=f)
+    
+    if 8+lmul*8 < 32:
+        print("#define TEST_VLSSEG8_OP(  testnum, inst, eew, stride, base  ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
             inst v8, (x1), x2; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*7) + " \n", file=f)
 
-def generate_vlxeiseg_macro(f, emul):
+def generate_vlxeiseg_macro(f, lmul):
     print("\
     #define TEST_VLXSEG1_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
@@ -184,83 +191,96 @@ def generate_vlxeiseg_macro(f, emul):
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(16+emul) + " \n\
-    #define TEST_VLXSEG3_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(16+lmul) + " \n", file=f)
+    
+    
+    if 16+lmul*4 < 32:
+        print("#define TEST_VLXSEG3_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + " \n\
-    #define TEST_VLXSEG4_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + "\n", file=f)
+    
+    if 16+lmul*4 < 32:
+        print("#define TEST_VLXSEG4_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*3) + "  \n\
-    #define TEST_VLXSEG5_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*3) + " \n", file=f)
+    
+    if 16+lmul*5 < 32:
+        print("#define TEST_VLXSEG5_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*4) + " \n\
-    #define TEST_VLXSEG6_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*4) + "\n", file=f)
+    
+    if 16+lmul*6 < 32:
+        print("#define TEST_VLXSEG6_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*5) + " \n\
-    #define TEST_VLXSEG7_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*5) + "\n", file=f)
+   
+    if 16+lmul*7 < 32:
+        print(" #define TEST_VLXSEG7_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*6) + " \n\
-    #define TEST_VLXSEG8_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*6) + "\n", file=f)
+    
+    if 16+lmul*8 < 32:
+        print("#define TEST_VLXSEG8_OP(  testnum, inst, index_eew, base_data, base_index  ) \\\n\
         TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
             la  x1, base_data; \\\n\
             la  x6, base_index; \\\n\
             MK_VLE_INST(index_eew) v8, (x6); \\\n\
             inst v16, (x1), v8; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(16+lmul*7) + " \n", file=f)
 
 def generate_macros_vlseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlseg_macro(f, max(emul, lmul))
+    generate_vlseg_macro(f, lmul)
     for n in range(1, 32):
         if n == 12 or n == 20 or n == 24: # signature base registers
             continue
@@ -283,7 +303,7 @@ def generate_macros_vlsseg(f, lmul, vsew, eew):
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlsseg_macro(f, max(emul, lmul))
+    generate_vlsseg_macro(f, lmul)
     for n in range(1, 32):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
@@ -378,7 +398,7 @@ def generate_macros_vlxeiseg(f, lmul, vsew, eew):
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
     # testreg is v8
-    generate_vlxeiseg_macro(f, max(emul, lmul))
+    generate_vlxeiseg_macro(f, lmul)
     for n in range(1,31):
         if n == 12 or n == 20 or n == 24 or n == 31: # signature base registers
             continue
@@ -460,7 +480,7 @@ def generate_macros_vse(f, lmul, vsew, eew):
         )",file=f)
 
 
-def generate_vsseg_macro(f, emul):
+def generate_vsseg_macro(f, lmul):
     print("\
     #define TEST_VSSEG1_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
@@ -478,7 +498,7 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+emul) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+lmul) + " \n\
     #define TEST_VSSEG3_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
@@ -487,9 +507,11 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \n\
-    #define TEST_VSSEG4_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "\n", file=f)
+    
+    if 8+lmul*4 < 32:
+        print("#define TEST_VSSEG4_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             la  x2, source_addr; \\\n\
@@ -497,10 +519,12 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + "  \n\
-    #define TEST_VSSEG5_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \n", file=f)
+    
+    if 8+lmul*5 < 32:
+        print("#define TEST_VSSEG5_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             la  x2, source_addr; \\\n\
@@ -508,11 +532,13 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \n\
-    #define TEST_VSSEG6_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + "\n", file=f)
+    
+    if 8+lmul*6 < 32:
+        print("#define TEST_VSSEG6_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             la  x2, source_addr; \\\n\
@@ -520,12 +546,14 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \n\
-    #define TEST_VSSEG7_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + "\n", file=f)
+    
+    if 8+lmul*7 < 32:
+        print("#define TEST_VSSEG7_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             la  x2, source_addr; \\\n\
@@ -533,13 +561,15 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \n\
-    #define TEST_VSSEG8_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + "\n", file=f)
+    
+    if 8+lmul*8 < 32:
+        print("#define TEST_VSSEG8_OP( testnum, load_inst, store_inst, eew,  base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             la  x2, source_addr; \\\n\
@@ -547,16 +577,16 @@ def generate_vsseg_macro(f, emul):
             store_inst v16, (x1); \\\n\
             load_inst v8, (x1);  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*7) + " \n", file=f)
 
 
-def generate_vssseg_macro(f, emul):
+def generate_vssseg_macro(f, lmul):
     print("\
     #define TEST_VSSSEG1_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
@@ -576,7 +606,7 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+emul) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+lmul) + " \n\
     #define TEST_VSSSEG3_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
@@ -586,9 +616,11 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \n\
-    #define TEST_VSSSEG4_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "\n", file=f)
+    
+    if 8+lmul*4 < 32:
+        print("#define TEST_VSSSEG4_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
@@ -597,10 +629,12 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + "  \n\
-    #define TEST_VSSSEG5_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \n", file=f)
+    
+    if 8+lmul*5 < 32:
+        print("#define TEST_VSSSEG5_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
@@ -609,11 +643,13 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \n\
-    #define TEST_VSSSEG6_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + "\n", file=f)
+    
+    if 8+lmul*6 < 32:
+        print("#define TEST_VSSSEG6_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
@@ -622,12 +658,14 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \n\
-    #define TEST_VSSSEG7_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + "\n", file=f)
+    
+    if 8+lmul*7 < 32:
+        print("#define TEST_VSSSEG7_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
@@ -636,13 +674,15 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \n\
-    #define TEST_VSSSEG8_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + "\n", file=f)
+    
+    if 8+lmul*8 < 32:
+        print("#define TEST_VSSSEG8_OP( testnum, load_inst, store_inst, eew, stride, base, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base; \\\n\
             li  x2, stride; \\\n\
@@ -651,16 +691,16 @@ def generate_vssseg_macro(f, emul):
             store_inst v16, (x1), x2; \\\n\
             load_inst v8, (x1), x2;  \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*7) + " \n", file=f)
 
 
-def generate_vsuxseg_macro(f, emul):
+def generate_vsuxseg_macro(f, lmul):
     print("\
     #define TEST_VSXSEG1_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
@@ -682,7 +722,7 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+emul) + " \n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 ) "%(8+lmul) + " \n\
     #define TEST_VSXSEG3_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
@@ -693,9 +733,11 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \n\
-    #define TEST_VSXSEG4_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "\n", file=f)
+    
+    if 8+lmul*4 < 32:
+        print("#define TEST_VSXSEG4_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
             la  x2, base_index; \\\n\
@@ -705,10 +747,12 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + "  \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + "  \n\
-    #define TEST_VSXSEG5_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \n", file=f)
+    
+    if 8+lmul*5 < 32:
+        print("#define TEST_VSXSEG5_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
             la  x2, base_index; \\\n\
@@ -718,11 +762,13 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \n\
-    #define TEST_VSXSEG6_OP( testnum, load_inst, store_inst, eew, base ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + "\n", file=f)
+    
+    if 8+lmul*6 < 32:
+        print("#define TEST_VSXSEG6_OP( testnum, load_inst, store_inst, eew, base ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
             la  x2, base_index; \\\n\
@@ -732,12 +778,14 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \n\
-    #define TEST_VSXSEG7_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + "\n", file=f)
+    
+    if 8+lmul*7 < 32:
+        print("#define TEST_VSXSEG7_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
             la  x2, base_index; \\\n\
@@ -747,13 +795,15 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \n\
-    #define TEST_VSXSEG8_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + "\n", file=f)
+    
+    if 8+lmul*8 < 32:
+        print("#define TEST_VSXSEG8_OP( testnum, load_inst, store_inst, index_eew, base_data, base_index, source_addr ) \\\n\
         TEST_CASE_LOOP( testnum, v8, x0,  \\\n\
             la  x1, base_data;   \\\n\
             la  x2, base_index; \\\n\
@@ -763,13 +813,13 @@ def generate_vsuxseg_macro(f, emul):
             store_inst v16, (x1), v24;" + " \\\n\
             load_inst v8, (x1), v24; \\\n\
         ) \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*1) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*2) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*3) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*4) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*5) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*6) + " \\\n\
-        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+emul*7) + " \n", file=f)
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d, x0 )"%(8+lmul*7) + " \n", file=f)
 
 
 def generate_macros_vsse(f):
@@ -902,7 +952,7 @@ def generate_macros_vsseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vsseg_macro(f,max(emul, lmul))
+    generate_vsseg_macro(f,lmul)
     for n in range(1,30):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
@@ -940,7 +990,7 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vsuxseg_macro(f,max(emul, lmul))
+    generate_vsuxseg_macro(f,lmul)
     for n in range(1,30):
         if n == 12 or n == 20 or n == 24 or n == 30 or n == 31: # signature base registers
             continue
@@ -985,7 +1035,7 @@ def generate_macros_vssseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
     lmul = 1 if lmul < 1 else int(lmul)
-    generate_vssseg_macro(f, max(emul, lmul))
+    generate_vssseg_macro(f, lmul)
     for n in range(1,29):
         if n == 12 or n == 20 or n == 24 or n == 29 or n == 30: # signature base registers
             continue

@@ -152,6 +152,18 @@ def extract_operands(f, rpt_path):
     rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
                for x in rs2_val_10]
     f.close()
+    
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    vsew = float(os.environ['RVV_ATG_VSEW'])
+    num_elem = int(vlen * lmul / vsew)
+    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    while loop_num == 0 and len(rs1_val) > 0 and len(rs2_val) > 0:
+        print(len(rs1_val), len(rs2_val), num_elem, loop_num)
+        rs1_val = rs1_val * 2
+        rs2_val = rs2_val * 2
+        loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    
     return rs1_val, rs2_val
 
 def is_overlap(rd, rd_mul, rs, rs_mul):

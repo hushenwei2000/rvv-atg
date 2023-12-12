@@ -2,6 +2,7 @@ from datetime import date
 import os
 import multiprocessing
 import subprocess
+import re
 
 from scripts.lib import setup_logging
 
@@ -33,16 +34,19 @@ fixpoint_short = ['vaadd', 'vnclip', 'vsmul', 'vssra']
 
 loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
 
-
 load = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16']
 store = ['vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
-store_seg = ['vlssege16', 'vlssege32', 'vlssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8']
+store_seg = ['vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8']
+load_seg = ['vlssege16', 'vlssege32', 'vlssege8',  'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlsege16', 'vlsege32', 'vlsege8']
+
 store_no_seg = ['vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vsuxei32', 'vsuxei8', 'vsuxei16' ]
 
 all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=permute, fixpoint=fixpoint, loadstore=loadstore)
 
 def runcommand_integer(ins):
     if (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8") and (ins.startswith('vw') or ins.startswith('vn')):
+        return
+    if (vsew == 8 or lmul_str == "0.125") and (ins == "vsext" or ins == "vzext"):
         return
     os.system('python run.py -t i -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
@@ -66,6 +70,12 @@ def runcommand_floatingpoint(ins):
     os.system('python run.py -t f -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_loadstore(ins):
+    # extract eew from `ins`, eew is number in `ins`, use regexr
+    reg = re.compile(r'\d+')
+    eew = int(reg.findall(ins)[0])
+    emul = (eew / vsew) * lmul
+    if eew < 8 or eew > 64 or emul < 0.125 or emul > 8:
+        return 
     os.system('python run.py -t l -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
 
 def runcommand_mask(ins):
@@ -99,19 +109,23 @@ def run_loadstore():
 # Modify here to config
 vlen = 512
 vsew = 32
-lmul_str = "2"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
+lmul_str = "8"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
+lmul = 8
 elen = 64
 
 # Generate all and Put final ELF to a directory
 def main():
     subprocess.run(["mkdir", "-p", 'generate_all'])
     setup_logging(True)
+    if vsew > elen * lmul:
+        print("vsew should be <= to elen * lmul")
+        return
     # Modify here to choose which categories you want to generate
-    # run_integer()
-    # run_floatingpoint()
-    # run_mask()
-    # run_fixpoint()
-    # run_permute()
+    run_integer()
+    run_floatingpoint()
+    run_mask()
+    run_fixpoint()
+    run_permute()
     run_loadstore()
 
 

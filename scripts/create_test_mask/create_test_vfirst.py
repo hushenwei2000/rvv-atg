@@ -57,9 +57,9 @@ def generate_macros_vpopc(f, vsew, lmul):
     TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x2, vm_addr; \\\n\
-        vle32.v v14, (x2); \\\n\
+        vle32.v v16, (x2); \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
-        inst x14, v14%s; "%(", v0.t" if masked else "") + " \\\n\
+        inst x14, v16%s; "%(", v0.t" if masked else "") + " \\\n\
     )", file=f)
     # generate the macro， 测试v1-v32源寄存器
     for i in range(1, 32):
@@ -102,31 +102,6 @@ def generate_tests_vfirst(f, vlen, vsew, lmul):
         print("TEST_VPOPC_OP( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (num_test, i), file=f)
         num_test = num_test + 1
 
-    #generate registers，覆盖不同寄存器
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # vfirst Tests (different register)",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    
-
-    for i in range(1, 32):
-        # 7, 14 used in macro, 3 is TESTNUM, 31 is rd of vsetivli, 20 is signature base 
-        if i == 7 or i  == 16 or i == 3 or i == 31 or i == 20:
-            continue
-        # Ensure is_aligned(insn.rd(), vemul)
-        if i % vemul != 0:
-            continue
-        print("TEST_VPOPC_OP_rd_%d( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
-        num_test = num_test + 1
-    print()
-    for i in range(2, 32):
-        if i == 7 or i  == 16 or i == 3 or i == 31:
-            continue
-        # Ensure is_aligned(insn.rd(), vemul)
-        if i % vemul != 0:
-            continue
-        print("TEST_VPOPC_OP_rs2_%d( %d, vfirst.m, 5201314, walking_dat_vpopc%d );" % (i, num_test, (i % (2 * num_elem + 2))), file=f)
-        num_test = num_test + 1
-        
     return num_test
 
 

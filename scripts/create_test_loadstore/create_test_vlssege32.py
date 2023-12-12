@@ -1,6 +1,6 @@
 import logging
 import os
-from scripts.create_test_loadstore.create_test_common import extract_operands, generate_macros_vlsseg
+from scripts.create_test_loadstore.create_test_common import  generate_macros_vlsseg
 from scripts.test_common_info import *
 import re
 
@@ -18,7 +18,7 @@ instr6 = 'vlsseg8e32'
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 32 / vsew * lmul
     if emul < 0.125 or emul > 8:
-        return
+        return 0
     n = 1
     print("  #-------------------------------------------------------------", file=f)
     print("  # VV Tests", file=f)
@@ -32,19 +32,19 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+" 8 "+", "+"0 + tdat14"+" );", file=f)
             n += 1
             print("  TEST_VLSSEG2_OP( "+str(n)+",  %s.v, " %instr+" 32 "+", "+" -8 "+", "+"0 + tdat14"+" );", file=f)
-        if 3 * emul <= 8 and 8 + 3 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 3 * emul <= 8 and 8 + 3 * emul <= 32 and 8 + 3 * lmul<= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSSEG3_OP( "+str(n)+",  %s.v, " %instr1+" 32 "+", "+" 4 "+", "+"0 + tdat"+" );", file=f)
-        if 4 * emul <= 8 and 8 + 4 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 4 * emul <= 8 and 8 + 4 * emul <= 32 and 8 + 4 * lmul<= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSSEG4_OP( "+str(n)+",  %s.v, " %instr2+" 32 "+", "+" 4 "+", "+"8 + tdat"+" );", file=f)
-        if 5 * emul <= 8 and 8 + 5 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 5 * emul <= 8 and 8 + 5 * emul <= 32 and 8 + 5 * lmul<= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSSEG5_OP( "+str(n)+",  %s.v, " %instr3+" 32 "+", "+" 4 "+", "+"-12 + tdat4"+" );", file=f)
-        if 6 * emul <= 8 and 8 + 6 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 6 * emul <= 8 and 8 + 6 * emul <= 32 and 8 + 6 * lmul<= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSSEG6_OP( "+str(n)+",  %s.v, " %instr4+" 32 "+", "+" 4 "+", "+"0 + tdat"+" );", file=f)
-        if 7 * emul <= 8 and 8 + 7 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
+        if 7 * emul <= 8 and 8 + 7 * emul <= 32 and 8 + 7 * lmul<= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
             print("  TEST_VLSSEG7_OP( "+str(n)+",  %s.v, " %instr5+" 32 "+", "+" 4 "+", "+"0 + tdat"+" );", file=f)
         if 8 * emul <= 8 and 8 +  8 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
