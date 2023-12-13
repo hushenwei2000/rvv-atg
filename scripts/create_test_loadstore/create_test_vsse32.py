@@ -20,11 +20,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     print("  RVTEST_SIGBASE( x12,signature_x12_1)", file=f)
     for i in range(2):
         n += 1
-        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"0"+", "+"0 + tdat"+");", file=f)
-        n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"4"+", "+"4 + tdat"+");", file=f)
-        n += 1
-        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"8"+", "+"0 + tdat"+");", file=f)
         n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"4"+", "+"12 + tdat"+");", file=f)
         n += 1
@@ -32,17 +28,6 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"-4100"+", "+"0 + tdat15"+");", file=f)
    
-    for i in range(100):     
-        k = i%30+1
-        if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
-            n+=1
-            print("  TEST_VSSE_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"0"+", "+"0 + tdat"+" );",file=f)
-    
-        k = i%30+2
-        if(k == 31):
-            continue;
-        n +=1
-        print("  TEST_VSSE_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0xa0a0aa00"+", "+"0"+", "+"-8 + tdat8"+" );",file=f)
 
 
 

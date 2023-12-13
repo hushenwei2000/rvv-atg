@@ -6,6 +6,7 @@ import re
 
 instr = 'vluxei32'
 
+tdats = "f00ff00f0ff00ff0ff00ff0000ff00fff00ff00f0ff00ff0ff00ff0000ff00ff" # consequence: "87654321"
 
 def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     emul = 32 / vsew * lmul
@@ -20,22 +21,22 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     for i in range(2):
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
+              instr+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+", "+"0 + tdat"+", "+"idx32dat"+" );", file=f)
         n += 1
         print("  TEST_VLXEI_OP( "+str(n)+",  %s.v, " %
-              instr+" 32 "+", "+"0xf00ff00f"+", "+"0x00ff00ff"+", "+"0 + tdat4"+", "+"idx32dat"+" );", file=f)
+              instr+" 32 "+", "+("0x"+tdats[int(-vsew/4)-32:-32])+", "+("0x"+tdats[2*int(-vsew/4)-32:int(-vsew/4)-32])+", "+"0 + tdat5"+", "+"idx32dat"+" );", file=f)
        
 
     for i in range(100):     
         k = i%31+1
         if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
             n+=1
-            print("  TEST_VLXEI_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x0ff00ff0"+", "+"0xf00ff00f"+" , "+"-8 + tdat4"+", "+"idx32dat"+" );",file=f)
+            print("  TEST_VLXEI_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+("0x"+tdats[int(-vsew/4)-16:-16])+", "+("0x"+tdats[2*int(-vsew/4)-16:int(-vsew/4)-16])+" , "+"-8 + tdat5"+", "+"idx32dat"+" );",file=f)
         
         k = i%30+2
         if k % emul == 0 and k % lmul == 0 and k not in [31, 8, 16] and not is_overlap(k, lmul, 8, emul):
             n +=1
-            print("  TEST_VLXEI_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+"0x00ff00ff"+", "+"0xff00ff00"+" , "+"0 + tdat"+", "+"idx32dat"+" );",file=f)
+            print("  TEST_VLXEI_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 32 "+", "+("0x"+tdats[int(-vsew/4):])+", "+("0x"+tdats[2*int(-vsew/4):int(-vsew/4)])+" , "+"0 + tdat"+", "+"idx32dat"+" );",file=f)
     
 
 

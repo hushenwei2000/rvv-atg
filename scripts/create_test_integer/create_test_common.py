@@ -797,6 +797,7 @@ def generate_macros_vred(f, lmul):
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#define TEST_VV_OP( testnum, inst, result, val2, val1 ) \\\n\
         TEST_CASE( testnum, v24, result, \\\n\
+            VSET_VSEW \\\n\
             %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             li x7, MASK_VSEW(val2); \\\n\
             vmv.v.x v16, x7; \\\n\
@@ -809,6 +810,7 @@ def generate_macros_vred(f, lmul):
             continue
         print("#define TEST_VV_OP_1%d( testnum, inst, result, val2, val1 )"%n + " \\\n\
             TEST_CASE( testnum, v24, result, \\\n\
+            VSET_VSEW \\\n\
             %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             li x7, MASK_VSEW(val2); \\\n\
             vmv.v.x v16, x7; \\\n\
@@ -822,6 +824,7 @@ def generate_macros_vred(f, lmul):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VV_OP_rd%d( testnum, inst, result, val1, val2 )"%n + " \\\n\
         TEST_CASE( testnum, v%d, result,"%n + " \\\n\
+            VSET_VSEW \\\n\
             %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             li x7, MASK_VSEW(val2); \\\n\
             vmv.v.x v16, x7; \\\n\
@@ -831,6 +834,7 @@ def generate_macros_vred(f, lmul):
         ) ", file=f)
     print("#define TEST_VV_OP_rd8( testnum, inst, result, val1, val2 ) \\\n\
         TEST_CASE( testnum, v8, result, \\\n\
+            VSET_VSEW \\\n\
             %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             li x7, MASK_VSEW(val2); \\\n\
             vmv.v.x v24, x7; \\\n\
@@ -840,6 +844,7 @@ def generate_macros_vred(f, lmul):
         )", file=f)
     print("#define TEST_VV_OP_rd16( testnum, inst, result, val1, val2 ) \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
+            VSET_VSEW \\\n\
             %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
             li x7, MASK_VSEW(val2); \\\n\
             vmv.v.x v8, x7; \\\n\

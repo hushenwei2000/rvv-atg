@@ -36,6 +36,7 @@
 #define SEXT_DOUBLE_VSEW(x)    ((x) | (-(((x) >> ((__riscv_vsew * 2) - 1)) & 1) << (__riscv_vsew - 1)))
 #define ZEXT_VSEW(x)           ((x) | (x) >> (__riscv_vsew - 1))
 #define ZEXT_DOUBLE_VSEW(x)    ((x) | (x) >> ((__riscv_vsew * 2) - 1))
+#define CLEAR_VREGS VSET_VSEW_4AVL; INIT_VREG;
 
 // Compare only low VSEW-bits of v14 and correctval
 #define VMVXS_AND_MASK_VSEW( targetreg, testreg ) \

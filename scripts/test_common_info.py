@@ -48,7 +48,7 @@ def print_common_header(instr, f):
     RVTEST_RV64UV\n\
     RVMODEL_BOOT\n\
     RVTEST_CODE_BEGIN\n\
-    RVTEST_VSET\n\
+    VSET_VSEW_4AVL\n\
     " % instr, file=f)
 
 
@@ -102,6 +102,52 @@ def print_common_ending(f):
     \n\
     RVTEST_DATA_END\n\
     ", file=f)
+
+
+def generate_idx_data(f):
+    vlen = int(os.environ['RVV_ATG_VLEN'])
+    lmul = float(os.environ['RVV_ATG_LMUL'])
+    vsew = float(os.environ['RVV_ATG_VSEW'])
+    num_elem = int(vlen * lmul / vsew * 8) # 8 is max seg_size 
+    print("num_elem = %d"%num_elem)
+    align_step = 1 if vsew == 8 else 2 if vsew == 16 else 4 if vsew == 32 else 8
+    
+    print(".align 8 \n\
+idx8dat:", file=f)
+    for i in range(0, num_elem):
+        if align_step*i > 127:
+            print("    idx8dat%d:  .zero %d" % (i+1, num_elem - i + 1) * 1, file=f)
+            break
+        print("    idx8dat%d:  .byte %d" % (i+1, align_step*i), file=f)
+    print("\n", file=f)
+    
+    print(".align 8 \n\
+idx16dat:", file=f)
+    for i in range(0, num_elem):
+        if align_step*i > 32767:
+            print("    idx16dat%d:   .zero %d" % (i+1, num_elem - i + 1) * 2, file=f)
+            break
+        print("    idx16dat%d:  .hword %d" % (i+1, align_step*i), file=f)
+    print("\n", file=f)
+    
+    print(".align 8 \n\
+idx32dat:", file=f)
+    for i in range(0, num_elem):
+        if align_step*i > 2147483647:
+            print("    idx32dat%d:   .zero %d" % (i+1, num_elem - i + 1) * 4, file=f)
+            break
+        print("    idx32dat%d:  .word %d" % (i+1, align_step*i), file=f)
+    print("\n", file=f)
+    
+    print(".align 8 \n\
+idx64dat:", file=f)
+    for i in range(0, num_elem):
+        if align_step*i > 9223372036854775807:
+            print("    idx64dat%d:   .zero %d" % (i+1, num_elem - i + 1) * 8, file=f)
+            break
+        print("    idx64dat%d:  .dword %d" % (i+1, align_step*i), file=f)
+    print("\n\n", file=f)
+
 
 def print_common_withmask_ending(f):
     print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
@@ -202,6 +248,7 @@ def print_load_ending(f):
     \n\
     .type tdat, @object\n\
     .size tdat, 4128\n\
+    .align 8 \n\
     tdat:\n\
     tdat1:  .word 0x00ff00ff\n\
     tdat2:  .word 0xff00ff00\n\
@@ -220,43 +267,11 @@ def print_load_ending(f):
     tdat15:  .word 0xff00ff00\n\
     tdat16:  .word 0x0ff00ff0\n\
     tdat17:  .word 0xf00ff00f\n\
-    \n\
-    idx8dat:\n\
-    idx8dat1:  .byte 0\n\
-    idx8dat2:  .byte 4\n\
-    idx8dat3:  .byte 8\n\
-    idx8dat4:  .byte 12\n\
-    idx8dat5:  .word 0x00000000\n\
-    idx8dat6:  .word 0x00000000\n\
-    idx8dat7:  .word 0x00000000\n\
-    idx8dat8:  .zero 5201314\n\
-    \n\
-    idx16dat:\n\
-    idx16dat1:  .word 0x00040000\n\
-    idx16dat2:  .word 0x000c0008\n\
-    idx16dat3:  .word 0x00140010\n\
-    idx16dat4:  .word 0x001c0018\n\
-    idx16dat5:  .zero 5201314\n\
-    \n\
-    idx32dat:\n\
-    idx32dat1:  .word 0x00000000\n\
-    idx32dat2:  .word 0x00000004\n\
-    idx32dat3:  .word 0x00000008\n\
-    idx32dat4:  .word 0x0000000c\n\
-    idx32dat5:  .zero 5201314\n\
-    \n\
-    idx64dat:\n\
-    idx64dat1:  .word 0x00000000\n\
-    idx64dat2:  .word 0x00000000\n\
-    idx64dat3:  .word 0x00000004\n\
-    idx64dat4:  .word 0x00000000\n\
-    idx64dat5:  .word 0x00000008\n\
-    idx64dat6:  .word 0x00000000\n\
-    idx64dat7:  .word 0x0000000c\n\
-    idx64dat8:  .word 0x00000000\n\
-    idx64dat9:  .zero 5201314\n\
-    \n\
-    signature_x12_0:\n\
+    \n", file=f)
+    
+    generate_idx_data(f)
+    
+    print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
     \n\
@@ -307,63 +322,32 @@ def print_loaddword_ending(f):
     \n\
     TEST_DATA\n\
     \n\
+    .align 8 \n\
     .type tdat, @object\n\
     .size tdat, 4128\n\
     tdat:\n\
-    tdat1:  .dword 0x00ff00ff\n\
-    tdat2:  .dword 0xff00ff00\n\
-    tdat3:  .dword 0x0ff00ff0\n\
-    tdat4:  .dword 0xf00ff00f\n\
-    tdat5:  .dword 0x00ff00ff\n\
-    tdat6:  .dword 0xff00ff00\n\
-    tdat7:  .dword 0x0ff00ff0\n\
-    tdat8:  .dword 0xf00ff00f\n\
+    tdat1:  .word 0x00ff00ff\n\
+    tdat2:  .word 0xff00ff00\n\
+    tdat3:  .word 0x0ff00ff0\n\
+    tdat4:  .word 0xf00ff00f\n\
+    tdat5:  .word 0x00ff00ff\n\
+    tdat6:  .word 0xff00ff00\n\
+    tdat7:  .word 0x0ff00ff0\n\
+    tdat8:  .word 0xf00ff00f\n\
     tdat9:  .zero 4064\n\
-    tdat10:  .dword 0x00ff00ff\n\
-    tdat11:  .dword 0xff00ff00\n\
-    tdat12:  .dword 0x0ff00ff0\n\
-    tdat13:  .dword 0xf00ff00f\n\
-    tdat14:  .dword 0x00ff00ff\n\
-    tdat15:  .dword 0xff00ff00\n\
-    tdat16:  .dword 0x0ff00ff0\n\
-    tdat17:  .dword 0xf00ff00f\n\
-    \n\
-    idx8dat:\n\
-    idx8dat1:  .byte 0\n\
-    idx8dat2:  .byte 8\n\
-    idx8dat3:  .byte 16\n\
-    idx8dat4:  .byte 24\n\
-    idx8dat5:  .word 0x00000000\n\
-    idx8dat6:  .word 0x00000000\n\
-    idx8dat7:  .word 0x00000000\n\
-    idx8dat8:  .zero 5201314\n\
-    \n\
-    idx16dat:\n\
-    idx16dat1:  .word 0x00080000\n\
-    idx16dat2:  .word 0x00180010\n\
-    idx16dat3:  .word 0x00280020\n\
-    idx16dat4:  .word 0x00380030\n\
-    idx16dat5:  .zero 5201314\n\
-    \n\
-    idx32dat:\n\
-    idx32dat1:  .word 0x00000000\n\
-    idx32dat2:  .word 0x00000008\n\
-    idx32dat3:  .word 0x00000010\n\
-    idx32dat4:  .word 0x00000018\n\
-    idx32dat5:  .zero 5201314\n\
-    \n\
-    idx64dat:\n\
-    idx64dat1:  .word 0x00000000\n\
-    idx64dat2:  .word 0x00000000\n\
-    idx64dat3:  .word 0x00000008\n\
-    idx64dat4:  .word 0x00000000\n\
-    idx64dat5:  .word 0x00000010\n\
-    idx64dat6:  .word 0x00000000\n\
-    idx64dat7:  .word 0x00000018\n\
-    idx64dat8:  .word 0x00000000\n\
-    idx64dat9:  .zero 5201314\n\
-    \n\
-    signature_x12_0:\n\
+    tdat10:  .word 0x00ff00ff\n\
+    tdat11:  .word 0xff00ff00\n\
+    tdat12:  .word 0x0ff00ff0\n\
+    tdat13:  .word 0xf00ff00f\n\
+    tdat14:  .word 0x00ff00ff\n\
+    tdat15:  .word 0xff00ff00\n\
+    tdat16:  .word 0x0ff00ff0\n\
+    tdat17:  .word 0xf00ff00f\n\
+    \n", file=f)
+    
+    generate_idx_data(f)
+    
+    print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
     \n\
@@ -449,40 +433,11 @@ def print_loadls_ending(f):
     tdat14:  .word 0x00ff00ff\n\
     tdat15:  .word 0xff00ff00\n\
     tdat16:  .word 0x0ff00ff0\n\
-    tdat17:  .word 0xf00ff00f\n\
-    \n\
-    idx8dat:\n\
-    idx8dat1:  .byte 0\n\
-    idx8dat2:  .byte 4\n\
-    idx8dat3:  .byte 8\n\
-    idx8dat4:  .byte 12\n\
-    idx8dat5:  .word 0x00000000\n\
-    idx8dat6:  .word 0x00000000\n\
-    idx8dat7:  .word 0x00000000\n\
-    \n\
-    idx16dat:\n\
-    idx16dat1:  .word 0x00040000\n\
-    idx16dat2:  .word 0x000c0008\n\
-    idx16dat3:  .word 0x00140010\n\
-    idx16dat4:  .word 0x001c0018\n\
-    \n\
-    idx32dat:\n\
-    idx32dat1:  .word 0x00000000\n\
-    idx32dat2:  .word 0x00000004\n\
-    idx32dat3:  .word 0x00000008\n\
-    idx32dat4:  .word 0x0000000c\n\
-    \n\
-    idx64dat:\n\
-    idx64dat1:  .word 0x00000000\n\
-    idx64dat2:  .word 0x00000000\n\
-    idx64dat3:  .word 0x00000004\n\
-    idx64dat4:  .word 0x00000000\n\
-    idx64dat5:  .word 0x00000008\n\
-    idx64dat6:  .word 0x00000000\n\
-    idx64dat7:  .word 0x0000000c\n\
-    idx64dat8:  .word 0x00000000\n\
-    \n\
-    signature_x12_0:\n\
+    tdat17:  .word 0xf00ff00f\n", file=f)
+        
+    generate_idx_data(f)
+        
+    print("signature_x12_0:\n\
         .fill 0,4,0xdeadbeef\n\
     \n\
     \n\
@@ -536,6 +491,7 @@ def print_loadlr_ending(f):
     \n\
     .type tdat, @object\n\
     .size tdat, 8448\n\
+    .align 8 \n\
     tdat:\n\
     tdat1:  .word 0x00ff00ff\n\
     tdat2:  .word 0xff00ff00\n\

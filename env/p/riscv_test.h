@@ -96,6 +96,74 @@
   li x30, 0;                                                            \
   li x31, 0;
 
+#define INIT_VREG                                                       \
+vxor.vv v0, v0, v0;                                                     \
+vxor.vv v1, v1, v1;                                                     \
+vxor.vv v2, v2, v2;                                                     \
+vxor.vv v3, v3, v3;                                                     \
+vxor.vv v4, v4, v4;                                                     \
+vxor.vv v5, v5, v5;                                                     \
+vxor.vv v6, v6, v6;                                                     \
+vxor.vv v7, v7, v7;                                                     \
+vxor.vv v8, v8, v8;                                                     \
+vxor.vv v9, v9, v9;                                                     \
+vxor.vv v10, v10, v10;                                                  \
+vxor.vv v11, v11, v11;                                                  \
+vxor.vv v12, v12, v12;                                                  \
+vxor.vv v13, v13, v13;                                                  \
+vxor.vv v14, v14, v14;                                                  \
+vxor.vv v15, v15, v15;                                                  \
+vxor.vv v16, v16, v16;                                                  \
+vxor.vv v17, v17, v17;                                                  \
+vxor.vv v18, v18, v18;                                                  \
+vxor.vv v19, v19, v19;                                                  \
+vxor.vv v20, v20, v20;                                                  \
+vxor.vv v21, v21, v21;                                                  \
+vxor.vv v22, v22, v22;                                                  \
+vxor.vv v23, v23, v23;                                                  \
+vxor.vv v24, v24, v24;                                                  \
+vxor.vv v25, v25, v25;                                                  \
+vxor.vv v26, v26, v26;                                                  \
+vxor.vv v27, v27, v27;                                                  \
+vxor.vv v28, v28, v28;                                                  \
+vxor.vv v29, v29, v29;                                                  \
+vxor.vv v30, v30, v30;                                                  \
+vxor.vv v31, v31, v31;                                                  \
+
+#define INIT_VREG_LMUL2                                                       \
+vxor.vv v0, v0, v0;                                                     \
+vxor.vv v2, v2, v2;                                                     \
+vxor.vv v4, v4, v4;                                                     \
+vxor.vv v6, v6, v6;                                                     \
+vxor.vv v8, v8, v8;                                                     \
+vxor.vv v10, v10, v10;                                                  \
+vxor.vv v12, v12, v12;                                                  \
+vxor.vv v14, v14, v14;                                                  \
+vxor.vv v16, v16, v16;                                                  \
+vxor.vv v18, v18, v18;                                                  \
+vxor.vv v20, v20, v20;                                                  \
+vxor.vv v22, v22, v22;                                                  \
+vxor.vv v24, v24, v24;                                                  \
+vxor.vv v26, v26, v26;                                                  \
+vxor.vv v28, v28, v28;                                                  \
+vxor.vv v30, v30, v30;                                                  \
+
+#define INIT_VREG_LMUL4                                                       \
+vxor.vv v0, v0, v0;                                                     \
+vxor.vv v4, v4, v4;                                                     \
+vxor.vv v8, v8, v8;                                                     \
+vxor.vv v12, v12, v12;                                                  \
+vxor.vv v16, v16, v16;                                                  \
+vxor.vv v20, v20, v20;                                                  \
+vxor.vv v24, v24, v24;                                                  \
+vxor.vv v28, v28, v28;                                                  \
+
+#define INIT_VREG_LMUL8                                                       \
+vxor.vv v0, v0, v0;                                                     \
+vxor.vv v8, v8, v8;                                                     \
+vxor.vv v16, v16, v16;                                                  \
+vxor.vv v24, v24, v24;                                                  \
+
 #define INIT_PMP                                                        \
   la t0, 1f;                                                            \
   csrw mtvec, t0;                                                       \
