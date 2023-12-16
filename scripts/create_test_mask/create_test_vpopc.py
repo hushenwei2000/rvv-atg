@@ -55,7 +55,7 @@ def generate_macros_vpopc(f, vsew, lmul):
     TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x2, vm_addr; \\\n\
-        vle32.v v16, (x2); \\\n\
+        vle%d.v v16, (x2);"%vsew + " \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         inst x14, v16%s; "%(", v0.t" if masked else "") + " \\\n\
     )", file=f)

@@ -108,7 +108,7 @@ def run_loadstore():
 
 # Modify here to config
 vlen = 512
-vsew = 32
+vsew = 8
 lmul_str = "8"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
 lmul = 8
 elen = 64

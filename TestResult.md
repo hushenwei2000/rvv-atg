@@ -7,6 +7,8 @@ All eew=8  load  store instruction will not be tested.
 vsew should <= elen * lmul
 ## VSEW32 LMUL2
 Pass
+## VSEW32 LMUL8
+Pass
 
 
 
@@ -24,13 +26,13 @@ Pass
 Pass
 ## VSEW16 LMUL0.5
 Pass
-
-
-
-
-## VSEW8 LMUL1
+## VSEW16 LMUL0.25
 Pass
+
+
 ## VSEW8 LMUL8
+Pass
+## VSEW8 LMUL1
 Pass
 ## VSEW8 LMUL0.125
 Pass
