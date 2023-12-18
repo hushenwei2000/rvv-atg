@@ -8,17 +8,17 @@
 //-----------------------------------------------------------------------
 
 // VSEW temporarily hard-coded to 32 bits
-#define RVTEST_VSET vsetivli x31, 1, e32, tu, mu;
+#define RVTEST_VSET vsetivli x31, 1, e32, ta, ma;
 #define __riscv_vsew 32
 #define __e_riscv_vsew e32
 #define __riscv_vsew_bytes 4
 #define __riscv_double_vsew 64
 #define VSEW_MASK_BITS 0x00000000ffffffff
 #define DOUBLE_VSEW_MASK_BITS 0xffffffffffffffff
-#define VSET_VSEW vsetivli x31, 1, e32, tu, mu;
-#define VSET_VSEW_4AVL vsetvli x31, x0, e32, tu, mu;
-#define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, tu, mu;
-#define VSET_DOUBLE_VSEW_4AVL vsetvli x31, x0, e64, m2, tu, mu;
+#define VSET_VSEW vsetivli x31, 1, e32, ta, ma;
+#define VSET_VSEW_4AVL vsetvli x31, x0, e32, ta, ma;
+#define VSET_DOUBLE_VSEW vsetivli x31, 1, e64, m2, ta, ma;
+#define VSET_DOUBLE_VSEW_4AVL vsetvli x31, x0, e64, m2, ta, ma;
 
 #define MASK_VSEW(x)        ((x) & ((1 << (__riscv_vsew - 1) << 1) - 1))
 #define MASK_EEW(x, eew)    ((x) & ((1 << (eew - 1) << 1) - 1))
@@ -181,16 +181,16 @@ test_ ## testnum: \
     code; \
     li x7, MASK_EEW(correctval1, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VSET_VSEW \
     bne x14, x7, fail; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), ta, ma; \
     vslidedown.vi v16, testreg, 1; \
     VSET_VSEW \
     li x7, MASK_EEW(correctval2, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VSET_VSEW \
     bne x14, x7, fail;
@@ -203,7 +203,7 @@ test_ ## testnum: \
     li x8, MASK_EEW(correctval2, eew); \
     li x9, MASK_EEW(correctval3, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     VMVXS_AND_MASK_EEW( x14, testreg, eew ) \
     VMVXS_AND_MASK_EEW( x15, v9, eew ) \
     VMVXS_AND_MASK_EEW( x16, v10, eew ) \
@@ -219,7 +219,7 @@ test_ ## testnum: \
     li x7, MASK_EEW(correctval1, eew); \
     li x8, MASK_EEW(correctval2, eew); \
     li TESTNUM, testnum; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     VMVXS_AND_MASK_EEW( x14, v16, eew ) \
     VMVXS_AND_MASK_EEW( x15, v17, eew ) \
     VSET_VSEW \
@@ -522,7 +522,7 @@ test_ ## testnum: \
   code; \
   li x7, MASK_EEW(correctval, correctval_eew); \
   li TESTNUM, testnum; \
-  vsetivli x31, 1, MK_EEW(correctval_eew), tu, mu; \
+  vsetivli x31, 1, MK_EEW(correctval_eew), ta, ma; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
   bne x14, x7, fail; \
@@ -545,7 +545,7 @@ test_ ## testnum: \
   code; \
   li x7, MASK_EEW(correctval, correctval_eew); \
   li TESTNUM, testnum; \
-  vsetivli x31, 1, MK_EEW(correctval_eew), tu, mu; \
+  vsetivli x31, 1, MK_EEW(correctval_eew), ta, ma; \
   VMVXS_AND_MASK_EEW( x14, testreg, correctval_eew ) \
   VSET_VSEW \
   bne x14, x7, fail; \
@@ -1029,7 +1029,7 @@ test_ ## testnum: \
   TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
     la  x1, base; \
     li  x2, stride; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), ta, ma; \
     inst v14, (x1), x2; \
     VSET_VSEW \
   )
@@ -1038,7 +1038,7 @@ test_ ## testnum: \
   TEST_CASE_LOAD( testnum, v16, __riscv_vsew, result1, result2, \
     la  x1, base_data; \
     la  x6, base_index; \
-    vsetvli x31, x0, MK_EEW(index_eew), tu, mu; \
+    vsetvli x31, x0, MK_EEW(index_eew), ta, ma; \
     MK_VLE_INST(index_eew) v8, (x6); \
     VSET_VSEW_4AVL \
     inst v16, (x1), v8; \
@@ -1048,7 +1048,7 @@ test_ ## testnum: \
 #define TEST_VLE_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), ta, ma; \
     inst v14, (x1); \
     VSET_VSEW \
   )
@@ -1056,7 +1056,7 @@ test_ ## testnum: \
 #define TEST_VLEFF_OP( testnum, inst, eew, result1, result2, base ) \
   TEST_CASE_LOAD( testnum, v14, eew, result1, result2, \
     la  x1, base; \
-    vsetivli x31, 4, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 4, MK_EEW(eew), ta, ma; \
     inst v14, (x1); \
     csrr x30, vl; \
     bne x30, x31, fail; \
@@ -1122,7 +1122,7 @@ test_ ## testnum: \
 //     li x7, MASK_EEW(result1, eew); \
 //     li x8, MASK_EEW(result2, eew); \
 //     li x9, MASK_EEW(result3, eew); \
-//     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+//     vsetivli x31, 1, MK_EEW(eew), ta, ma; \
 //     vmv.v.x v1, x7; \
 //     vmv.v.x v2, x8; \
 //     vmv.v.x v3, x9; \
@@ -1136,7 +1136,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1150,7 +1150,7 @@ test_ ## testnum: \
 //     li x7, MASK_EEW(result1, eew); \
 //     li x8, MASK_EEW(result2, eew); \
 //     li x9, MASK_EEW(result3, eew); \
-//     vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+//     vsetivli x31, 1, MK_EEW(eew), ta, ma; \
 //     vmv.v.x v1, x7; \
 //     vmv.v.x v2, x8; \
 //     vmv.v.x v3, x9; \
@@ -1164,7 +1164,7 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1202,7 +1202,7 @@ test_ ## testnum: \
     la  x1, base; \
     li  x2, stride; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1), x2; \
@@ -1213,7 +1213,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result, \
     la  x1, base; \
     li  x3, result; \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     vmv.v.x v8, x3; \
     VSET_VSEW \
     store_inst v8, (x1); \
@@ -1235,7 +1235,7 @@ test_ ## testnum: \
     la  x1, base; \
     li x7, MASK_EEW(result1, eew); \
     li x8, MASK_EEW(result2, eew); \
-    vsetivli x31, 1, MK_EEW(eew), m1, tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), m1, ta, ma; \
     vmv.v.x v8, x7; \
     vmv.v.x v9, x8; \
     VSET_VSEW \
@@ -1247,7 +1247,7 @@ test_ ## testnum: \
   TEST_CASE( testnum, v16, result,  \
     la  x1, base; \
     li x7, MASK_EEW(result, eew); \
-    vsetivli x31, 1, MK_EEW(eew), tu, mu; \
+    vsetivli x31, 1, MK_EEW(eew), ta, ma; \
     vmv.v.x v8, x7; \
     VSET_VSEW \
     store_inst v8, (x1); \
