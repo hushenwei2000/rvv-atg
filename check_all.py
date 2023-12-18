@@ -5,7 +5,7 @@ import os
 out = open('check_all.out', 'w+')
 dirs = os.listdir('.')
 for d in dirs:
-    if d.startswith(str(date.today())[5:]):
+    if d.startswith("12-"):
         print("------------------", file=out)
         instr = d.split('-')[2]
         vlen = d.split('-')[3]
@@ -13,8 +13,10 @@ for d in dirs:
         lmul = d.split('-')[5]
         log = "%s/%s"%(d, 'spike_%s_final.log'%instr) 
         if os.system("grep pass %s"%(log)) != 0:
-            print("Generated file is WRONG or not exist! : %s"%d)
+            print("Generated file is WRONG or not exist!! Will be removed : %s"%d)
+            os.system("rm -rf %s"%d)
             continue
+        
         report = "%s/coverage_final.rpt"%d
         try:
             f = open(report, 'r')

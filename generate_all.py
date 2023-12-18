@@ -32,8 +32,7 @@ fixpoint = ['vaadd', 'vaaddu', 'vasub', 'vasubu', 'vnclip', 'vnclipu', 'vsmul', 
 # For fast tests
 fixpoint_short = ['vaadd', 'vnclip', 'vsmul', 'vssra']
 
-# loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
-loadstore = ['vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8']
+loadstore = ['vle16', 'vle32', 'vle64', 'vle8', 'vluxei16', 'vluxei32', 'vluxei8', 'vluxsegei16', 'vluxsegei32', 'vluxsegei8', 'vlre16', 'vlre32', 'vlre8', 'vlse16', 'vlse32', 'vlse64', 'vlse8', 'vlssege32', 'vlssege8', 'vlsege16', 'vlsege32', 'vlsege8', 'vlssege16', 'vs1r', 'vs2r', 'vs4r', 'vs8r', 'vse16', 'vse32', 'vse8', 'vsse16', 'vsse32', 'vsse8', 'vssege16', 'vssege32', 'vssege8', 'vsssege16', 'vsssege32', 'vsssege8', 'vsuxei32', 'vsuxei8', 'vsuxsegei16', 'vsuxsegei32', 'vsuxsegei8',  'vsuxei16']
 
 
 all = dict(integer=integer, mask=mask, floatingpoint=floatingpoint, permute=permute, fixpoint=fixpoint, loadstore=loadstore)
@@ -45,14 +44,14 @@ def runcommand_integer(ins):
         return
     if (vsew == 8 or lmul_str == "0.125") and (ins == "vsext" or ins == "vzext"):
         return
-    os.system('python run.py -t i -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t i -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
 
 def runcommand_fixpoint(ins):
     global vsew
     global lmul
     if (ins == "vnclip" or ins == "vnclipu") and (vsew == 8 or vsew == 64 or lmul_str == "0.125" or lmul_str == "8"):
         return
-    os.system('python run.py -t x -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t x -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
 
 def runcommand_permute(ins):
     global vsew
@@ -61,7 +60,7 @@ def runcommand_permute(ins):
         return
     if ins == "vrgatherei16" and ((vsew == 8 and lmul_str == "8") or (vsew == 32 and lmul_str == "0.125") or (vsew == 64 and lmul_str == "0.125") or (vsew == 64 and lmul_str == "0.25")):
         return
-    os.system('python run.py -t p -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t p -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
 
 def runcommand_floatingpoint(ins):
     global vsew
@@ -70,7 +69,7 @@ def runcommand_floatingpoint(ins):
         return
     if (vsew == 8 or vsew == 16):
         return
-    os.system('python run.py -t f -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t f -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
 
 def runcommand_loadstore(ins):
     global vsew
@@ -81,12 +80,12 @@ def runcommand_loadstore(ins):
     emul = (eew / vsew) * lmul
     if eew < 8 or eew > 64 or emul < 0.125 or emul > 8:
         return 
-    os.system('python run.py -t l -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t l -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
 
 def runcommand_mask(ins):
     global vsew
     global lmul
-    os.system('python run.py -t m -i %s --vlen %d --vsew %d --lmul %s --elen %d' % (ins, vlen, vsew, lmul_str, elen))
+    os.system('python run.py -t m -i %s --vlen %d --vsew %d --lmul %s --elen %d --vta %d --vma %d --agnostic_type %d' % (ins, vlen, vsew, lmul_str, elen, vta, vma, agnostic_type))
     
 
 def run_integer():
@@ -115,10 +114,13 @@ def run_loadstore():
 
 # Modify here to config
 vlen = 128
-vsew = 32
-lmul_str = "2"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
-lmul = 2
+vsew = 64
+lmul_str = "8"  # "1", "2", "4", "8", "0.25", "0.5", "0.125"
+lmul = 8
 elen = 64
+vta = 0
+vma = 0
+agnostic_type = 0
 
 # Generate all and Put final ELF to a directory
 def main():
@@ -137,7 +139,7 @@ def main():
     # run_mask()
     # run_fixpoint()
     # run_permute()
-    run_loadstore()
+    # run_loadstore()
 
 
 if __name__ == "__main__":
