@@ -20,15 +20,15 @@ def parse_args(cwd):
     parser.add_argument("--xlen", type=int, default="64",
                         help="XLEN Value for the ISA: \
                             32, 64(default)")
-    parser.add_argument("--flen", type=int, default="-1",
+    parser.add_argument("--flen", type=int, default="32",
                         help="FLEN Value for the ISA: \
                             32(default), 64")
     parser.add_argument("--vlen", type=int, default="128",
                         help="Vector Register Length: \
                         32, 64, 128(default), 256, 512, 1024")
-    parser.add_argument("--elen", type=int, default="-1",
+    parser.add_argument("--elen", type=int, default="64",
                         help="The maximum size of a vector element that any operation can produce or consume in bits: \
-                        default = vlen")
+                        default = 64")
     parser.add_argument("--vsew", type=int, default="32",
                         help="Selected Element Width: \
                         8, 16, 32(default), 64")
@@ -60,13 +60,6 @@ def parse_args(cwd):
     parser.add_argument("-b","--batch", type=int, default="1",
                         help="Batch mode")
     args = parser.parse_args()
-    if args.elen == -1:
-        args.elen = 64
-    if args.flen == -1:
-        if args.vsew == 32 or args.vsew == 64:
-            args.flen = args.vsew
-        else:
-            args.flen = 32
     if args.vma == 0:
         args.vma = False
     else:
