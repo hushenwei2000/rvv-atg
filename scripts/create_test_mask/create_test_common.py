@@ -25,8 +25,8 @@ def generate_walking_data_seg_common(element_num, vlen, vsew, f):
 
 def generate_macros_common(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
-    print("#define TEST_VMRL_OP_rs1_1( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-        TEST_CASE_MASK_4VL( testnum, v16, result, \\\n\
+    print("#define TEST_VMRL_OP_rs1_1( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+        TEST_CASE_MASK_4VL( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
             MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -39,8 +39,8 @@ def generate_macros_common(f, lmul):
         )", file=f)
     for n in range(2, 32):
         if n >= 16 and n < 16 + lmul:
-            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-            TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+            TEST_CASE_MASK_4VL( testnum, v14,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, src1_addr; \\\n\
                 MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -52,8 +52,8 @@ def generate_macros_common(f, lmul):
                 VSET_VSEW \\\n\
             )" % (n, n, n), file=f)
         else:
-            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-            TEST_CASE_MASK_4VL( testnum, v14, result, \\\n\
+            print("#define TEST_VMRL_OP_rs1_%d( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+            TEST_CASE_MASK_4VL( testnum, v14,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x1, src1_addr; \\\n\
                 MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -65,8 +65,8 @@ def generate_macros_common(f, lmul):
                 VSET_VSEW \\\n\
             )" % (n, n, n), file=f)
     for n in range(2, 32):
-        print("#define TEST_VMRL_OP_rd_%d( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-        TEST_CASE_MASK_4VL( testnum, v%d, result, \\\n\
+        print("#define TEST_VMRL_OP_rd_%d( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+        TEST_CASE_MASK_4VL( testnum, v%d,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src1_addr; \\\n\
             MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -77,8 +77,8 @@ def generate_macros_common(f, lmul):
             inst v%d, v1, v2; \\\n\
             VSET_VSEW \\\n\
         )" % (n, n, n), file=f)
-    print("#define TEST_VMRL_OP_rd_1( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-    TEST_CASE_MASK_4VL( testnum, v1, result, \\\n\
+    print("#define TEST_VMRL_OP_rd_1( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+    TEST_CASE_MASK_4VL( testnum, v1,  \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -89,8 +89,8 @@ def generate_macros_common(f, lmul):
         inst v1, v3, v2; \\\n\
         VSET_VSEW \\\n\
     )", file=f)
-    print("#define TEST_VMRL_OP_rd_2( testnum, inst, sew, result, src1_addr, src2_addr ) \\\n\
-    TEST_CASE_MASK_4VL( testnum, v2, result, \\\n\
+    print("#define TEST_VMRL_OP_rd_2( testnum, inst, sew,  src1_addr, src2_addr ) \\\n\
+    TEST_CASE_MASK_4VL( testnum, v2,  \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x1, src1_addr; \\\n\
         MK_VLE_INST(sew) v8, (x1); \\\n\
@@ -117,27 +117,27 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
     percentage = 1000 / (4 * num_elem_plus_square)
     for i in range(0, num_elem_plus_square):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_ones_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_ones_dat%d, walking_ones_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), i / num_elem_plus, i % num_elem_plus), file=f)
             n = n + 1
 
     for i in range(num_elem_plus_square, num_elem_plus_square * 2):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_zeros_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_zeros_dat%d, walking_zeros_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
             n = n + 1
 
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_ones_dat%d, walking_zeros_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
             n = n + 1
 
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus_square_old):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_zeros_dat%d, walking_ones_dat%d );" % (
                 i, instr, (vsew if vsew <= 64 else 64), (i - num_elem_plus_square) / num_elem_plus, (i - num_elem_plus_square) % num_elem_plus), file=f)
             n = n + 1
     
@@ -145,14 +145,14 @@ def generate_tests_common(instr, f, vlen, vsew, lmul):
     num_elem_plus_square = num_elem_plus_square + num_elem_plus_square_old
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_ones_dat%d, walking_zeros_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_ones_dat%d, walking_zeros_dat%d );" % (
             i, instr, (vsew if vsew <= 64 else 64), i - num_elem_plus_square, i - num_elem_plus_square), file=f)
             n = n + 1
 
     num_elem_plus_square = num_elem_plus_square + num_elem_plus
     for i in range(num_elem_plus_square, num_elem_plus_square + num_elem_plus):
         if random.random() < percentage:
-            print("TEST_VMRL_OP( %d,  %s.mm,  %d,  5201314, walking_zeros_dat%d, walking_ones_dat%d );" % (
+            print("TEST_VMRL_OP( %d,  %s.mm,  %d,   walking_zeros_dat%d, walking_ones_dat%d );" % (
             i, instr, (vsew if vsew <= 64 else 64), i - num_elem_plus_square, i - num_elem_plus_square), file=f)
             n = n + 1
 

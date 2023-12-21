@@ -8,8 +8,8 @@ instr = 'vfmerge'
 
 def generate_macros(f, vsew):
     print("#undef TEST_FP_VF_OP_AFTER_VMSEQ \n\
-#define TEST_FP_VF_OP_AFTER_VMSEQ( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 ) \\\n\
-    TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8,     \\\n\
+#define TEST_FP_VF_OP_AFTER_VMSEQ( testnum, val1, val2, vmseqop1, vmseqop2 ) \\\n\
+    TEST_CASE_LOOP_FP( testnum, v24,      \\\n\
         VSET_VSEW_4AVL \\\n\
         li x7, MASK_VSEW(vmseqop1); \\\n\
         vmv.v.x v8, x7; \\\n\
@@ -25,8 +25,8 @@ def generate_macros(f, vsew):
     for n in range(1, 32):
         # if n == 2 or n == 14:
         #     continue
-        print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
-            TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8,     \\\n\
+        print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( testnum,  val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v24,     \\\n\
                 VSET_VSEW_4AVL \\\n\
                 li x7, MASK_VSEW(vmseqop1); \\\n\
                 vmv.v.x v8, x7; \\\n\
@@ -43,8 +43,8 @@ def generate_macros(f, vsew):
     for n in range(1, 32):
         # if n == 1:
         #     continue
-        print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( testnum, flags, result, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
-            TEST_CASE_LOOP_FP( testnum, v%d, flags, result, v8,  "%n + " \\\n\
+        print("#define TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( testnum, val1, val2, vmseqop1, vmseqop2 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d,   "%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
                 li x7, MASK_VSEW(vmseqop1); \\\n\
                 vmv.v.x v8, x7; \\\n\
@@ -81,7 +81,7 @@ def generate_tests(f, vsew, lmul):
     
     for i in range(loop_num):        
         n += 1
-        print("TEST_FP_VF_OP_AFTER_VMSEQ( %d,        0xff100,        rd_data_vf+%d, rs2_data+%d, rs1_data+%d, 0xe, 1);"%(n, i*step_bytes, i*step_bytes, i*step_bytes), file=f)
+        print("TEST_FP_VF_OP_AFTER_VMSEQ( %d,        rs2_data+%d, rs1_data+%d, 0xe, 1);"%(n,  i*step_bytes, i*step_bytes), file=f)
     
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfmerge.vfm Tests (different register)",file=f)
@@ -91,12 +91,12 @@ def generate_tests(f, vsew, lmul):
         k = i%31+1  
         if not (k == 8 or k == 16 or k == 24 or k % lmul != 0):
             n += 1
-            print("  TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( "%k+str(n)+", 0xff100, " + "rd_data_vf+%d, rs2_data+%d, rs1_data+%d, 0xe, 1);"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
+            print("  TEST_FP_VF_OP_AFTER_VMSEQ_rd_%d( "%k+str(n)+", " + " rs2_data+%d, rs1_data+%d, 0xe, 1);"%(i*step_bytes, i*step_bytes),file=f)
 
         k = i%31+1  
         if not (k == 8 or k == 16 or k == 24 or k % lmul != 0):
             n += 1
-            print("  TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( "%k+str(n)+", 0xff100, " + "rd_data_vf+%d, rs2_data+%d, rs1_data+%d, 0xe, 1);"%(i*step_bytes, i*step_bytes, i*step_bytes),file=f)
+            print("  TEST_FP_VF_OP_AFTER_VMSEQ_rs1_%d( "%k+str(n)+", " + " rs2_data+%d, rs1_data+%d, 0xe, 1);"%(i*step_bytes, i*step_bytes),file=f)
     return (0, n, 0)
 
 

@@ -15,8 +15,8 @@ def generate_macros(f, lmul):
     for n in range(1,32):
         if n % lmul != 0: continue
         rs2, rd = valid_aligned_regs(n)
-        print("#define TEST_W_FP_WV_OP_DS_1%d( testnum, inst, finst, flags, val1, val2 ) \\\n\
-        TEST_CASE_WVWF_FP( testnum, v%d, flags, val1, val2, \\\n\
+        print("#define TEST_W_FP_WV_OP_DS_1%d( testnum, inst, val1, val2 ) \\\n\
+        TEST_CASE_WVWF_FP( testnum, v%d,  val1, val2, \\\n\
             fld f0, 0(a0); \\\n\
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
@@ -25,14 +25,13 @@ def generate_macros(f, lmul):
             VSET_VSEW \\\n\
             vfmv.s.f v%d, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
-            finst f2, f0, f4; \\\n\
             inst v%d, v%d, v%d; \\\n\
         )"%(n, rd, n, rs2, rd, rs2, n),file=f)
     for n in range(1,32):
         if n % (2*lmul) != 0: continue
         rs1, rs2 = valid_aligned_regs(n)
-        print("#define TEST_W_FP_WV_OP_DS_rd%d( testnum, inst, finst, flags, val1, val2 ) \\\n\
-        TEST_CASE_WVWF_FP( testnum, v%d, flags, val1, val2, \\\n\
+        print("#define TEST_W_FP_WV_OP_DS_rd%d( testnum, inst,  val1, val2 ) \\\n\
+        TEST_CASE_WVWF_FP( testnum, v%d, val1, val2, \\\n\
             fld f0, 0(a0); \\\n\
             flw f1, 8(a0); \\\n\
             flw f4, 8(a0); \\\n\
@@ -41,7 +40,6 @@ def generate_macros(f, lmul):
             VSET_VSEW \\\n\
             vfmv.s.f v%d, f1; \\\n\
             fcvt.d.s f4, f4; \\\n\
-            finst f2, f0, f4; \\\n\
             inst v%d, v%d, v%d; \\\n\
         )"%(n, n, rs1, rs2, n, rs2, rs1),file=f)
 
@@ -57,7 +55,7 @@ def generate_tests(f, lmul):
     
     for i in range(len(rs1_val)):
         n += 1
-        print("  TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredosum.vs,  "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
     # print("  #-------------------------------------------------------------",file=f)
     # print("  # vfwredusum Tests",file=f)
@@ -66,7 +64,7 @@ def generate_tests(f, lmul):
     # 
     # for i in range(len(rs1_val)):
     #     n += 1
-    #     print("  #TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredusum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
+    #     print("  #TEST_W_FP_WV_OP_DS( "+str(n)+",  vfwredusum.vs,  "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # vfwredosum Tests (different register)",file=f)
@@ -76,11 +74,11 @@ def generate_tests(f, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS_1%d( "%k+str(n)+",  vfwredosum.vs,  "+fdat_rs2+", "+fdat_rs1+" );",file=f)
 
         if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs, fadd.d, 0xff100, "+fdat_rs2+", "+fdat_rs1+" );",file=f)
+        print("  TEST_W_FP_WV_OP_DS_rd%d( "%k+str(n)+",  vfwredosum.vs,  "+fdat_rs2+", "+fdat_rs1+" );",file=f)
         
     return n
 

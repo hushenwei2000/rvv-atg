@@ -57,35 +57,32 @@ def generate_macros_viota(f, vsew, lmul):
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     lmul = 1 if lmul < 1 else int(lmul)
     print("#undef TEST_VIOTA_OP", file=f)
-    print("#define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+    print("#define TEST_VIOTA_OP( testnum, inst, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, \\\n\
         VSET_VSEW_4AVL \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
         vle%d.v v8, (x1);"%vsew +" \\\n\
         vmseq.vi v2, v8, 1; \\\n\
         vmv.v.i v16, 2;\\\n\
         inst v16, v2%s; \\\n\
         )"%(", v0.t" if masked else ""), file=f)
     # generate the macro， 测试v1-v32源寄存器
-    print("#define TEST_VIOTA_OP_rs2_8( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+    print("#define TEST_VIOTA_OP_rs2_8( testnum, inst, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, \\\n\
         VSET_VSEW_4AVL \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
         vle%d.v v16, (x1); \\\n\
         vmseq.vi v8, v16, 1; \\\n\
         vmv.v.i v16, 2;\\\n\
         inst v16, v8%s; \\\n\
         )"%(vsew, ", v0.t" if masked else ""), file=f)
-    print("#define TEST_VIOTA_OP_rs2_16( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+    print("#define TEST_VIOTA_OP_rs2_16( testnum, inst, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, \\\n\
         VSET_VSEW_4AVL \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
         vle%d.v v8, (x1); \\\n\
         vmseq.vi v16, v8, 1; \\\n\
         vmv.v.i v8, 2;\\\n\
@@ -95,14 +92,13 @@ def generate_macros_viota(f, vsew, lmul):
     for n in range(1, 32):
         if n == 8 or n == 16 or (8 + lmul - 1 >= n and n + lmul - 1 >= 8) or (n >= 16 and 16 + lmul - 1 >= n): #vmseq no_overlap and viota no_overlap
             continue
-        print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, result_addr, src1_addr )"%n + " \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+        print("#define TEST_VIOTA_OP_rs2_%d( testnum, inst, src1_addr )"%n + " \\\n\
+        TEST_CASE_LOOP( testnum, v16, \\\n\
         VSET_VSEW_4AVL \\\n\
         la x7, rd_origin_data; \\\n\
         vle%d.v v16, (x7);"%vsew + " \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
         vle%d.v v8, (x1); \\\n\
         vmseq.vi v%d, v8, 1; \\\n\
         vmv.v.i v16, 2;\\\n\
@@ -112,14 +108,13 @@ def generate_macros_viota(f, vsew, lmul):
     for n in range(1, 32):
         if n % lmul != 0 or n == 2:
             continue
-        print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, result_addr, src1_addr )"%n + "  \\\n\
-        TEST_CASE_LOOP( testnum, v%d, result_addr,"%n + "  \\\n\
+        print("#define TEST_VIOTA_OP_rd_%d( testnum, inst, src1_addr )"%n + "  \\\n\
+        TEST_CASE_LOOP( testnum, v%d, "%n + "  \\\n\
         VSET_VSEW_4AVL \\\n\
         la x7, rd_origin_data; \\\n\
         vle%d.v v16, (x7);"%vsew + " \\\n\
         %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
         la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
         vle%d.v v8, (x1); \\\n\
         vmseq.vi v2, v8, 1; \\\n\
         vmv.v.i v%d, 2;\\\n\
@@ -137,11 +132,11 @@ def generate_tests_viota(instr, f, vlen, vsew, lmul):
     print("  # %s tests" % instr, file=f)
     print("  #-------------------------------------------------------------", file=f)
     for i in range(0, num_elem_plus, 10):
-        print("TEST_VIOTA_OP( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
-            num_test, instr, i, i), file=f)
+        print("TEST_VIOTA_OP( %d,  %s.m, walking_ones_dat%d );" % (
+            num_test, instr,  i), file=f)
         num_test = num_test + 1
-        print("TEST_VIOTA_OP( %d,  %s.m, walking_zeros_ans%d, walking_zeros_dat%d);" % (
-            num_test, instr, i, i), file=f)
+        print("TEST_VIOTA_OP( %d,  %s.m, walking_zeros_dat%d);" % (
+            num_test, instr, i), file=f)
         num_test = num_test + 1
 
     print("  #-------------------------------------------------------------", file=f)
@@ -154,13 +149,13 @@ def generate_tests_viota(instr, f, vlen, vsew, lmul):
             if i == 2:
                 continue
             else:
-                print("TEST_VIOTA_OP_rd_%d( %d,  %s.m, walking_zeros_ans%d, walking_zeros_dat%d );" % (
-                    i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
+                print("TEST_VIOTA_OP_rd_%d( %d,  %s.m,  walking_zeros_dat%d );" % (
+                    i, num_test, instr,  i % num_elem_plus), file=f)
                 num_test = num_test + 1
     for i in range(1, 32):
         if (8 + lmul - 1 < i or i + lmul - 1 < 8) and (i < 16 or 16 + lmul - 1 < i): # rs2 and rd no overlap each other
-            print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_ans%d, walking_ones_dat%d );" % (
-                i, num_test, instr, i % num_elem_plus, i % num_elem_plus), file=f)
+            print("TEST_VIOTA_OP_rs2_%d( %d,  %s.m, walking_ones_dat%d );" % (
+                i, num_test, instr, i % num_elem_plus), file=f)
             num_test = num_test + 1
     return num_test
 

@@ -13,8 +13,8 @@ def generate_macros_vfncvt(f, lmul):
     lmul_1 = 1 if lmul < 1 else int(lmul)
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#undef TEST_FP_N_V_OP \n\
-#define TEST_FP_N_V_OP( testnum, inst, flags, result, val1 ) \\\n\
-    TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8,     \\\n\
+#define TEST_FP_N_V_OP( testnum, inst,  val1 ) \\\n\
+    TEST_CASE_LOOP_FP( testnum, v24,       \\\n\
         VSET_VSEW_4AVL \\\n\
         la x7, rd_origin_data; \\\n\
         vle%d.v v24, (x7);"%vsew + " \\\n\
@@ -26,8 +26,8 @@ def generate_macros_vfncvt(f, lmul):
     for n in range(1, 32):
         if n % lmul != 0 or n == 24:
             continue
-        print("#define TEST_FP_N_V_OP_rs1_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_LOOP_FP( testnum, v24, flags, result, v8, \\\n\
+        print("#define TEST_FP_N_V_OP_rs1_%d( testnum, inst,  val1 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v24,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la x7, rd_origin_data; \\\n\
                 vle%d.v v24, (x7);"%vsew + " \\\n\
@@ -40,8 +40,8 @@ def generate_macros_vfncvt(f, lmul):
     for n in range(1, 32):
         if n % lmul != 0 or n == 8:
             continue
-        print("#define TEST_FP_N_V_OP_rd_%d( testnum, inst, flags, result, val1 )"%n + " \\\n\
-            TEST_CASE_LOOP_FP( testnum, v%d, flags, result, v8, "%n + " \\\n\
+        print("#define TEST_FP_N_V_OP_rd_%d( testnum, inst,  val1 )"%n + " \\\n\
+            TEST_CASE_LOOP_FP( testnum, v%d,  "%n + " \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la x7, rd_origin_data; \\\n\
                 vle%d.v v%d, (x7);"%(vsew, n) + " \\\n\
@@ -79,23 +79,23 @@ def generate_tests_vfncvt(instr, f, lmul):
     print("  #-------------------------------------------------------------",file=f)
     
     # for i in range(loop_num):
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.rtz.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.rtz.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.rod.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
     
     # for i in range(loop_num):
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.f.xu.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
-    #     print("TEST_FP_N_V_OP( %d,  %s, 0xff100, "%(n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+    #     print("TEST_FP_N_V_OP( %d,  %s, "%(n, 'vfncvt.f.x.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
     #     n += 1
     
     print("  #-------------------------------------------------------------",file=f)
@@ -107,44 +107,44 @@ def generate_tests_vfncvt(instr, f, lmul):
         k = i % 31 + 1  
         if k % (2*lmul) == 0 and k != 8 and not is_overlap(24, lmul_1 ,k, lmul_double_1):
             for i in range(loop_num):
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.rtz.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.rod.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
                 n += 1
             for i in range(loop_num):
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.f.xu.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
                 n += 1
-                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+                print("TEST_FP_N_V_OP_rs1_%d( %d,  %s, "%(k, n, 'vfncvt.f.x.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
                 n += 1
 
         k = i % 31 + 1
         if k % lmul != 0 or k == 8 or is_overlap(k, lmul_1 ,8, lmul_double_1):
             continue
         for i in range(loop_num):
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.rtz.xu.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rtz.x.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.rtz.x.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.rod.f.f.w') + "rd_data+%d, rs1_data+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.rod.f.f.w') + "rs1_data+%d);"%(i*step_bytes_double), file=f)
             n += 1
         for i in range(loop_num):
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.xu.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.f.xu.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
             n += 1
-            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, 0xff100, "%(k, n, 'vfncvt.f.x.w') + "rd_data+%d, rs1_data_int+%d);"%(n*step_bytes, i*step_bytes_double), file=f)
+            print("TEST_FP_N_V_OP_rd_%d( %d,  %s, "%(k, n, 'vfncvt.f.x.w') + "rs1_data_int+%d);"%(i*step_bytes_double), file=f)
             n += 1
     return (n, 0, 0)
 

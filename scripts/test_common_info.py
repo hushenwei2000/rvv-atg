@@ -52,19 +52,6 @@ def print_common_header(instr, f):
     #include \"arch_test.h\"\n\
     #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
     vsew = int(os.environ["RVV_ATG_VSEW"])
-    if instr == "viota" :
-        print("#undef TEST_VIOTA_OP", file=f)
-        print("#define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
-        VSET_VSEW_4AVL \\\n\
-        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
-        la  x1, src1_addr; \\\n\
-        la  x7, result_addr; \\\n\
-        vle%d.v v8, (x1);"%vsew +" \\\n\
-        vmseq.vi v2, v8, 1; \\\n\
-        vmv.v.i v16, 2;\\\n\
-        inst v16, v2%s; \\\n\
-        )"%(", v0.t" if masked else ""), file=f)
         
     print("RVTEST_ISA(\"RV64RV64IMAFDCVZicsr\")\n\
     \n\

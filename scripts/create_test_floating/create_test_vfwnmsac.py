@@ -13,7 +13,7 @@ def generate_tests(f, lmul):
     
     for i in range(len(rs2_val)):
         n += 1
-        print("  TEST_W_FP_VV_OP_NEGRESULT( "+str(n)+",  %s.vv, fmul.d, 0xff100, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP_NEGRESULT( "+str(n)+",  %s.vv,"%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # VF Tests",file=f)
@@ -21,7 +21,7 @@ def generate_tests(f, lmul):
     
     for i in range(len(rs2_val)):
         n += 1
-        print("  TEST_W_FP_VF_OP_RV_NEGRESULT( "+str(n)+",  %s.vf, fmul.d, 0xff100, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+        print("  TEST_W_FP_VF_OP_RV_NEGRESULT( "+str(n)+",  %s.vf,"%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
     print("  #-------------------------------------------------------------",file=f)
     print("  # %s Tests (different register)"%instr,file=f)
@@ -31,11 +31,11 @@ def generate_tests(f, lmul):
         k = i % 31 + 1
         if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_VV_OP_NEGRESULT_2%d( "%k+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP_NEGRESULT_2%d( "%k+str(n)+",  %s.vv, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
         if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
         n += 1
-        print("  TEST_W_FP_VV_OP_NEGRESULT_rd%d( "%k+str(n)+",  %s.vv, fmul.d, "%instr+"0xff100, "+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
+        print("  TEST_W_FP_VV_OP_NEGRESULT_rd%d( "%k+str(n)+",  %s.vv, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
 
 
 def create_empty_test_vfwnmsac(xlen, vlen, vsew, lmul, vta, vma, output_dir):

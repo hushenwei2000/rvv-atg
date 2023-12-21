@@ -11,8 +11,8 @@ def generate_macros(f, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     vsew = int(os.environ['RVV_ATG_VSEW'])
     print("#undef TEST_W_VX_OP_RV \n\
-#define TEST_W_VX_OP_RV( testnum, inst, result, val1, val2 ) \\\n\
-    TEST_CASE_LOOP_W( testnum, v24, result, \\\n\
+#define TEST_W_VX_OP_RV( testnum, inst,  val1, val2 ) \\\n\
+    TEST_CASE_LOOP_W( testnum, v24,  \\\n\
         VSET_DOUBLE_VSEW_4AVL \\\n\
         la x7, rd_origin_data; \\\n\
         vle%d.v v24, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
@@ -26,8 +26,8 @@ def generate_macros(f, lmul):
     for n in range(2, 32):
         if n % lmul != 0 or n == 8 or n == 16 or n == 24:
             continue
-        print("#define TEST_W_VX_OP_RV_1%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
-            TEST_CASE_LOOP_W( testnum, v24, result, \\\n\
+        print("#define TEST_W_VX_OP_RV_1%d( testnum, inst,  val1, val2 ) "%n + " \\\n\
+            TEST_CASE_LOOP_W( testnum, v24,  \\\n\
                 VSET_DOUBLE_VSEW_4AVL \\\n\
                 la x7, rd_origin_data; \\\n\
                 vle%d.v v24, (x7);"%(64 if vsew == 64 else vsew*2) + " \\\n\
@@ -42,8 +42,8 @@ def generate_macros(f, lmul):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         if n % (lmul*2) != 0 or n == 8 or n == 16 or n == 24:
             continue
-        print("#define TEST_W_VX_OP_RV_rd%d( testnum, inst, result, val1, val2 ) "%n + " \\\n\
-        TEST_CASE_LOOP_W( testnum, v%d, result, "%n + "\\\n\
+        print("#define TEST_W_VX_OP_RV_rd%d( testnum, inst,  val1, val2 ) "%n + " \\\n\
+        TEST_CASE_LOOP_W( testnum, v%d,  "%n + "\\\n\
             VSET_DOUBLE_VSEW_4AVL \\\n\
             la x7, rd_origin_data; \\\n\
             vle%d.v v%d, (x7);"%(64 if vsew == 64 else vsew*2,n) + " \\\n\
@@ -77,20 +77,20 @@ def generate_tests(f, rs1_val, rs2_val, lmul):
     for i in range(loop_num):
         n += 1
         print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
-              instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes), file=f)
+              instr+" %s, rs2_data+%d)"%( rs1_val[i], i*step_bytes), file=f)
     for i in range(min(32, loop_num)):
         k = i%31+1
         if k == 0 or k == 8 or k == 16 or k == 24 or k % (lmul*2) != 0 or k == 12 or k == 20 or k == 24:
             continue
         if k%2==0:
             n+=1
-            print("  TEST_W_VX_OP_RV_rd%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes),file=f)
+            print("  TEST_W_VX_OP_RV_rd%d( "%k+str(n)+",  %s.vx, "%instr+" %s, rs2_data+%d)"%( rs1_val[i], i*step_bytes),file=f)
         
         k = i%30+2
         if k == 0 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
             continue
         n +=1
-        print("  TEST_W_VX_OP_RV_1%d( "%k+str(n)+",  %s.vx, "%instr+"rd_data_vx+%d, %s, rs2_data+%d)"%(i*step_bytes_double, rs1_val[i], i*step_bytes),file=f)
+        print("  TEST_W_VX_OP_RV_1%d( "%k+str(n)+",  %s.vx, "%instr+" %s, rs2_data+%d)"%( rs1_val[i], i*step_bytes),file=f)
     
     return n
 

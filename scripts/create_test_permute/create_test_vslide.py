@@ -29,8 +29,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     print("#undef TEST_VSLIDE_VX_OP \n\
-#define TEST_VSLIDE_VX_OP( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
+#define TEST_VSLIDE_VX_OP( testnum, inst,  rd_base, offset, base ) \\\n\
+        TEST_CASE_LOOP( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             %s \
             la  x1, base; \\\n\
@@ -42,8 +42,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
         )" % (("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else ""), vsew, vsew, (", v0.t" if masked else "")), file=f)
 
     print("#undef TEST_VSLIDE_VI_OP \n\
-#define TEST_VSLIDE_VI_OP( testnum, inst, result_base, rd_base, offset_imm, base) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
+#define TEST_VSLIDE_VI_OP( testnum, inst,  rd_base, offset_imm, base) \\\n\
+        TEST_CASE_LOOP( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             %s \
             la  x1, base; \\\n\
@@ -55,8 +55,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     for i in range(1, 32):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
-        print("#define TEST_VSLIDE_VX_OP_rd_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
+        print("#define TEST_VSLIDE_VX_OP_rd_%d( testnum, inst,  rd_base, offset, base ) \\\n\
+            TEST_CASE_LOOP( testnum, v%d,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 %s \
                 la  x1, base; \\\n\
@@ -70,8 +70,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     for i in range(1, 32):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
-        print("#define TEST_VSLIDE_VX_OP_rs2_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
+        print("#define TEST_VSLIDE_VX_OP_rs2_%d( testnum, inst,  rd_base, offset, base ) \\\n\
+            TEST_CASE_LOOP( testnum, v16,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 %s \
                 la  x1, base; \\\n\
@@ -85,8 +85,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     for i in range(1, 32):
         if i == 1 or i == 7 or i % lmul != 0:
             continue
-        print("#define TEST_VSLIDE_VX_OP_rs1_%d( testnum, inst, result_base, rd_base, offset, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
+        print("#define TEST_VSLIDE_VX_OP_rs1_%d( testnum, inst,  rd_base, offset, base ) \\\n\
+            TEST_CASE_LOOP( testnum, v16,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 %s \
                 la  x1, base; \\\n\
@@ -100,8 +100,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     for i in range(1, 32):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
-        print("#define TEST_VSLIDE_VI_OP_rd_%d( testnum, inst, result_base, rd_base, offset_imm, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v%d, result_base, \\\n\
+        print("#define TEST_VSLIDE_VI_OP_rd_%d( testnum, inst,  rd_base, offset_imm, base ) \\\n\
+            TEST_CASE_LOOP( testnum, v%d,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 %s \
                 la  x1, base; \\\n\
@@ -114,8 +114,8 @@ def generate_macros_vslide(f, vlen, vsew, lmul):
     for i in range(1, 32):
         if i == 8 or i == 16 or i == 24 or i % lmul != 0:
             continue
-        print("#define TEST_VSLIDE_VI_OP_rs2_%d( testnum, inst, result_base, rd_base, offset_imm, base ) \\\n\
-            TEST_CASE_LOOP( testnum, v16, result_base, \\\n\
+        print("#define TEST_VSLIDE_VI_OP_rs2_%d( testnum, inst,  rd_base, offset_imm, base ) \\\n\
+            TEST_CASE_LOOP( testnum, v16,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 %s \
                 la  x1, base; \\\n\
@@ -137,18 +137,14 @@ def generate_tests_vslide(f, vsew, lmul):
 
     for i in range(num_group_walking):
         for k in range(0, num_elem + 1, 10):
-            print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " %
-                  (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
+            print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslideup.vx, rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
             n += 1
-            print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslidedown.vx, walking_data%d_slidedownans_offset_%d, " %
-                  (i, k) + "rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
+            print("  TEST_VSLIDE_VX_OP( " + str(n) + ", vslidedown.vx, rd_data, " + str(k) + ", walking_data%d );" % i, file=f)
             n += 1
             if k < 31:
-                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " %
-                    (i, k) + "rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
+                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslideup.vi, rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
                 n += 1
-                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslidedown.vi, walking_data%d_slidedownans_offset_%d, " %
-                    (i, k) + "rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
+                print("  TEST_VSLIDE_VI_OP( " + str(n) + ", vslidedown.vi,     rd_data, " + str(k % 31) + ", walking_data%d );" % i, file=f)
                 n += 1
     vx_test_num = n
     print("  #-------------------------------------------------------------", file=f)
@@ -157,22 +153,17 @@ def generate_tests_vslide(f, vsew, lmul):
 
     for i in range(1, 32):
         if i != 8 and i != 16 and i != 24 and i % lmul == 0 and i != 12 and i != 20:
-            print("  TEST_VSLIDE_VX_OP_rd_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
-                    i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+            print("  TEST_VSLIDE_VX_OP_rd_%d( " % i + str(n) + ", vslideup.vx, rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
-            print("  TEST_VSLIDE_VX_OP_rs2_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
-                    num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+            print("  TEST_VSLIDE_VX_OP_rs2_%d( " % i + str(n) + ", vslideup.vx, rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
             if i < 31:
-                print("  TEST_VSLIDE_VI_OP_rd_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i % num_group_walking,
-                    i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+                print("  TEST_VSLIDE_VI_OP_rd_%d( " % i + str(n) + ", vslideup.vi, rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
                 n += 1
-                print("  TEST_VSLIDE_VI_OP_rs2_%d( " % i + str(n) + ", vslideup.vi, walking_data%d_slideupans_offset_%d, " % (i %
-                    num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+                print("  TEST_VSLIDE_VI_OP_rs2_%d( " % i + str(n) + ", vslideup.vi, rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
                 n += 1
         if i != 1 and i != 7 and i % lmul == 0 and i != 24 and i != 12 and i != 20:
-            print("  TEST_VSLIDE_VX_OP_rs1_%d( " % i + str(n) + ", vslideup.vx, walking_data%d_slideupans_offset_%d, " % (i %
-                  num_group_walking, i % (num_elem+1)) + "rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
+            print("  TEST_VSLIDE_VX_OP_rs1_%d( " % i + str(n) + ", vslideup.vx, rd_data, " + str(i % (num_elem+1)) + ", walking_data%d );" % (i % num_group_walking), file=f)
             n += 1
     vi_test_num = n - vx_test_num
     return (vx_test_num, vi_test_num, 0)

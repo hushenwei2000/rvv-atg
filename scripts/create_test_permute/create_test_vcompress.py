@@ -112,8 +112,8 @@ def generate_dat_seg_vcompress(f, vsew):
 
 def generate_macros_vcompress(f, vsew, lmul):
     lmul = 1 if lmul < 1 else int(lmul)
-    print("#define TEST_VCOMPRESS_OP( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+    print("#define TEST_VCOMPRESS_OP( testnum, inst,  src_addr, rd_addr, vm_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
@@ -129,8 +129,8 @@ def generate_macros_vcompress(f, vsew, lmul):
         # no overlap: (v0 < rd) or (rd + lmul - 1 < v0)
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0 or (0 >= i and i + lmul - 1 >= 0):  # 15 is used for TEST_CASE_LOOP
             continue
-        print("#define TEST_VCOMPRESS_OP_rd_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v%d, result_addr, \\\n\
+        print("#define TEST_VCOMPRESS_OP_rd_%d( testnum, inst,  src_addr, rd_addr, vm_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v%d,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
@@ -145,8 +145,8 @@ def generate_macros_vcompress(f, vsew, lmul):
     for i in range(32):
         if i == 0 or i == 8 or i == 16 or i == 15 or (8 + lmul - 1 >= i and i + lmul - 1 >= 8) or (i >= 16 and 16 + lmul - 1 >= i):  # 15 is used for TEST_CASE_LOOP; require_noover for vmseq and vcompress
             continue
-        print("#define TEST_VCOMPRESS_OP_rs1_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+        print("#define TEST_VCOMPRESS_OP_rs1_%d( testnum, inst,  src_addr, rd_addr, vm_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
@@ -161,8 +161,8 @@ def generate_macros_vcompress(f, vsew, lmul):
     for i in range(32):
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0:  # 15 is used for TEST_CASE_LOOP
             continue
-        print("#define TEST_VCOMPRESS_OP_rs2_%d( testnum, inst, result_addr, src_addr, rd_addr, vm_addr ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+        print("#define TEST_VCOMPRESS_OP_rs2_%d( testnum, inst,  src_addr, rd_addr, vm_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16,  \\\n\
             VSET_VSEW_4AVL \\\n\
             la  x1, src_addr; \\\n\
             la  x2, rd_addr; \\\n\
@@ -189,8 +189,8 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
     no = 1
     for i in range(num_group_walking):
         for j in range(len(mask_val)):
-            print("TEST_VCOMPRESS_OP( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
-                no, instr, i, j, i, j), file=f)
+            print("TEST_VCOMPRESS_OP( %d,  %s.vm,   walking_data%d, rd_data, walking_mask_dat%d );" % (
+                no, instr, i, j), file=f)
             no = no + 1
 
     #################################################################################################################################
@@ -205,22 +205,22 @@ def generate_tests_vcompress(f, vlen, vsew, lmul):
             continue
         if i % vemul != 0: # guarantee is_aligned(insn.rd(), vemul)
             continue
-        print("TEST_VCOMPRESS_OP_rd_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
-            i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
+        print("TEST_VCOMPRESS_OP_rd_%d( %d,  %s.vm,   walking_data%d, rd_data, walking_mask_dat%d );" % (
+            i, no, instr, i % num_group_walking, j % len(mask_val)), file=f)
         no = no + 1
 
     for i in range(32):
         if i == 0 or i == 8 or i == 16 or i == 15 or (8 + lmul - 1 >= i and i + lmul - 1 >= 8) or (i >= 16 and 16 + lmul - 1 >= i) or i == 12 or i == 20 or i == 24:  # 15 is used for TEST_CASE_LOOP
             continue
-        print("TEST_VCOMPRESS_OP_rs1_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
-            i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
+        print("TEST_VCOMPRESS_OP_rs1_%d( %d,  %s.vm,  walking_data%d, rd_data, walking_mask_dat%d );" % (
+            i, no, instr,  i % num_group_walking, j % len(mask_val)), file=f)
         no = no + 1
 
     for i in range(32):
         if i == 0 or i == 8 or i == 16 or i == 15 or i % lmul != 0 or i == 12 or i == 20 or i == 24:  # 15 is used for TEST_CASE_LOOP
             continue
-        print("TEST_VCOMPRESS_OP_rs2_%d( %d,  %s.vm,  walking_data%d_ans_mask%d,  walking_data%d, rd_data, walking_mask_dat%d );" % (
-            i, no, instr, i % num_group_walking, j % len(mask_val), i % num_group_walking, j % len(mask_val)), file=f)
+        print("TEST_VCOMPRESS_OP_rs2_%d( %d,  %s.vm,   walking_data%d, rd_data, walking_mask_dat%d );" % (
+            i, no, instr,  i % num_group_walking, j % len(mask_val)), file=f)
         no = no + 1
         
     return no

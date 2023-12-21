@@ -51,8 +51,8 @@ def generate_macros_vpopc(f, vsew, lmul):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
     # generate the macro
-    print("#define TEST_VPOPC_OP( testnum, inst, result, vm_addr ) \\\n\
-    TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
+    print("#define TEST_VPOPC_OP( testnum, inst,  vm_addr ) \\\n\
+    TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14,  \\\n\
         VSET_VSEW_4AVL \\\n\
         la  x2, vm_addr; \\\n\
         vle%d.v v16, (x2);"%vsew + " \\\n\
@@ -62,8 +62,8 @@ def generate_macros_vpopc(f, vsew, lmul):
     for i in range(1, 32):
         if i == 7 or i  == 16 or i == 3 or i % lmul != 0:
             continue
-        print("#define TEST_VPOPC_OP_rs2_%d( testnum, inst, result, vm_addr ) \\\n\
-            TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14, result, \\\n\
+        print("#define TEST_VPOPC_OP_rs2_%d( testnum, inst,  vm_addr ) \\\n\
+            TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x14,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
                 vle%d.v v%d, (x2); \\\n\
@@ -74,8 +74,8 @@ def generate_macros_vpopc(f, vsew, lmul):
     for i in range(1, 32):
         if i == 7 or i  == 16 or i == 3 or i % lmul != 0 or i == 20:  # 20 is signature base 
             continue
-        print("#define TEST_VPOPC_OP_rd_%d( testnum, inst, result, vm_addr ) \\\n\
-            TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x%d, result, \\\n\
+        print("#define TEST_VPOPC_OP_rd_%d( testnum, inst,  vm_addr ) \\\n\
+            TEST_CASE_SCALAR_SETVSEW_AFTER(testnum, x%d,  \\\n\
                 VSET_VSEW_4AVL \\\n\
                 la  x2, vm_addr; \\\n\
                 vle%d.v v16, (x2); \\\n\
@@ -94,7 +94,7 @@ def generate_tests_vpopc(f, vlen, vsew, lmul):
     print("  # %s tests" % instr,file=f)
     print("  #-------------------------------------------------------------",file=f)
     for i in range(0, 2 * num_elem + 2):
-        print("TEST_VPOPC_OP( %d, vpopc.m, 5201314, walking_dat_vpopc%d );" % (num_test, i), file=f)
+        print("TEST_VPOPC_OP( %d, vpopc.m,  walking_dat_vpopc%d );" % (num_test, i), file=f)
         num_test = num_test + 1
 
 
