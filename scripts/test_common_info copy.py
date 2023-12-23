@@ -7,20 +7,84 @@ rd_origin_data = ["0x66da64aa","0xf682191a","0xfd2ce83f","0x67f9ab29","0x112e3ff
 def get_mask_bit(index):
     return mask_data_ending[int(index / 32)] >> (index % 32) & 1
 
+def print_common_header(instr, f):
+    
+    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
+    print("#----------------------------------------------------------------------------- \n\
+    # %s.S\n\
+    #-----------------------------------------------------------------------------\n\
+    #\n\
+    # Test %s instructions.\n\
+    #\n\n\
+    #include \"model_test.h\"\n\
+    #include \"arch_test.h\"\n\
+    #include \"riscv_test.h\"\n\
+    #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
+    vsew = int(os.environ["RVV_ATG_VSEW"])
+    if instr == "viota" :
+        print("#undef TEST_VIOTA_OP", file=f)
+        print("#define TEST_VIOTA_OP( testnum, inst, result_addr, src1_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v16, result_addr, \\\n\
+        VSET_VSEW_4AVL \\\n\
+        %s "%("la x7, mask_data; \\\n    vle%d.v v0, (x7); \\\n  "%vsew if masked else "")+" \
+        la  x1, src1_addr; \\\n\
+        la  x7, result_addr; \\\n\
+        vle%d.v v8, (x1);"%vsew +" \\\n\
+        vmseq.vi v2, v8, 1; \\\n\
+        vmv.v.i v16, 2;\\\n\
+        inst v16, v2%s; \\\n\
+        )"%(", v0.t" if masked else ""), file=f)
+        
+    print("RVTEST_ISA(\"RV64RV64IMAFDCVZicsr\")\n\
+    \n\
+    .section .text.init\n\
+    .globl rvtest_entry_point\n\
+    rvtest_entry_point:\n\
+    \n\
+    #ifdef TEST_CASE_1\n\
+    \n\
+    RVTEST_CASE(0,\"//check ISA:=regex(.*64.*);check ISA:=regex(.*V.*);def TEST_CASE_1=True;\",%s)\n\
+    \n\
+    RVTEST_RV64UV\n\
+    RVMODEL_BOOT\n\
+    RVTEST_CODE_BEGIN\n\
+    VSET_VSEW_4AVL\n\
+    " % instr, file=f)
 
-def print_rvmodel_data(arr, f):
-    print(" RVMODEL_DATA_BEGIN\n\
+
+def print_common_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
+    \n\
+    RVTEST_CODE_END\n\
+    RVMODEL_HALT\n\
+    \n\
+    .data\n\
+    RVTEST_DATA_BEGIN\n\
+    \n\
+    TEST_DATA\n\
+    \n\
     signature_x12_0:\n\
-        .fill %d,4,0xdeadbeef\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
     \n\
     \n\
     signature_x20_0:\n\
-        .fill %d,4,0xdeadbeef\n\
+        .fill 512,4,0xdeadbeef\n\
     \n\
     \n\
-    signature_x24_0:\n\
-        .fill %d,4,0xdeadbeef\n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
     \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
     \n\
     #ifdef rvtest_mtrap_routine\n\
     \n\
@@ -36,8 +100,9 @@ def print_rvmodel_data(arr, f):
     \n\
     #endif\n\
     \n\
-    RVMODEL_DATA_END\n\
-    "%(arr[0], arr[1], arr[2]), file=f)
+    RVTEST_DATA_END\n\
+    ", file=f)
+
 
 def generate_idx_data(f):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -84,76 +149,12 @@ idx64dat:", file=f)
     print("\n\n", file=f)
 
 
-def print_common_header(instr, f):
-    
-    masked = True if os.environ['RVV_ATG_MASKED'] == "True" else False
-    print("#----------------------------------------------------------------------------- \n\
-    # %s.S\n\
-    #-----------------------------------------------------------------------------\n\
-    #\n\
-    # Test %s instructions.\n\
-    #\n\n\
-    #include \"model_test.h\"\n\
-    #include \"arch_test.h\"\n\
-    #include \"test_macros_vector.h\"\n" % (instr, instr),file=f)
-    vsew = int(os.environ["RVV_ATG_VSEW"])
-        
-    print("RVTEST_ISA(\"RV64RV64IMAFDCVZicsr\")\n\
-    \n\
-    .section .text.init\n\
-    .globl rvtest_entry_point\n\
-    rvtest_entry_point:\n\
-    \n\
-    #ifdef TEST_CASE_1\n\
-    \n\
-    RVTEST_CASE(0,\"//check ISA:=regex(.*64.*);check ISA:=regex(.*V.*);def TEST_CASE_1=True;\",%s)\n\
-    \n\
-    RVMODEL_BOOT\n\
-    RVTEST_CODE_BEGIN\n\
-    RVTEST_VSET\n\
-    \n\
-    RVTEST_SIGBASE( x12,signature_x12_0)\n\
-    RVTEST_SIGBASE( x20,signature_x20_0)\n\
-    RVTEST_SIGBASE( x24,signature_x24_0)\n\
-    \n\
-    " % instr, file=f)
-
-
-def print_common_ending(f, arr=[0,0,0]):
-    print(" #endif\n\
-    \n\
-    RVTEST_CODE_END\n\
-    RVMODEL_HALT\n\
-    \n\
-    .data\n\
-    RVTEST_DATA_BEGIN\n\
-    \n\
-    TEST_DATA\n\
-    \n\
-    RVTEST_DATA_END\n\
-    \n", file=f)
-    print_rvmodel_data(arr, f)
-
-
-def gen_arr_load(n, rd_data_multiplier = 1):
-    vlen = int(os.environ['RVV_ATG_VLEN'])
-    lmul = float(os.environ['RVV_ATG_LMUL'])
-    vsew = int(os.environ['RVV_ATG_VSEW'])
-    lmul_1 = 1 if lmul < 1 else int(lmul)
-    arr = [0, ((vlen * lmul_1 * rd_data_multiplier / vsew) * vsew / 8) * (n), 0]
-    return arr
-
-def gen_arr_compute(test_num_tuple, rd_data_multiplier = 1):
-    vlen = int(os.environ['RVV_ATG_VLEN'])
-    lmul = float(os.environ['RVV_ATG_LMUL'])
-    vsew = int(os.environ['RVV_ATG_VSEW'])
-    lmul_1 = 1 if lmul < 1 else int(lmul)
-    arr = [0, ((vlen * lmul_1 * rd_data_multiplier / vsew) * vsew / 8) * (test_num_tuple[0] + test_num_tuple[1] + test_num_tuple[2]) ,0]
-    return arr
-
-
-def print_common_withmask_ending(n, f):
-    print(" #endif\n\
+def print_common_withmask_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -164,11 +165,41 @@ def print_common_withmask_ending(n, f):
     TEST_DATA\n\
     \n", file=f)
     print_mask_origin_data_ending(f)
-    print("\
-        RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_load(n)
-    print_rvmodel_data(arr, f)
+    print("  signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    RVTEST_DATA_END\n\
+    ", file=f)
 
 def extract_operands(f, rpt_path):
     rs1_val = []
@@ -184,18 +215,6 @@ def extract_operands(f, rpt_path):
     rs2_val = ['{:#016x}'.format(int(x) & 0xffffffffffffffff)
                for x in rs2_val_10]
     f.close()
-    
-    vlen = int(os.environ['RVV_ATG_VLEN'])
-    lmul = float(os.environ['RVV_ATG_LMUL'])
-    vsew = float(os.environ['RVV_ATG_VSEW'])
-    num_elem = int(vlen * lmul / vsew)
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
-    while loop_num == 0 and len(rs1_val) > 0 and len(rs2_val) > 0:
-        print(len(rs1_val), len(rs2_val), num_elem, loop_num)
-        rs1_val = rs1_val * 2
-        rs2_val = rs2_val * 2
-        loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
-    
     return rs1_val, rs2_val
 
 def is_overlap(rd, rd_mul, rs, rs_mul):
@@ -212,8 +231,12 @@ def print_data_width_prefix(f, vsew):
         print(".dword", end="\t", file=f)
 
 
-def print_load_ending(f, n = 0):
-    print("#endif\n\
+def print_load_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -248,15 +271,48 @@ def print_load_ending(f, n = 0):
     
     generate_idx_data(f)
     
-    print_mask_origin_data_ending(f)
-    print("\n\
+    print("signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_load(n)
-    print_rvmodel_data(arr, f)
+    ", file=f)
 
-def print_loaddword_ending(f, n = 0):
-    print("  #endif\n\
+def print_loaddword_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -266,41 +322,74 @@ def print_loaddword_ending(f, n = 0):
     \n\
     TEST_DATA\n\
     \n\
+    .align 8 \n\
     .type tdat, @object\n\
     .size tdat, 4128\n\
-    .align 8 \n\
     tdat:\n\
-    tdat1:  .dword 0x00ff00ff\n\
-    tdat2:  .dword 0xff00ff00\n\
-    tdat3:  .dword 0x0ff00ff0\n\
-    tdat4:  .dword 0xf00ff00f\n\
-    tdat5:  .dword 0x00ff00ff\n\
-    tdat6:  .dword 0xff00ff00\n\
-    tdat7:  .dword 0x0ff00ff0\n\
-    tdat8:  .dword 0xf00ff00f\n\
+    tdat1:  .word 0x00ff00ff\n\
+    tdat2:  .word 0xff00ff00\n\
+    tdat3:  .word 0x0ff00ff0\n\
+    tdat4:  .word 0xf00ff00f\n\
+    tdat5:  .word 0x00ff00ff\n\
+    tdat6:  .word 0xff00ff00\n\
+    tdat7:  .word 0x0ff00ff0\n\
+    tdat8:  .word 0xf00ff00f\n\
     tdat9:  .zero 4064\n\
-    tdat10:  .dword 0x00ff00ff\n\
-    tdat11:  .dword 0xff00ff00\n\
-    tdat12:  .dword 0x0ff00ff0\n\
-    tdat13:  .dword 0xf00ff00f\n\
-    tdat14:  .dword 0x00ff00ff\n\
-    tdat15:  .dword 0xff00ff00\n\
-    tdat16:  .dword 0x0ff00ff0\n\
-    tdat17:  .dword 0xf00ff00f\n\
+    tdat10:  .word 0x00ff00ff\n\
+    tdat11:  .word 0xff00ff00\n\
+    tdat12:  .word 0x0ff00ff0\n\
+    tdat13:  .word 0xf00ff00f\n\
+    tdat14:  .word 0x00ff00ff\n\
+    tdat15:  .word 0xff00ff00\n\
+    tdat16:  .word 0x0ff00ff0\n\
+    tdat17:  .word 0xf00ff00f\n\
     \n", file=f)
     
     generate_idx_data(f)
     
-    
-    print("\n\
+    print("signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_load(n)
-    print_rvmodel_data(arr, f)
+    ", file=f)
 
 
-def print_loadls_ending(f, n = 0):
-    print("#endif\n\
+def print_loadls_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -344,19 +433,53 @@ def print_loadls_ending(f, n = 0):
     tdat14:  .word 0x00ff00ff\n\
     tdat15:  .word 0xff00ff00\n\
     tdat16:  .word 0x0ff00ff0\n\
-    tdat17:  .word 0xf00ff00f\n\
-    \n", file=f)
+    tdat17:  .word 0xf00ff00f\n", file=f)
+        
     generate_idx_data(f)
-    
-    print("\n\
+        
+    print("signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_load(n)
-    print_rvmodel_data(arr, f)
+    ", file=f)
 
 
-def print_loadlr_ending(f, n = 0):
-    print("#endif\n\
+def print_loadlr_ending(f):
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -378,7 +501,6 @@ def print_loadlr_ending(f, n = 0):
     tdat6:  .word 0xff00ff00\n\
     tdat7:  .word 0x0ff00ff0\n\
     tdat8:  .word 0xf00ff00f\n\
-    tdta28:  .zero 7584\n\
     tdat9:  .zero 32\n\
     tdat10:  .word 0x00ff00ff\n\
     tdat11:  .word 0xff00ff00\n\
@@ -398,11 +520,43 @@ def print_loadlr_ending(f, n = 0):
     tdat25:  .word 0x0ff00ff0\n\
     tdat26:  .word 0xf00ff00f\n\
     tdta27:  .zero 32\n\
+    tdta28:  .zero 7584\n\
+    \n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
     \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_load(n)
-    print_rvmodel_data(arr, f)
+    ", file=f)
 
 def print_mask_origin_data_ending(f):
     # 24 words, mask_data + 0/64/128
@@ -479,7 +633,11 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
-    print("#endif\n\
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -523,10 +681,41 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     print_mask_origin_data_ending(f)
 
     print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_compute(test_num_tuple, rd_data_multiplier)
-    print_rvmodel_data(arr, f)
+    ", file=f)
 
 def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1, generate_wvwx = True):
     # test_num_tuple is vv_test_num, vx_test_num, wv_test_num, wx_test_num
@@ -538,7 +727,11 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
-    print("#endif\n\
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -596,11 +789,41 @@ def print_common_ending_rs1rs2rd_vw(rs1_val, rs2_val, test_num_tuple, vsew, f, r
             print("0x5201314", file=f)
     print_mask_origin_data_ending(f)
     print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_compute(test_num_tuple, rd_data_multiplier)
-    print_rvmodel_data(arr, f)
-
+    ", file=f)
 
 def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, generate_rv = False, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -611,7 +834,11 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
     print("!!!!!loop_num=%d, vv_test_num=%d"%(loop_num, test_num_tuple[0]))
-    print(" #endif\n\
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -655,11 +882,41 @@ def print_common_ending_rs1rs2rd_vvvfrv(rs1_val, rs2_val, test_num_tuple, vsew, 
     print_mask_origin_data_ending(f)
 
     print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_compute(test_num_tuple, rd_data_multiplier)
-    print_rvmodel_data(arr, f)
-
+    ", file=f)
 
 def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f, generate_vv = True, generate_vf = True, rs1_data_multiplier = 1, rs2_data_multiplier = 1, rd_data_multiplier = 1, generate_wvwf = True):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -670,7 +927,11 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
     print(test_num_tuple)
-    print("#endif\n\
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -731,11 +992,41 @@ def print_common_ending_rs1rs2rd_wvwf(rs1_val, rs2_val, test_num_tuple, vsew, f,
     print_mask_origin_data_ending(f)
 
     print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_compute(test_num_tuple, rd_data_multiplier)
-    print_rvmodel_data(arr, f)
-
+    ", file=f)
 
 def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vsew, f, is_widen = False, is_narrow = False):
     vlen = int(os.environ['RVV_ATG_VLEN'])
@@ -745,7 +1036,11 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
     lmul_1 = 1 if lmul < 1 else int(lmul)
     num_elem_1 = int(vlen * lmul_1 / vsew)
 
-    print("#endif\n\
+    print("  RVTEST_SIGBASE( x20,signature_x20_2)\n\
+        \n\
+    TEST_VV_OP_NOUSE(32766, vadd.vv, 2, 1, 1)\n\
+    TEST_PASSFAIL\n\
+    #endif\n\
     \n\
     RVTEST_CODE_END\n\
     RVMODEL_HALT\n\
@@ -783,10 +1078,40 @@ def print_common_ending_rs1rs2rd_vfcvt(rs1_val, rs1_int_val, test_num_tuple, vse
 
     print_mask_origin_data_ending(f)
     print("\n\
+    signature_x12_0:\n\
+        .fill 0,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x12_1:\n\
+        .fill 32,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_0:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_1:\n\
+        .fill 512,4,0xdeadbeef\n\
+    \n\
+    \n\
+    signature_x20_2:\n\
+        .fill 376,4,0xdeadbeef\n\
+    \n\
+    #ifdef rvtest_mtrap_routine\n\
+    \n\
+    mtrap_sigptr:\n\
+        .fill 128,4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
+    #ifdef rvtest_gpr_save\n\
+    \n\
+    gpr_save:\n\
+        .fill 32*(XLEN/32),4,0xdeadbeef\n\
+    \n\
+    #endif\n\
+    \n\
     RVTEST_DATA_END\n\
-    \n", file=f)
-    arr = gen_arr_compute(test_num_tuple, rd_data_multiplier)
-    print_rvmodel_data(arr, f)
-
+    ", file=f)
 
 

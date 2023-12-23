@@ -17,15 +17,15 @@ def generate_macros(f):
     for n in range(1, 32):
         if n == 12 or n == 20 or n == 24: # signature base registers
             continue
-        print("#define TEST_VLRE1_OP_1%d( testnum, inst, eew, result, base )"%n + " \\\n\
-            TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
+        print("#define TEST_VLRE1_OP_1%d( testnum, inst, eew,  base )"%n + " \\\n\
+            TEST_CASE_LOOP( testnum, v16,   \\\n\
                 la  x%d, base; "%n + "\\\n\
                 inst v16, (x%d); "%n + "\\\n\
         )", file=f)
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
-        print("#define TEST_VLRE1_OP_rd%d( testnum, inst, eew, result, base )"%n + " \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x0,  "%n + "\\\n\
+        print("#define TEST_VLRE1_OP_rd%d( testnum, inst, eew,  base )"%n + " \\\n\
+            TEST_CASE_LOOP( testnum, v%d,   "%n + "\\\n\
                 la  x2, base; \\\n\
                 inst v%d, (x2); "%n + "\\\n\
         ) ", file=f)
@@ -85,13 +85,13 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
 
     for i in range(2):
         n += 1
-        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+fir_fill[0]+", "+"0 + tdat"+" );", file=f)
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+"0 + tdat"+" );", file=f)
         n += 1
-        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+fir_fill[1]+", "+"1 + tdat"+" );", file=f)
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+"1 + tdat"+" );", file=f)
         n += 1
-        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+fir_fill[2]+", "+"2 + tdat"+" );", file=f)
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+"2 + tdat"+" );", file=f)
         n += 1
-        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+fir_fill[3]+", "+"3 + tdat"+" );", file=f)
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr+" 8 "+", "+"3 + tdat"+" );", file=f)
         n += 1
         print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr1+" 8 "+", "+fill[2]+", "+fill[3]+", "+"12 + tdat"+" );", file=f)
         n += 1
@@ -108,13 +108,13 @@ def generate_tests(f, rs1_val, rs2_val, fill, fir_fill, vsew ,lmul):
         k = i%31+1
         n+=1
         if( k % lmul == 0 and k % emul == 0 and k % lmul == 0 and k != 31 and k != 12 and k != 20 and k != 24):
-            print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
+            print("  TEST_VLRE1_OP_rd%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0 + tdat"+" );",file=f)
         
         k = i%30+2
         if(k == 31 or k == 12 or k == 20 or k == 24):
             continue;
         n +=1
-        print("  TEST_VLRE1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+fir_fill[0]+", "+"0 + tdat"+" );",file=f)
+        print("  TEST_VLRE1_OP_1%d( "%k+str(n)+",  %s.v, "%instr+" 8 "+", "+"0 + tdat"+" );",file=f)
     return n
 
 

@@ -35,9 +35,9 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
     for i in range(2):
         if 2 * emul <= 8 and 2 + 2 * emul <= 32: # (nf * emul) <= (NVPR / 4) &&  (insn.rd() + nf * emul) <= NVPR);
             n += 1
-            print("   TEST_VSSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"32"+", "+"0 + tdat15"+", rd_origin_data);", file=f)
+            print("   TEST_VSSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"32"+", "+"0 + tdat14"+", rd_origin_data);", file=f)
             n += 1
-            print("   TEST_VSSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"-32"+", "+"0 + tdat15"+", rd_origin_data);", file=f)
+            print("   TEST_VSSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"-32"+", "+"0 + tdat14"+", rd_origin_data);", file=f)
             n += 1
             print("   TEST_VSSSEG2_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"32"+", "+"0"+", "+"0 + tdat"+", rd_origin_data);", file=f)
             n += 1

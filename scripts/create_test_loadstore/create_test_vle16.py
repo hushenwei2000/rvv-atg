@@ -11,7 +11,7 @@ def generate_macros(f):
         if n == 12 or n == 20 or n == 24: # signature base registers
             continue
         print("#define TEST_VLE_OP_1%d( testnum, inst, eew, result1, result2, base )"%n + " \\\n\
-            TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
+            TEST_CASE_LOOP( testnum, v16,   \\\n\
                 la  x%d, base; "%n + "\\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
                 inst v16, (x%d); "%n + "\\\n\
@@ -20,7 +20,7 @@ def generate_macros(f):
     for n in range(1, 32):
         # Beacuse of the widening instruction, rd should valid for the destination’s EMUL
         print("#define TEST_VLE_OP_rd%d( testnum, inst, eew, result1, result2, base )"%n + " \\\n\
-            TEST_CASE_LOOP( testnum, v%d, x0,  "%n + "\\\n\
+            TEST_CASE_LOOP( testnum, v%d,   "%n + "\\\n\
                 la  x1, base; \\\n\
                 vsetivli x31, 4, MK_EEW(eew), tu, mu; \\\n\
                 inst v%d, (x1); "%n + "\\\n\

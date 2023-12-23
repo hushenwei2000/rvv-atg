@@ -297,7 +297,7 @@ test_ ## testnum: \
     inst v16, (x1); \
   )
 
-#define TEST_VLRE1_OP( testnum, inst, eew, result, base ) \
+#define TEST_VLRE1_OP( testnum, inst, eew, base ) \
   TEST_CASE_LOOP( testnum, v16, \
     la  x1, base; \
     inst v16, (x1); \

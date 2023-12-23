@@ -16,7 +16,7 @@ def generate_macros(f):
         if n == 12 or n == 20 or n == 24 or n == 30: # signature base registers
             continue
         print("#define TEST_VSRE1_OP_1%d(  testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
+        TEST_CASE_LOOP( testnum, v16,   \\\n\
             la  x%d, base; "%n + " \\\n\
             li  x30, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -28,7 +28,7 @@ def generate_macros(f):
 
     for n in range(1,31):
         print("#define TEST_VSRE1_OP_rd%d( testnum, load_inst, store_inst, eew, result, base )"%n + " \\\n\
-        TEST_CASE_LOOP( testnum, v16, x0,  " + "\\\n\
+        TEST_CASE_LOOP( testnum, v16,   " + "\\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -39,7 +39,7 @@ def generate_macros(f):
         )",file=f)
         n += 1
     print("#define TEST_VSRE1_OP_130( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
+        TEST_CASE_LOOP( testnum, v16,   \\\n\
             la  x30, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\
@@ -50,7 +50,7 @@ def generate_macros(f):
         )",file=f)
 
     print("#define TEST_VSRE1_OP_rd31( testnum, load_inst, store_inst, eew, result, base ) \\\n\
-        TEST_CASE_LOOP( testnum, v16, x0,  \\\n\
+        TEST_CASE_LOOP( testnum, v16,   \\\n\
             la  x1, base;  \\\n\
             li  x3, result; \\\n\
             vsetivli x31, 1, MK_EEW(eew), tu, mu; \\\n\

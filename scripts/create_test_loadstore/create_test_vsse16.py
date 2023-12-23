@@ -30,7 +30,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
         n += 1
         print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"4096"+", "+"0 + tdat"+");", file=f)
         n += 1
-        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"-4096"+", "+"0 + tdat15"+");", file=f)
+        print("   TEST_VSSE_OP( "+str(n)+", %s.v, %s.v, "%(instr1,instr)+"16"+", "+"0xa0a0"+", "+"-4096"+", "+"0 + tdat14"+");", file=f)
    
     for i in range(100):     
         k = i%30+1

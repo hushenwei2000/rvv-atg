@@ -55,7 +55,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             n += 1
             print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0 + tdat"+", "+"idx8dat"+", rd_origin_data);", file=f)
             n += 1
-            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0 + tdat15"+", "+"idx8dat"+", rd_origin_data);", file=f)
+            print("   TEST_VSXSEG3_OP( "+str(n)+", %s.v, %s.v, "%(instr7l,instr7)+"8"+", "+"0 + tdat14"+", "+"idx8dat"+", rd_origin_data);", file=f)
         
         
     if 2 * lmul <= 8 and 2 + 2 * lmul <= 32: # (nf * lmul) <= (NVPR / 4) &&  (insn.rd() + nf * lmul) <= NVPR);
