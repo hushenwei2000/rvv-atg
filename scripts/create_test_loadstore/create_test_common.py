@@ -489,6 +489,7 @@ def generate_macros_vsuxseg(f, lmul, vsew, eew):
             vmv.v.i v8, 0; \\\n\
             vmv.v.i v%d, 0; "%(8+lmul) + " \\\n\
             vmv.v.i v%d, 0; "%(8+lmul*2) + " \\\n\
+            VSET_VSEW_4AVL \\\n\
             load_inst v8, (x1), v24; \\\n\
         )", file=f)
     for n in range(1,30):

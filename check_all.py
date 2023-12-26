@@ -13,6 +13,9 @@ for d in dirs:
         lmul = d.split('-')[5]
         log = "%s/%s"%(d, 'spike_%s_final.log'%instr) 
         if os.system("grep pass %s"%(log)) != 0:
+            if "agnostic_type1" in log:
+                print("Generated file spike log is not exist due to agnostic_type is 1!! %s"%d)
+                continue
             print("Generated file is WRONG or not exist!! Will be removed : %s"%d)
             os.system("rm -rf %s"%d)
             continue

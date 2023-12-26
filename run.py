@@ -20,7 +20,7 @@ def parse_args(cwd):
     parser.add_argument("--xlen", type=int, default="64",
                         help="XLEN Value for the ISA: \
                             32, 64(default)")
-    parser.add_argument("--flen", type=int, default="-1",
+    parser.add_argument("--flen", type=int, default="32",
                         help="FLEN Value for the ISA: \
                             32(default), 64")
     parser.add_argument("--vlen", type=int, default="128",
@@ -62,11 +62,6 @@ def parse_args(cwd):
     args = parser.parse_args()
     if args.elen == -1:
         args.elen = 64
-    if args.flen == -1:
-        if args.vsew == 32 or args.vsew == 64:
-            args.flen = args.vsew
-        else:
-            args.flen = 32
     if args.vma == 0:
         args.vma = False
     else:

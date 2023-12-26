@@ -39,10 +39,13 @@ def create_output(args):
     vlen = args.vlen
     vsew = args.vsew
     lmul = args.lmul
+    vta = args.vta
+    vma = args.vma
+    agnostic_type = args.agnostic_type
     masked = True if args.masked == "True" else False
     # Create output directory
     if output is None:
-        output = str(date.today())[5:] + "-" + instr + "-vlen" + str(vlen) + "-vsew" + str(vsew) + "-lmul" + str(lmul) + ("-masked" if masked else "")
+        output = str(date.today())[5:] + "-" + instr + "-vlen" + str(vlen) + "-vsew" + str(vsew) + "-lmul" + str(lmul) + ("-masked" if masked else "") + "-vta" + str(vta) + "-vma" + str(vma) + "-agnostic_type" + str(agnostic_type)
     os.system("rm -rf {}".format(output))
 
     logging.info("Creating output directory: {}".format(output))
