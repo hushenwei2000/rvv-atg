@@ -84,9 +84,7 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 - Lack of vmerge tests
 - Lack of load store eew=64 tests
 - VL1/2/4/8R, VS1/2/4/8R load and store need adapt signature
-- FP instruction not using data segment data as source operands
 - SEGMENT load and store signature problem: if eew > sew, only the first register will be signatured
-- vfirst/vpopc use `vle32` to load data, error when vsew=16 lmul = 8 (i.e. emul > 8); need to dynamicly use vleXX to load source data
 - mask instructions lack of test different registers tests
 
 ## Support Configuration

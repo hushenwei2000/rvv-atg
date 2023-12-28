@@ -813,7 +813,7 @@ def generate_macros_vvmvfm(f, lmul, test_vv = True):
             inst v24, v8, f1%s; "%(", v0.t" if masked else "") + " \\\n\
         )", file=f)
 
-def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True, test_rv=False):
+def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True):
     # lmul = 1 if lmul < 1 else int(lmul)
     vlen = int(os.environ['RVV_ATG_VLEN'])
     vsew = int(os.environ['RVV_ATG_VSEW'])
@@ -914,32 +914,6 @@ def generate_tests(instr, f, vsew, lmul, suffix="vv", test_vv=True, test_vf=True
             print("  TEST_FP_VF_OP_rs1_%d( "%k+str(n)+",  %s.vf, "%instr+"rs2_data+%d, rs1_data+%d);" % ( i*step_bytes, i*step_bytes),file=f)
     vf_test_num = n - vv_test_num
 
-    if test_rv:
-        print("  #-------------------------------------------------------------", file=f)
-        print("  # VF Tests", file=f)
-        print("  #-------------------------------------------------------------", file=f)
-        
-        for i in range(loop_num):
-            n += 1
-            print("TEST_FP_VF_OP_RV( %d,  %s.vf,     %s,        %s );" % (
-                n, instr, rs1_val[i], rs2_val[i]), file=f)
-
-        print("  #-------------------------------------------------------------",file=f)
-        print("  # VF Tests (different register)",file=f)
-        print("  #-------------------------------------------------------------",file=f)
-        
-        for i in range(min(32, loop_num)):
-            k = i%31+1
-            if k == 1 or k == 8 or k == 16 or k == 24 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
-                continue
-            n += 1
-            print("  TEST_FP_VF_OP_RV_rd_%d( "%k+str(n)+",  %s.vf, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
-
-            k = i%31+1
-            if k == 14 or k % lmul != 0 or k == 12 or k == 20 or k == 24:
-                continue
-            n += 1
-            print("  TEST_FP_VF_OP_RV_rs1_%d( "%k+str(n)+",  %s.vf, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
     rv_test_num = n - vf_test_num - vv_test_num
     
     return (vv_test_num, vf_test_num, rv_test_num)

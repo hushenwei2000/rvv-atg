@@ -10,38 +10,6 @@ rs2_val = ["0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF",
            "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", "0x00000000", "0xBF800000", "0x3F800000", "0xFF7FFFFF", "0x7F7FFFFF", "0x80855555", "0x00800001", "0x80800000", "0x00800000", "0x807FFFFF", "0x007FFFFF", "0x807FFFFE", "0x00000002", "0x80000001", "0x00000001", "0x80000000", ]
 
 
-def generate_tests(f, lmul):
-    n = 1
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # VV Tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    
-    for i in range(len(rs2_val)):
-        n += 1
-        print("  TEST_W_FP_VV_OP( "+str(n)+",  %s.vv, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # VF Tests",file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    
-    for i in range(len(rs2_val)):
-        n += 1
-        print("  TEST_W_FP_VF_OP_RV( "+str(n)+",  %s.vf, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
-
-    print("  #-------------------------------------------------------------",file=f)
-    print("  # %s Tests (different register)"%instr,file=f)
-    print("  #-------------------------------------------------------------",file=f)
-    
-    for i in range(len(rs2_val)):
-        k = i % 31 + 1
-        if k % lmul != 0 or k == 12 or k == 20 or k == 24: continue
-        n += 1
-        print("  TEST_W_FP_VV_OP_2%d( "%k+str(n)+",  %s.vv, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
-
-        if k % (2*lmul) != 0 or k == 12 or k == 20 or k == 24: continue
-        n += 1
-        print("  TEST_W_FP_VV_OP_rd%d( "%k+str(n)+",  %s.vv, "%instr+rs1_val[i]+", "+rs2_val[i]+" );",file=f)
-
 
 def create_empty_test_vfwmacc(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating empty test for {}".format(instr))

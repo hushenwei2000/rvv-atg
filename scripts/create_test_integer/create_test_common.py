@@ -1069,7 +1069,7 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
     
     return (vv_test_num, vx_test_num, wv_test_num, wx_test_num)
               
-def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', generate_vxrv=True):
+def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, generate_vv = True):
     lmul_1 = 1 if lmul < 1 else int(lmul)
     lmul_double_1 = 1 if (lmul * 2) < 1 else int(lmul * 2)
     n = 0
@@ -1081,36 +1081,37 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
-    print("  #-------------------------------------------------------------", file=f)
-    print("  # VV Tests", file=f)
-    print("  #-------------------------------------------------------------", file=f)
-
-    for i in range(loop_num):
-        n += 1
-        print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s, " %
-              (instr, instr_suffix)+"rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
-    for i in range(min(32, loop_num)): 
-        k = i%31+1
-        if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1)and not is_overlap(k, lmul_double_1, 16, lmul_1) and k != 12 and k != 20 and k != 24:
-            n+=1
-            print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+"rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
-        
-        k = i%30+2
-        if k % lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1) and k != 12 and k != 20 and k != 24:
-            n +=1
-            print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+" rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
     
+    if generate_vv:
+        print("  #-------------------------------------------------------------", file=f)
+        print("  # VV Tests", file=f)
+        print("  #-------------------------------------------------------------", file=f)
 
-    vv_test_num = n
-    if generate_vxrv:
-        print("  #-------------------------------------------------------------", file=f)
-        print("  # VX Tests", file=f)
-        print("  #-------------------------------------------------------------", file=f)
-        
         for i in range(loop_num):
             n += 1
-            print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
-                instr+" %s, rs2_data+%d)"%( rs1_val[i], i*step_bytes), file=f)
+            print("  TEST_W_VV_OP_WITH_INIT( "+str(n)+",  %s.%s, " %
+                (instr, 'vv')+"rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes), file=f)
+        for i in range(min(32, loop_num)): 
+            k = i%31+1
+            if k%(2*lmul)==0 and k != 8 and k != 16 and k != 24 and not is_overlap(k, lmul_double_1, 8, lmul_1)and not is_overlap(k, lmul_double_1, 16, lmul_1) and k != 12 and k != 20 and k != 24:
+                n+=1
+                print("  TEST_W_VV_OP_WITH_INIT_rd%d( "%k+str(n)+",  %s.%s, "%(instr, 'vv')+"rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
+            
+            k = i%30+2
+            if k % lmul == 0 and k != 8 and k != 16 and k != 24 and not is_overlap(24, lmul_double_1, k, lmul_1) and k != 12 and k != 20 and k != 24:
+                n +=1
+                print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, 'vv')+" rs2_data+%d, rs1_data+%d)"%(i*step_bytes, i*step_bytes),file=f)
+
+    vv_test_num = n
+    
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VX Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+    
+    for i in range(loop_num):
+        n += 1
+        print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
+            instr+" %s, rs2_data+%d)"%( rs1_val[i], i*step_bytes), file=f)
     vx_test_num = n - vv_test_num
     return (vv_test_num, vx_test_num, 0)
 
@@ -1461,7 +1462,7 @@ def generate_tests_vred(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', gen
             
     return n
     
-def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', generate_vxrv=True):
+def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv'):
     n = 1
     if lmul < 1:
         lmul = 1
@@ -1485,15 +1486,6 @@ def generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', ge
         if k % lmul == 0 and k != 8 and k != 16 and k != 24 and k != 12 and k != 20 and k != 24:
             n +=1
             print("  TEST_W_VV_OP_WITH_INIT_1%d( "%k+str(n)+",  %s.%s, "%(instr, instr_suffix)+rs2_val[i]+", "+rs1_val[i]+" );",file=f)
-    if generate_vxrv:
-        print("  #-------------------------------------------------------------", file=f)
-        print("  # VX Tests", file=f)
-        print("  #-------------------------------------------------------------", file=f)
-        
-        for i in range(len(rs1_val)):
-            n += 1
-            print("  TEST_W_VX_OP_RV( "+str(n)+",  %s.vx, " %
-                instr+rs2_val[i]+", "+rs1_val[i]+" );", file=f)
             
     return n
 

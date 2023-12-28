@@ -47,7 +47,7 @@ def create_first_test_vwredsumu(xlen, vlen, vsew, lmul, vta, vma, output_dir, rp
     generate_macros_vwred(f, lmul)
 
     # Generate tests
-    n = generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vs', generate_vxrv=False)
+    n = generate_tests_vwred(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vs')
 
     # Common const information
     print_common_withmask_ending(n, f)
