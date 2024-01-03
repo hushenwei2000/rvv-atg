@@ -83,7 +83,6 @@ After genering, run `python move_generate_all_elf.py`, this will check if genera
 - Not support floating-point vsew=16
 - Lack of vmerge tests
 - Lack of load store eew=64 tests
-- VL1/2/4/8R, VS1/2/4/8R load and store need adapt signature
 - SEGMENT load and store signature problem: if eew > sew, only the first register will be signatured
 - mask instructions lack of test different registers tests
 

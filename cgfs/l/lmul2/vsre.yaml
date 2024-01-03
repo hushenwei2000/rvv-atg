@@ -1,12 +1,15 @@
-vs4r:
+vsre:
     config: 
       - check ISA:=regex(.*V.*)
     opcode: 
+      vs1r.v: 0
+      vs2r.v: 0
       vs4r.v: 0
+      vs8r.v: 0
     rs1: 
       <<: *all_regs_cropped
     rd: 
-      <<: *v_quard_regs
+      <<: *v_octant_regs
     val_comb:
         'ea_align == 0': 0
         'imm_val == 0': 0

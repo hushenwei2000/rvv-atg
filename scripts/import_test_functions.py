@@ -180,10 +180,7 @@ from scripts.create_test_loadstore.create_test_vluxsegei32 import *
 from scripts.create_test_loadstore.create_test_vse8 import *
 from scripts.create_test_loadstore.create_test_vse16 import *
 from scripts.create_test_loadstore.create_test_vse32 import *
-from scripts.create_test_loadstore.create_test_vs1r import *
-from scripts.create_test_loadstore.create_test_vs2r import *
-from scripts.create_test_loadstore.create_test_vs4r import *
-from scripts.create_test_loadstore.create_test_vs8r import *
+from scripts.create_test_loadstore.create_test_vsre import *
 from scripts.create_test_loadstore.create_test_vsse8 import *
 from scripts.create_test_loadstore.create_test_vsse16 import *
 from scripts.create_test_loadstore.create_test_vsse32 import *

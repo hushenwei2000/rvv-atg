@@ -275,6 +275,58 @@ def generate_vlxeiseg_macro(f, lmul):
         TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(16+lmul*6) + " \\\n\
         TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(16+lmul*7) + " \n", file=f)
 
+
+def generate_vlre_macro(f, lmul):
+    print("\
+    #define TEST_VLRE1_OP( testnum, inst,  base ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            inst v8, (x1); \\\n\
+        ) \n", file=f)
+    
+    print("#define TEST_VLRE2_OP( testnum, inst,  base ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            inst v8, (x1); \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d) "%(8+1) + " \n", file=f)
+    print("", file=f)
+    
+    print("#define TEST_VLRE4_OP( testnum, inst,  base ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            inst v8, (x1); \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*3) + " \n", file=f)
+    elif lmul == 2:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \n", file=f)
+    print("", file=f)
+    
+    
+    print("#define TEST_VLRE8_OP( testnum, inst,  base ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            inst v8, (x1); \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*7) + " \n", file=f)
+    elif lmul == 2:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*6) + "\n", file=f)
+    elif lmul == 4:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + "\n", file=f)
+
 def generate_macros_vlseg(f, lmul, vsew, eew):
     emul = eew / vsew * lmul
     emul = 1 if emul < 1 else int(emul)
@@ -819,6 +871,67 @@ def generate_vsuxseg_macro(f, lmul):
         TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+lmul*7) + " \n", file=f)
 
 
+def generate_vsre_macro(f, lmul):
+    print("\
+    #define TEST_VSRE1_OP( testnum, load_inst, store_inst,   base, source_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            la  x2, source_addr; \\\n\
+            vl8re32.v v16, (x2); \\\n\
+            store_inst v16, (x1); \\\n\
+            load_inst v8, (x1);  \\\n\
+        ) \n\
+    #define TEST_VSRE2_OP( testnum, load_inst, store_inst,   base, source_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            la  x2, source_addr; \\\n\
+            vl8re32.v v16, (x2); \\\n\
+            store_inst v16, (x1); \\\n\
+            load_inst v8, (x1);  \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d) "%(8+1) + " \n", file=f)
+    print("", file=f)
+    
+    print("#define TEST_VSRE4_OP( testnum, load_inst, store_inst,   base, source_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            la  x2, source_addr; \\\n\
+            vl8re32.v v16, (x2); \\\n\
+            store_inst v16, (x1); \\\n\
+            load_inst v8, (x1);  \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*1) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + "  \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*3) + " \n", file=f)
+    elif lmul == 2:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \n", file=f)
+    print("", file=f)
+    
+    print("#define TEST_VSRE8_OP( testnum, load_inst, store_inst,   base, source_addr ) \\\n\
+        TEST_CASE_LOOP( testnum, v8,   \\\n\
+            la  x1, base; \\\n\
+            la  x2, source_addr; \\\n\
+            vl8re32.v v16, (x2); \\\n\
+            store_inst v16, (x1); \\\n\
+            load_inst v8, (x1);  \\\n\
+        ) \\", file=f)
+    if lmul <= 1:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*1) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*3) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*5) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*6) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*7) + " \n", file=f)
+    elif lmul == 2:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*2) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + " \\\n\
+        TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*6) + "\n", file=f)
+    elif lmul == 4:
+        print("TEST_CASE_LOOP_CONTINUE( testnum, v%d)"%(8+1*4) + "\n", file=f)
+
 def generate_macros_vsse(f):
     for n in range(1,31):
         if n == 12 or n == 20 or n == 24 or n == 29 or n == 30: # signature base registers
@@ -1072,4 +1185,78 @@ def generate_macros_vssseg(f, lmul, vsew, eew):
             store_inst v8, (x29), x2; \\\n\
             load_inst v16, (x29), x2;  \\\n\
         )",file=f)
- 
+
+
+def generate_tests_vlre(f, vsew , eew, lmul):
+    emul = eew / vsew * lmul
+    if emul < 0.125 or emul > 8:
+        return 0
+    emul = 1 if emul < 1 else int(emul)
+    n = 0
+    instr1 = "vl1re%d"%(eew)
+    instr2 = "vl2re%d"%(eew)
+    instr4 = "vl4re%d"%(eew)
+    instr8 = "vl8re%d"%(eew)
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VV Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+
+    for i in range(2):
+        n += 1
+        print("  TEST_VLRE1_OP( "+str(n)+",  %s.v, " %instr1+"0 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+"16 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE4_OP( "+str(n)+",  %s.v, " %instr4+"-12 + tdat4"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE8_OP( "+str(n)+",  %s.v, " %instr8+"0 + tdat5"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE2_OP( "+str(n)+",  %s.v, " %instr2+"0 + tdat"+" );", file=f)
+        n += 1
+        print("  TEST_VLRE8_OP( "+str(n)+",  %s.v, " %instr8+"4096 + tdat5"+" );", file=f)
+
+    return n
+
+
+def generate_tests_vsre(f, vsew , lmul):
+    n = 0
+    
+    list = [8, 16, 32, 64]
+    load_ins_eew = 32
+    for i in range(4):
+        emul = list[i] / vsew * lmul
+        if emul >= 0.125 and emul <= 8:
+            load_ins_eew = list[i]
+            break
+
+    print("  #-------------------------------------------------------------", file=f)
+    print("  # VV Tests", file=f)
+    print("  #-------------------------------------------------------------", file=f)
+
+    for i in range(2):
+        n += 1
+        print("  TEST_VSRE1_OP( "+str(n)+", vl1re%d.v, vs1r.v, "%load_ins_eew +"0 + tdat"+" , mask_data );", file=f)
+        n += 1
+        print("  TEST_VSRE2_OP( "+str(n)+", vl2re%d.v, vs2r.v, "%load_ins_eew +"16 + tdat"+" , mask_data );", file=f)
+        n += 1
+        print("  TEST_VSRE4_OP( "+str(n)+", vl4re%d.v, vs4r.v, "%load_ins_eew +"-12 + tdat4"+" , mask_data );", file=f)
+        n += 1
+        print("  TEST_VSRE8_OP( "+str(n)+", vl8re%d.v, vs8r.v, "%load_ins_eew +"0 + tdat5"+" , mask_data );", file=f)
+        n += 1
+        print("  TEST_VSRE8_OP( "+str(n)+", vl8re%d.v, vs8r.v, "%load_ins_eew +"4096 + tdat5"+" , mask_data );", file=f)
+
+    return n
+
+
+
+
+
+
+
+
+
+
+
+
+
+

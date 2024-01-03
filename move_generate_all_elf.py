@@ -4,7 +4,7 @@ dirs = os.listdir('.')
 if not os.path.isdir('generate_all'):
     os.makedirs('generate_all')
 for d in dirs:
-    if d.startswith("12"):
+    if d.startswith(str(date.today())[5:]):
         instr = d.split('-')[2]
         instr_index = d.find(instr)
         full_instr = d[instr_index:]

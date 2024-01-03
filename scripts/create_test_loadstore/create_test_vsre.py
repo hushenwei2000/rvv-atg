@@ -1,14 +1,13 @@
 import logging
 import os
-from scripts.create_test_loadstore.create_test_common import *
 from scripts.test_common_info import *
+from scripts.create_test_loadstore.create_test_common import *
 import re
 import numpy as np
 
-name = 'vlre16'
+name='vsre'
 
-
-def create_empty_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
+def create_empty_test_vsre(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     logging.info("Creating empty test for {}".format(name))
 
     path = "%s/%s_empty.S" % (output_dir, name)
@@ -16,6 +15,7 @@ def create_empty_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
 
     # Common header files
     print_common_header(name, f)
+
 
     # Common const information
 
@@ -31,7 +31,7 @@ def create_empty_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir):
     return path
 
 
-def create_first_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
+def create_first_test_vsre(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_path):
     logging.info("Creating first test for {}".format(name))
 
     path = "%s/%s_first.S" % (output_dir, name)
@@ -41,10 +41,10 @@ def create_first_test_vlre16(xlen, vlen, vsew, lmul, vta, vma, output_dir, rpt_p
     print_common_header(name, f)
 
     # Generate macros to test diffrent register
-    generate_vlre_macro(f, lmul)
-
+    generate_vsre_macro(f, lmul)
+    
     # Generate tests
-    n =  generate_tests_vlre(f, vsew, 16, lmul)
+    n = generate_tests_vsre(f, vsew, lmul)
 
     # Common const information
 

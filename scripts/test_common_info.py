@@ -398,7 +398,9 @@ def print_loadlr_ending(f, n = 0):
     tdat25:  .word 0x0ff00ff0\n\
     tdat26:  .word 0xf00ff00f\n\
     tdta27:  .zero 32\n\
-    \n\
+    \n", file=f)
+    print_mask_origin_data_ending(f)
+    print("\n\
     RVTEST_DATA_END\n\
     \n", file=f)
     arr = gen_arr_load(n)

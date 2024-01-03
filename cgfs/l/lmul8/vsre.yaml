@@ -1,8 +1,11 @@
-vs2r:
+vsre:
     config: 
       - check ISA:=regex(.*V.*)
     opcode: 
+      vs1r.v: 0
       vs2r.v: 0
+      vs4r.v: 0
+      vs8r.v: 0
     rs1: 
       <<: *all_regs_cropped
     rd: 
