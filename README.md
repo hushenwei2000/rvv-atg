@@ -1,5 +1,15 @@
 # RISC-V Vector Automatic Tests Generator
 
+## Branches Descriptions
+
+This repository has two available branches:
+
+- `master`: generates tests that contain self-checking.
+
+- `new_test_format`: generates tests that are used for the RISCOF framework (no self-checking, use signature for verification).
+
+The test content is the same in both of them.
+
 ## Prerequisite
 
 1. RVV Compiler
