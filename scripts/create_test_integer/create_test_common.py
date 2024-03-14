@@ -956,7 +956,7 @@ def generate_tests_vvvxvi(instr, f, rs1_val, rs2_val, lmul, instr_suffix='vv', g
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     if generate_vv:
@@ -1053,7 +1053,7 @@ def generate_tests_vw(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', gener
     lmul_double_1 = 1 if lmul_double < 1 else int (lmul_double)
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
@@ -1157,7 +1157,7 @@ def generate_tests_vwmacc(f, rs1_val, rs2_val, instr, lmul, instr_suffix='vv', g
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     step_bytes_double = step_bytes * 2
@@ -1238,7 +1238,7 @@ def generate_tests_muladd(instr, f, rs1_val, rs2_val, lmul):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
@@ -1354,7 +1354,7 @@ def generate_tests_vmadc(instr, f, rs1_val, rs2_val, lmul, generate_vi = True):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
@@ -1527,7 +1527,7 @@ def generate_tests_vadc(instr, f, rs1_val, rs2_val, lmul, generate_vi=True):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
@@ -1583,7 +1583,7 @@ def generate_tests_vvmvxmvim(instr, f, rs1_val, rs2_val, lmul, generate_vv=True,
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     if generate_vv:
@@ -1655,7 +1655,7 @@ def generate_tests_nvvnvxnvi(instr, f, rs1_val, rs2_val, lmul):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
@@ -1837,7 +1837,7 @@ def generate_tests_ext_op(instr, f, rs1_val, rs2_val, lmul):
     
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     

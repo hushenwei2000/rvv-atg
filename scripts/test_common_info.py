@@ -628,7 +628,10 @@ def print_common_ending_rs1rs2rd_vvvxvi(rs1_val, rs2_val, test_num_tuple, vsew, 
     vlen = int(os.environ['RVV_ATG_VLEN'])
     lmul = float(os.environ['RVV_ATG_LMUL'])
     num_elem = int(vlen * lmul / vsew)
-    loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
+    if num_elem == 0:
+        loop_num = 0
+    else:
+        loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     lmul_1 = 1 if lmul < 1 else int(lmul)
     num_elem_1 = int(vlen * lmul_1 / vsew)
 

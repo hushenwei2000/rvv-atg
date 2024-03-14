@@ -176,7 +176,7 @@ def generate_tests(f, rs1_val, rs2_val, instr, lmul, generate_vi = False):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
@@ -234,7 +234,7 @@ def generate_tests_vnclip(f, rs1_val, rs2_val, instr, lmul):
     vsew = int(os.environ['RVV_ATG_VSEW'])
     num_elem = int((vlen * lmul / vsew))
     if num_elem == 0:
-        return 0
+        return (0,0,0)
     loop_num = int(min(len(rs1_val), len(rs2_val)) / num_elem)
     step_bytes = int(vlen * lmul / 8)
     print("  #-------------------------------------------------------------", file=f)
