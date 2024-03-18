@@ -8,6 +8,7 @@ from scripts.replace_results import replace_results
 from scripts.run_riscof_coverage import run_riscof_coverage
 from scripts.run_spike import run_spike
 from scripts.constants import *
+from scripts.create_test_combination.testgen import *
 
 
 def parse_args(cwd):
@@ -277,6 +278,24 @@ def run_exception(cwd,args):
     #3. move output to output directory
     os.system("mv ./build %s/%s" %(cwd,output))
 
+def run_combination(cwd, args):
+    output_dir = args.o
+    if output_dir is None:
+        output_dir = str(date.today())[5:] + "-vlen" + str(args.vlen) + "-vsew" + str(args.vsew) + "-lmul" + str(args.lmul)
+    os.system("rm -rf {}".format(output_dir))
+    logging.info("Creating output directory: {}".format(output_dir))
+    subprocess.run(["mkdir", "-p", output_dir])
+    test_generator(cwd, args.xlen, args.flen, args.vlen, args.elen, args.vsew, args.lmul, output_dir)
+
+def run_combination_all(cwd, args):
+    output_dir = args.o
+    if output_dir is None:
+        output_dir = str(date.today())[5:] + "-ctest_vlen" + str(args.vlen)
+    os.system("rm -rf {}".format(output_dir))
+    logging.info("Creating output directory: {}".format(output_dir))
+    subprocess.run(["mkdir", "-p", output_dir])
+    ctest_all(cwd, args.xlen, args.flen, args.vlen, args.elen, output_dir)
+
 def main():
     # Full path of current dir
     cwd = os.path.dirname(os.path.realpath(__file__))
@@ -288,6 +307,14 @@ def main():
         # print("get e!")
         run_exception(cwd, args)
         return
+    # combination test, ignore instr in this case
+    elif args.t == "c":
+        run_combination(cwd, args)
+        return
+    elif args.t == "ca":
+        run_combination_all(cwd, args)
+        return
+    
     output_dir = create_output(args)
     cgf = create_cgf_path(args.i, args.t, args.lmul, cwd, output_dir)
     rewrite_macro_vtavma(args.vsew, args.lmul, args.vta, args.vma)
