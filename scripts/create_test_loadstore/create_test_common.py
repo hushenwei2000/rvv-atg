@@ -308,7 +308,7 @@ def generate_vsseg3_macro(f, emul):
 
 
 def generate_macros_vsse(f):
-    for n in range(1,31):
+    for n in range(1,29):
         print("#define TEST_VSSE_OP_1%d( testnum, load_inst, store_inst, eew, result, stride, base )"%n + " \\\n\
         TEST_CASE( testnum, v16, result, \\\n\
             la  x%d, base; "%n + " \\\n\
@@ -344,6 +344,18 @@ def generate_macros_vsse(f):
             VSET_VSEW \\\n\
             store_inst v8, (x30), x2; \\\n\
             load_inst v16, (x30), x2 ;  \\\n\
+        )",file=f)
+    
+    print("#define TEST_VSSE_OP_131( testnum, load_inst, store_inst, eew, result, stride, base ) \\\n\
+        TEST_CASE( testnum, v16, result, \\\n\
+            la  x31, base;  \\\n\
+            li  x2, stride; \\\n\
+            li  x3, result; \\\n\
+            vsetivli x30, 1, MK_EEW(eew), tu, mu; \\\n\
+            vmv.v.x v8, x3; \\\n\
+            VSET_VSEW \\\n\
+            store_inst v8, (x31), x2; \\\n\
+            load_inst v16, (x31), x2 ;  \\\n\
         )",file=f)
 
     print("#define TEST_VSSE_OP_129( testnum, load_inst, store_inst, eew, result, stride, base ) \\\n\

@@ -71,7 +71,7 @@ def generate_tests(f, rs1_val, rs2_val, vsew, lmul):
             print("  TEST_VSRE2_OP_rd%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00f00ff"+", "+"0xf00f00ff"+", "+"0 + tdat"+" );",file=f)
     
         k = i%30+2
-        if k == 31 or k == 30:
+        if k == 31 or k == 30 or k == 29:
             continue;
         n +=1
         print("  TEST_VSRE2_OP_1%d( "%k+str(n)+", %s.v, %s.v, "%(instr3,instr)+"32"+", "+"0xf00fff00"+", "+"0xf00f00ff"+", "+"-8 + tdat4"+" );",file=f)
